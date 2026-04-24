@@ -71,18 +71,22 @@ const ATSChecker = () => {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${user.token}`
-                }
+                },
+                timeout: 30000 
             });
             setResults(res.data);
             setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
         } catch (err) {
+            console.error('ATS Error:', err);
             const status = err.response?.status;
             if (status === 401) {
                 setError('Session expired. Please re-login.');
             } else if (status === 413) {
                 setError('File too large (Max 5MB).');
+            } else if (err.code === 'ECONNABORTED') {
+                setError('Analysis timed out. Please try a smaller file.');
             } else {
-                setError(err.response?.data?.message || 'Analysis failed. Please try a different PDF or DOCX.');
+                setError(err.response?.data?.message || 'Analysis failed. Check your connection or file type.');
             }
         } finally {
             setLoading(false);

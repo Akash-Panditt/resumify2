@@ -12,6 +12,21 @@ const atsRoutes = require('./routes/ats');
 const paymentsRoutes = require('./routes/payments');
 
 const app = express();
+
+// Production Environment Check
+const REQUIRED_VARS = ['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'FRONTEND_URL'];
+console.log('--- Production Health Check ---');
+REQUIRED_VARS.forEach(v => {
+  if (!process.env[v]) {
+    console.warn(`[WARNING] Missing Environment Variable: ${v}`);
+  } else {
+    console.log(`[OK] ${v} is set`);
+  }
+});
+if (!process.env.GEMINI_API_KEY) {
+  console.warn('[WARNING] GEMINI_API_KEY is missing. AI features will be disabled.');
+}
+console.log('-------------------------------');
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
