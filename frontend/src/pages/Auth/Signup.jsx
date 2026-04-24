@@ -120,7 +120,13 @@ const Signup = () => {
             </div>
             
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => setError('Google Authentication Failed')} width="100%" text="signup_with" shape="rectangular" />
+              <GoogleLogin 
+                onSuccess={handleGoogleSuccess} 
+                onError={() => setError('Google Authentication Failed')} 
+                text="signup_with" 
+                shape="rectangular" 
+                width="350"
+              />
             </div>
           </div>
         </form>
