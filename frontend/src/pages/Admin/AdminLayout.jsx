@@ -42,7 +42,7 @@ const AdminLayout = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:5000/api/auth/logout');
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/logout`);
     } catch (err) {
       console.error('Logout failed', err);
     }
@@ -77,7 +77,7 @@ const AdminLayout = () => {
     const fetchPendingCount = async () => {
       try {
         if (!user.token) return;
-        const res = await axios.get('http://localhost:5000/api/admin/stats', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/stats`, {
           headers: { 'Authorization': `Bearer ${user.token}` }
         });
         setPendingCount(res.data.pendingUpgradesCount || 0);

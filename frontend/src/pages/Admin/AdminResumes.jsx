@@ -28,7 +28,7 @@ const AdminResumes = () => {
 
   const fetchResumes = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/resumes', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/resumes`, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       setResumes(res.data);
@@ -42,7 +42,7 @@ const AdminResumes = () => {
   const handleDeleteResume = async (resumeId) => {
     if (!window.confirm('Are you sure you want to permanently delete this resume? This cannot be undone.')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/resumes/${resumeId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/resumes/${resumeId}`, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       fetchResumes();

@@ -35,7 +35,7 @@ const Login = () => {
     setError('');
     if (!validateFields()) return;
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
       
       if (res.data.requireOtp) {
         setShowOtp(true);
@@ -56,7 +56,7 @@ const Login = () => {
   };
 
   const handleVerifyOtp = async (otp) => {
-    const res = await axios.post('http://localhost:5000/api/auth/verify-otp', { email, otp });
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/verify-otp`, { email, otp });
     const userData = res.data;
     localStorage.setItem('resumify_user', JSON.stringify(userData));
     
@@ -69,12 +69,12 @@ const Login = () => {
   };
 
   const handleResendOtp = async () => {
-    await axios.post('http://localhost:5000/api/auth/send-otp', { email, type: 'login' });
+    await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/send-otp`, { email, type: 'login' });
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/google', { credential: credentialResponse.credential });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/google`, { credential: credentialResponse.credential });
       const userData = res.data;
       localStorage.setItem('resumify_user', JSON.stringify(userData));
       

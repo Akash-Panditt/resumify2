@@ -30,7 +30,7 @@ const Dashboard = () => {
 
   const fetchProfile = async (currentUser) => {
     try {
-      const res = await axios.get('http://localhost:5000/api/auth/profile', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/profile`, {
         headers: { Authorization: `Bearer ${currentUser.token}` },
       });
       const updatedUser = { ...currentUser, ...res.data, _id: res.data.id || currentUser._id };
@@ -48,7 +48,7 @@ const Dashboard = () => {
 
   const fetchResumes = async (currentUser) => {
     try {
-      const res = await axios.get('http://localhost:5000/api/resumes', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes`, {
         headers: { Authorization: `Bearer ${currentUser.token}` },
       });
       const fetchedResumes = res.data;
@@ -80,7 +80,7 @@ const Dashboard = () => {
   const handleDeleteResume = async (resumeId) => {
     if (!window.confirm('Delete this resume permanently?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/resumes/${resumeId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/resumes/${resumeId}`, {
         headers: getAuthHeaders(),
       });
       setResumes(resumes.filter(r => r._id !== resumeId));

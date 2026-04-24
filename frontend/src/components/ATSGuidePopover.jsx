@@ -21,7 +21,7 @@ const ATSGuidePopover = ({ jobTitle }) => {
       try {
         const user = JSON.parse(localStorage.getItem('resumify_user') || '{}');
         
-        const res = await axios.post('http://localhost:5000/api/ai/ats-guide', 
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/ai/ats-guide`, 
           { jobTitle },
           { headers: { Authorization: `Bearer ${user.token}` } }
         );

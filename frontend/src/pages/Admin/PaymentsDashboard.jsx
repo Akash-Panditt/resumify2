@@ -27,7 +27,7 @@ const PaymentsDashboard = () => {
 
   const fetchPayments = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/payments', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/payments`, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       setPaymentsData(res.data);

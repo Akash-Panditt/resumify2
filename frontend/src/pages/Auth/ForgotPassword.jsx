@@ -32,7 +32,7 @@ const ForgotPassword = () => {
     setMessage('');
 
     try {
-      await axios.post('http://localhost:5000/api/auth/send-otp', { email, type: 'forgot' });
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/send-otp`, { email, type: 'forgot' });
       setShowOtp(true);
       setStatus('idle');
     } catch (err) {
@@ -45,7 +45,7 @@ const ForgotPassword = () => {
   const handleVerifyOtp = async (otp) => {
     setStatus('loading');
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/forgot-password/verify', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password/verify`, {
         email,
         otp
       });
@@ -69,7 +69,7 @@ const ForgotPassword = () => {
 
     setStatus('loading');
     try {
-      await axios.post('http://localhost:5000/api/auth/forgot-password/reset', {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password/reset`, {
         email,
         resetToken,
         newPassword
@@ -115,7 +115,7 @@ const ForgotPassword = () => {
           <OtpVerification 
             email={email}
             onVerify={handleVerifyOtp}
-            onResend={() => axios.post('http://localhost:5000/api/auth/send-otp', { email, type: 'forgot' })}
+            onResend={() => axios.post(`${import.meta.env.VITE_API_URL}/api/auth/send-otp`, { email, type: 'forgot' })}
             onCancel={() => setShowOtp(false)}
             type="forgot"
           />

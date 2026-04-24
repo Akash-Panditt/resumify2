@@ -34,7 +34,7 @@ const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
     
     try {
       const payloadText = actionType === 'generate' ? '' : text;
-      const res = await axios.post('http://localhost:5000/api/ai/enhance', 
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/ai/enhance`, 
         { text: payloadText, type, contextData },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );

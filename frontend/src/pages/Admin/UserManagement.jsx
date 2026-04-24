@@ -33,7 +33,7 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/users', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users`, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       setUsers(res.data);
@@ -46,7 +46,7 @@ const UserManagement = () => {
 
   const handleUpdateRole = async (userId, newRole) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/users/${userId}`, { role: newRole }, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`, { role: newRole }, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       fetchUsers();
@@ -57,7 +57,7 @@ const UserManagement = () => {
 
   const handleUpdatePlan = async (userId, newPlan) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/users/${userId}`, { plan: newPlan }, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`, { plan: newPlan }, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       fetchUsers();
@@ -68,7 +68,7 @@ const UserManagement = () => {
 
   const handleToggleBlock = async (userId, currentStatus) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/users/${userId}`, { is_blocked: !currentStatus }, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`, { is_blocked: !currentStatus }, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       fetchUsers();
@@ -80,7 +80,7 @@ const UserManagement = () => {
   const handleDeleteUser = async (userId) => {
     if (!window.confirm('Are you sure you want to delete this user? This action is irreversible.')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/users/${userId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       fetchUsers();
@@ -92,7 +92,7 @@ const UserManagement = () => {
 
   const handleApproveUpgrade = async (userId) => {
     try {
-      const res = await axios.post(`http://localhost:5000/api/admin/approve-upgrade/${userId}`, {}, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/approve-upgrade/${userId}`, {}, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       alert(res.data.message || 'Upgrade approved successfully');
@@ -107,7 +107,7 @@ const UserManagement = () => {
   const handleRejectUpgrade = async (userId) => {
     if (!window.confirm('Are you sure you want to reject this upgrade request?')) return;
     try {
-      const res = await axios.post(`http://localhost:5000/api/admin/reject-upgrade/${userId}`, {}, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/reject-upgrade/${userId}`, {}, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       alert(res.data.message);
@@ -120,7 +120,7 @@ const UserManagement = () => {
   const handleRevokeSubscription = async (userId) => {
     if (!window.confirm('Are you sure you want to revoke this user\'s subscription? They will be downgraded to the Free tier immediately.')) return;
     try {
-      const res = await axios.post(`http://localhost:5000/api/admin/revoke-subscription/${userId}`, {}, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/revoke-subscription/${userId}`, {}, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       alert(res.data.message);

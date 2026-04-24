@@ -190,7 +190,7 @@ const Templates = () => {
       // Save accent color preference for the builder to pick up
       localStorage.setItem('resumify_accent_color', selectedAccent.hex);
       
-      const res = await axios.post('http://localhost:5000/api/resumes', { 
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes`, { 
         template: templateId,
         color: selectedAccent.hex // Attempt to save color to backend
       });

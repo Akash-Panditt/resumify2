@@ -48,7 +48,7 @@ const Pricing = () => {
       const planInfo = PLANS.find(p => p.id === planId);
       const amount = parseInt(planInfo.price.replace('₹', ''));
 
-      const res = await axios.post(`http://localhost:5000/api/payments/checkout`, { 
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/checkout`, { 
         type: 'plan', 
         itemId: planId,
         amount

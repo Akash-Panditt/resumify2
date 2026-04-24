@@ -94,7 +94,7 @@ const Preview = () => {
         const storedUser = JSON.parse(localStorage.getItem('resumify_user') || '{}');
         if (!storedUser?.token) return navigate('/login');
         
-        const res = await axios.get(`http://localhost:5000/api/resumes/${id}`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes/${id}`, {
           headers: { Authorization: `Bearer ${storedUser.token}` }
         });
         setResumeData(res.data);
@@ -117,7 +117,7 @@ const Preview = () => {
     setDownloading(true);
     try {
       // Call download tracking endpoint first
-      const res = await axios.post(`http://localhost:5000/api/resumes/download/${id}`, {}, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes/download/${id}`, {}, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
 

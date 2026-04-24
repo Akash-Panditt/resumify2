@@ -30,7 +30,7 @@ const AdminAnnouncements = () => {
 
   const fetchAnnouncements = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/announcements', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/announcements`, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       setAnnouncements(res.data);
@@ -44,7 +44,7 @@ const AdminAnnouncements = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/admin/announcements', {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/announcements`, {
         ...newAnnouncement,
         is_active: true
       }, {
@@ -61,7 +61,7 @@ const AdminAnnouncements = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this announcement permanently?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/announcements/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/announcements/${id}`, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       fetchAnnouncements();

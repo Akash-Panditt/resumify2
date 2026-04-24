@@ -26,12 +26,12 @@ const Settings = () => {
 
   const fetchMasterProfile = async (token) => {
     try {
-      const res = await axios.get('http://localhost:5000/api/resumes');
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes`);
       let master = res.data.find(r => r.title === '___MASTER_PROFILE___');
       
       if (!master) {
         // Create initial master profile if none exists
-        const createRes = await axios.post('http://localhost:5000/api/resumes', 
+        const createRes = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes`, 
           { title: '___MASTER_PROFILE___', template: 'modern' }
         );
         master = createRes.data;
@@ -45,7 +45,7 @@ const Settings = () => {
   const handleSaveProfile = async () => {
     setIsSavingProfile(true);
     try {
-      await axios.put(`http://localhost:5000/api/resumes/${masterProfile._id}`, masterProfile);
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/resumes/${masterProfile._id}`, masterProfile);
       setProfileSuccess(true);
       setTimeout(() => setProfileSuccess(false), 3000);
     } catch (err) {
@@ -325,7 +325,7 @@ const PremiumPerksModule = ({ user }) => {
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/pro/requests');
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/pro/requests`);
       setRequests(res.data);
     } catch (err) {
       console.error('Failed to fetch requests', err);
@@ -335,7 +335,7 @@ const PremiumPerksModule = ({ user }) => {
   const handleSubmit = async (type, data = {}) => {
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/pro/requests', { type, request_data: data });
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/pro/requests`, { type, request_data: data });
       setSuccess(type);
       fetchRequests();
       setTimeout(() => setSuccess(null), 3000);

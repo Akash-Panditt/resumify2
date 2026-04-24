@@ -10,7 +10,7 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, price, onSucc
   const handlePayment = async () => {
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/payments/checkout', {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/checkout`, {
         type: 'template',
         itemId: templateId,
         amount: price

@@ -42,7 +42,7 @@ const AdminLogin = () => {
     if (!validateFields()) return;
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
       
       if (res.data.role !== 'admin') {
         setError('Access denied. This accounts role is set to "' + (res.data.role || 'user') + '". Administrative privileges required.');
@@ -64,7 +64,7 @@ const AdminLogin = () => {
     setError('');
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/google', { credential: credentialResponse.credential });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/google`, { credential: credentialResponse.credential });
       
       if (res.data.role !== 'admin') {
         setError(`Access denied. Your account (${res.data.email}) is not an administrator.`);

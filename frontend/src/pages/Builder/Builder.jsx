@@ -159,7 +159,7 @@ const Builder = () => {
         const user = JSON.parse(localStorage.getItem('resumify_user'));
         if (!user) return navigate('/login');
         
-        const res = await axios.get(`http://localhost:5000/api/resumes/${id}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes/${id}`);
         
         const fetchedData = {
           title: res.data.title || 'Untitled Resume',
@@ -177,7 +177,7 @@ const Builder = () => {
         
         if (isFreshResume && fetchedData.title !== '___MASTER_PROFILE___') {
           try {
-            const allResumes = await axios.get('http://localhost:5000/api/resumes');
+            const allResumes = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes`);
             const master = allResumes.data.find(r => r.title === '___MASTER_PROFILE___');
             if (master && (master.personalDetails?.fullName || master.skills?.length > 0)) {
               // Apply master data
@@ -275,7 +275,7 @@ const Builder = () => {
       const user = JSON.parse(localStorage.getItem('resumify_user'));
       if (!user) return navigate('/login');
       
-      await axios.put(`http://localhost:5000/api/resumes/${id}`, resumeData);
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/resumes/${id}`, resumeData);
       if (showNotification) alert('Resume saved successfully!');
       return true;
     } catch (err) {
@@ -455,7 +455,7 @@ const Builder = () => {
                         setIsSyncing(true);
                         try {
                           const user = JSON.parse(localStorage.getItem('resumify_user'));
-                          const res = await axios.get('http://localhost:5000/api/resumes');
+                          const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes`);
                           const master = res.data.find(r => r.title === '___MASTER_PROFILE___');
                           
                           if (master) {

@@ -22,10 +22,10 @@ const TemplateManagement = () => {
   const fetchData = async () => {
     try {
       const [tRes, cRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/admin/templates', {
+        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/templates`, {
           headers: { 'Authorization': `Bearer ${admin.token}` }
         }),
-        axios.get('http://localhost:5000/api/admin/categories', {
+        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/categories`, {
           headers: { 'Authorization': `Bearer ${admin.token}` }
         })
       ]);
@@ -41,7 +41,7 @@ const TemplateManagement = () => {
   const handleAddTemplate = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/admin/templates', newTemplate, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/templates`, newTemplate, {
         headers: { 'Authorization': `Bearer ${admin.token}` }
       });
       setNewTemplate({ name: '', category_id: '', image_url: '', is_premium: false });
@@ -54,7 +54,7 @@ const TemplateManagement = () => {
   const handleDeleteTemplate = async (templateId) => {
     if (!window.confirm('Are you sure you want to delete this template from the catalog?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/templates/${templateId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/templates/${templateId}`, {
         headers: { 'Authorization': `Bearer ${admin.token}` }
       });
       fetchData();
@@ -65,7 +65,7 @@ const TemplateManagement = () => {
 
   const handleTogglePremium = async (template) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/templates/${template.id}`, { is_premium: !template.is_premium }, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/templates/${template.id}`, { is_premium: !template.is_premium }, {
         headers: { 'Authorization': `Bearer ${admin.token}` }
       });
       fetchData();

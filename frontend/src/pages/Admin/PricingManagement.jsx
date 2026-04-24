@@ -13,7 +13,7 @@ const PricingManagement = () => {
 
   const fetchPlans = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/pricing');
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/pricing`);
       setPlans(res.data);
     } catch (err) {
       console.error('Pricing fetch failed', err);
@@ -25,7 +25,7 @@ const PricingManagement = () => {
   const handleUpdatePlan = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/admin/pricing/${editingPlan.id}`, editingPlan);
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/pricing/${editingPlan.id}`, editingPlan);
       setEditingPlan(null);
       fetchPlans();
     } catch (err) {

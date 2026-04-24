@@ -25,7 +25,7 @@ const UpgradeApprovals = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/users', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users`, {
         headers: { Authorization: `Bearer ${adminValue.token}` }
       });
       // Filter for non-admin users who have a pending request OR are already paid users
@@ -49,7 +49,7 @@ const UpgradeApprovals = () => {
       else if (action === 'reject') endpoint = `reject-upgrade/${userId}`;
       else if (action === 'revoke') endpoint = `revoke-subscription/${userId}`;
 
-      const res = await axios.post(`http://localhost:5000/api/admin/${endpoint}`, {}, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/${endpoint}`, {}, {
         headers: { Authorization: `Bearer ${adminValue.token}` }
       });
       alert(res.data.message);

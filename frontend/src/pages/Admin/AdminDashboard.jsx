@@ -31,7 +31,7 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/stats', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/stats`, {
         headers: { 'Authorization': `Bearer ${admin.token}` }
       });
       setStats(res.data);
@@ -42,7 +42,7 @@ const AdminDashboard = () => {
 
   const fetchGrowthAnalytics = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/analytics/growth', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/analytics/growth`, {
         headers: { 'Authorization': `Bearer ${admin.token}` }
       });
       setGrowthData(res.data);
@@ -216,7 +216,7 @@ const PremiumRequestsPanel = ({ admin }) => {
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/premium-requests', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/premium-requests`, {
         headers: { 'Authorization': `Bearer ${admin.token}` }
       });
       setRequests(res.data);
@@ -234,7 +234,7 @@ const PremiumRequestsPanel = ({ admin }) => {
   const handleUpdateStatus = async (id, status) => {
     try {
       const notes = prompt("Admin notes for this update:");
-      await axios.put(`http://localhost:5000/api/admin/premium-requests/${id}`, { status, admin_notes: notes }, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/premium-requests/${id}`, { status, admin_notes: notes }, {
         headers: { 'Authorization': `Bearer ${admin.token}` }
       });
       fetchRequests();
@@ -304,7 +304,7 @@ const UpgradeRequestsPanel = ({ admin, onAction }) => {
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/users', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users`, {
         headers: { 'Authorization': `Bearer ${admin.token}` }
       });
       // Filter only users with a pending request
@@ -323,7 +323,7 @@ const UpgradeRequestsPanel = ({ admin, onAction }) => {
   const handleAction = async (userId, action) => {
     try {
       const endpoint = action === 'approve' ? 'approve-upgrade' : 'reject-upgrade';
-      const res = await axios.post(`http://localhost:5000/api/admin/${endpoint}/${userId}`, {}, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/${endpoint}/${userId}`, {}, {
         headers: { 'Authorization': `Bearer ${admin.token}` }
       });
       alert(res.data.message);

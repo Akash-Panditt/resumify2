@@ -23,7 +23,7 @@ const Signup = () => {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, { name, email, password });
       localStorage.setItem('resumify_user', JSON.stringify(res.data));
       navigate('/dashboard');
     } catch (err) {
@@ -33,7 +33,7 @@ const Signup = () => {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/google', { credential: credentialResponse.credential });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/google`, { credential: credentialResponse.credential });
       localStorage.setItem('resumify_user', JSON.stringify(res.data));
       navigate('/dashboard');
     } catch (err) {

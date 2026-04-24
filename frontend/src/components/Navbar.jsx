@@ -15,7 +15,7 @@ const Navbar = ({ user }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:5000/api/auth/logout', {}, { headers: getAuthHeaders() });
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/logout`, {}, { headers: getAuthHeaders() });
     } catch (err) {
       console.error('Logout error', err);
     }

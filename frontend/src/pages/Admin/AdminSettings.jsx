@@ -13,7 +13,7 @@ const AdminSettings = () => {
 
   const fetchSettings = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/settings', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/settings`, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       // Ensure defaults if empty DB
@@ -50,7 +50,7 @@ const AdminSettings = () => {
     e.preventDefault();
     setSaving(true);
     try {
-      await axios.put('http://localhost:5000/api/admin/settings', settings, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/settings`, settings, {
         headers: { Authorization: `Bearer ${admin.token}` }
       });
       alert('Platform settings saved successfully.');
