@@ -15,9 +15,8 @@ router.post('/checkout', protect, async (req, res) => {
       .insert([{
         user_id: req.user.id,
         amount,
-        type: type === 'plan' ? 'plan_purchase' : 'single_download',
-        item_id: itemId,
-        status: 'completed' // Simulate instant success for this demo
+        type: type === 'plan' ? `plan_purchase_${itemId}` : `single_download_${itemId}`,
+        status: 'completed' 
       }])
       .select()
       .single();
