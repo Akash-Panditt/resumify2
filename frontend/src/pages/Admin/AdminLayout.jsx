@@ -80,7 +80,7 @@ const AdminLayout = () => {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/stats`, {
           headers: { 'Authorization': `Bearer ${user.token}` }
         });
-        setPendingCount(res.data.pendingUpgradesCount || 0);
+        setPendingCount(res.data.totalPendingNotifications || res.data.pendingUpgradesCount || 0);
       } catch (err) {
         console.error('Failed to fetch pending count', err);
       }
