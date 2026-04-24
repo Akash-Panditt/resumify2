@@ -16,7 +16,8 @@ router.post('/checkout', protect, async (req, res) => {
         user_id: req.user.id,
         amount,
         type: type === 'plan' ? `plan_purchase_${itemId}` : `single_download_${itemId}`,
-        status: 'completed' 
+        status: 'completed',
+        gateway: 'internal_simulated'
       }])
       .select()
       .single();
