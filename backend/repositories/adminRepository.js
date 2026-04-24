@@ -90,23 +90,7 @@ class AdminRepository {
 
       const pendingUpgradesCount = users.filter(u => u.requested_plan !== null && u.role !== 'admin').length;
 
-      let pendingProRequestsCount = 0;
-      try {
-        const { count, error: pErr } = await supabase
-          .from('pro_requests')
-          .select('id', { count: 'exact', head: true })
-          .eq('status', 'pending');
-        if (!pErr) pendingProRequestsCount = count || 0;
-      } catch (e) {
-        console.warn('[AdminRepo] pro_requests table might be missing.');
-      }
-
-      return { 
-        users, 
-        resumeCount, 
-        pendingUpgradesCount,
-        totalPendingNotifications: pendingUpgradesCount + pendingProRequestsCount
-      };
+      return { users, resumeCount, pendingUpgradesCount };
     } catch (err) {
       console.error('[AdminRepo] getStats Error:', err.message);
       throw err;
