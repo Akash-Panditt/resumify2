@@ -32,7 +32,7 @@ const ModernTemplate = React.forwardRef(({ data }, ref) => {
 
       {/* Sections Wrapper */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}>
-        
+
         {/* Experience */}
         {experience && experience.length > 0 && (
           <div>
@@ -121,12 +121,12 @@ const ModernTemplate = React.forwardRef(({ data }, ref) => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '1rem' }}>
               {languages.map((l, i) => (
                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fafafa', padding: '0.5rem 0.75rem', borderRadius: '0.25rem', border: '1px solid #f1f5f9' }}>
-                   <span style={{ fontWeight: '600', color: '#1e293b' }}>{l.name}</span>
-                   <span style={{ fontSize: '0.8rem', color: '#6366f1', fontWeight: '500' }}>
+                  <span style={{ fontWeight: '600', color: '#1e293b' }}>{l.name}</span>
+                  <span style={{ fontSize: '0.8rem', color: '#6366f1', fontWeight: '500' }}>
                     {l.level === 1 && "Basic"}
                     {l.level === 2 && "Intermediate"}
                     {l.level === 3 && "Fluent"}
-                   </span>
+                  </span>
                 </div>
               ))}
             </div>

@@ -84,12 +84,12 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div style={{ padding: '3rem 1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-      <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-        <h1 className="text-gradient" style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Resumify</h1>
+    <div style={{ padding: 'clamp(1rem, 5vw, 3rem) 1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+      <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+        <h1 className="text-gradient" style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', marginBottom: '0.75rem' }}>Resumify</h1>
       </div>
       
-      <div className="card" style={{ width: '100%', maxWidth: '400px' }}>
+      <div className="card" style={{ width: '100%', maxWidth: '420px', padding: 'clamp(1.25rem, 5vw, 2.5rem)' }}>
         {!showResetFields && (
           <div style={{ marginBottom: '2rem' }}>
             {!showOtp && <h2 style={{ marginBottom: '0.5rem' }}>Reset Password</h2>}

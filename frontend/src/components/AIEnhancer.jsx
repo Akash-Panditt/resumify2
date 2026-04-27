@@ -6,18 +6,12 @@ const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
   const [loading, setLoading] = useState(false);
   const [suggestion, setSuggestion] = useState(null);
   const [error, setError] = useState(null);
-  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [showAIWriter, setShowAIWriter] = useState(false);
   
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('resumify_user') || '{}');
-  const isPremium = user.plan === 'pro' || user.role === 'admin';
 
   const handleOpenWriter = () => {
-    if (!isPremium) {
-      setShowUpgradePrompt(!showUpgradePrompt);
-      return;
-    }
     setShowAIWriter(true);
   };
 
@@ -25,12 +19,10 @@ const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
     if (actionType === 'improve' && (!text || text.trim().length < 5)) {
       return alert('Please write some text in the field before clicking Improve, or click Generate instead.');
     }
-    // We now allow generation even without a jobTitle by falling back to generic AI templates!
 
     setShowAIWriter(false);
     setLoading(true);
     setError(null);
-    setShowUpgradePrompt(false);
     
     try {
       const payloadText = actionType === 'generate' ? '' : text;
@@ -50,77 +42,23 @@ const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
     <div style={{ position: 'relative', display: 'inline-block' }}>
       <button 
         type="button"
-        className={`btn ${isPremium ? 'btn-primary' : 'btn-secondary'}`}
+        className="btn btn-primary"
         style={{ 
           padding: '0.4rem 0.8rem', 
           fontSize: '0.75rem', 
           gap: '0.4rem',
           borderRadius: 'var(--radius-sm)',
-          boxShadow: (loading || !isPremium) ? 'none' : '0 4px 12px rgba(99, 102, 241, 0.3)',
-          opacity: isPremium ? 1 : 0.9,
-          border: isPremium ? 'none' : '1px solid rgba(99, 102, 241, 0.4)',
-          background: isPremium ? 'var(--primary)' : 'rgba(99, 102, 241, 0.05)',
-          color: isPremium ? '#fff' : 'var(--primary)',
+          boxShadow: loading ? 'none' : '0 4px 12px rgba(99, 102, 241, 0.3)',
           transition: 'all 0.2s ease'
         }}
         onClick={handleOpenWriter}
         disabled={loading}
       >
-        {!isPremium && <span style={{ fontSize: '0.8rem' }}>🔒</span>}
-        {isPremium && <span>{loading ? '🪄' : '✨'}</span>}
+        <span>{loading ? '🪄' : '✨'}</span>
         {loading ? 'Thinking...' : 'AI Writer'}
-        {!isPremium && <span style={{ 
-          background: 'var(--primary)', 
-          color: 'white', 
-          fontSize: '0.55rem', 
-          padding: '0.15rem 0.3rem', 
-          borderRadius: '4px',
-          marginLeft: '2px',
-          fontWeight: '900',
-          letterSpacing: '0.05em'
-        }}>PRO</span>}
       </button>
 
-      {/* Upgrade Prompt Popover */}
-      {showUpgradePrompt && (
-        <div style={{
-          position: 'absolute',
-          top: '100%',
-          right: 0,
-          zIndex: 1000,
-          marginTop: '0.75rem',
-          width: '280px',
-          background: 'var(--surface)',
-          border: '1px solid rgba(99, 102, 241, 0.3)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '1.25rem',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-          animation: 'fadeIn 0.2s ease-out',
-          textAlign: 'left'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-            <h4 className="text-gradient" style={{ margin: 0, fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span>🚀</span> Upgrade Required
-            </h4>
-            <button 
-              onClick={() => setShowUpgradePrompt(false)} 
-              style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '2px', fontSize: '1rem' }}
-            >✕</button>
-          </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-main)', lineHeight: '1.6', marginBottom: '1.25rem' }}>
-            Unlock <strong>AI-powered</strong> text enhancement, perfect grammar, and ATS-optimized phrasing instantly with our Pro plan.
-          </p>
-          <button 
-            className="btn btn-primary" 
-            style={{ width: '100%', fontSize: '0.85rem', padding: '0.75rem', justifyContent: 'center' }}
-            onClick={() => navigate('/pricing')}
-          >
-            Upgrade to Pro
-          </button>
-        </div>
-      )}
-
-      {/* AI Writer Modal (New UI based on user screenshot) */}
+      {/* AI Writer Modal */}
       {showAIWriter && (
         <div style={{
           position: 'fixed',
@@ -138,16 +76,13 @@ const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
               <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)' }}>
                 AI WRITER <span style={{ color: '#a855f7' }}>✨</span>
               </h3>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <span style={{ background: '#a855f7', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 600 }}>PRO</span>
-                <button 
-                  onClick={() => setShowAIWriter(false)} 
-                  style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem' }}
-                >✕</button>
-              </div>
+              <button 
+                onClick={() => setShowAIWriter(false)} 
+                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem' }}
+              >✕</button>
             </div>
             
-            <p style={{ color: '#6b7280', fontSize: '0.95rem', marginBottom: '1.5rem', lineHeight: '1.5' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '1.5rem', lineHeight: '1.5' }}>
               Add job title, company name and the dates to generate your employment history, or magically improve your existing text.
             </p>
 
@@ -176,7 +111,7 @@ const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
 
             <div style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '1rem' }}>
               <button 
-                style={{ background: 'none', border: 'none', color: '#4b5563', cursor: 'pointer', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px', padding: 0 }}
+                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px', padding: 0 }}
                 onClick={() => alert('Pre-written phrases feature coming soon!')}
               >
                 Add pre-written phrases

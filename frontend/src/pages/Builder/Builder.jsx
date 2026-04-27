@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ThemeToggle from '../../components/ThemeToggle';
@@ -43,22 +43,22 @@ import SupermarketTemplate from '../../components/Templates/SupermarketTemplate'
 import FresherTemplate from '../../components/Templates/FresherTemplate';
 import CollegeStudentTemplate from '../../components/Templates/CollegeStudentTemplate';
 
-import { 
-  DoctorD1, DoctorD2, DoctorD3, DoctorD4, DoctorD5, 
-  NurseN1, NurseN2, NurseN3, NurseN4, NurseN5 
+import {
+  DoctorD1, DoctorD2, DoctorD3, DoctorD4, DoctorD5,
+  NurseN1, NurseN2, NurseN3, NurseN4, NurseN5
 } from '../../components/Templates/MedicalTemplates';
-import { 
-  LawyerL1, LawyerL2, LawyerL3, LawyerL4, LawyerL5, 
-  TeacherT1, TeacherT2, TeacherT3, TeacherT4, TeacherT5 
+import {
+  LawyerL1, LawyerL2, LawyerL3, LawyerL4, LawyerL5,
+  TeacherT1, TeacherT2, TeacherT3, TeacherT4, TeacherT5
 } from '../../components/Templates/LegalAndEduTemplates';
-import { 
-  MarketingM1, MarketingM2, MarketingM3, MarketingM4, MarketingM5, 
-  DesignerDS1, DesignerDS2, DesignerDS3, DesignerDS4, DesignerDS5 
+import {
+  MarketingM1, MarketingM2, MarketingM3, MarketingM4, MarketingM5,
+  DesignerDS1, DesignerDS2, DesignerDS3, DesignerDS4, DesignerDS5
 } from '../../components/Templates/CreativeTemplates';
-import { 
-  RetailR1, RetailR2, RetailR3, RetailR4, RetailR5, 
-  FresherF1, FresherF2, FresherF3, FresherF4, FresherF5, 
-  StudentS1, StudentS2, StudentS3, StudentS4, StudentS5 
+import {
+  RetailR1, RetailR2, RetailR3, RetailR4, RetailR5,
+  FresherF1, FresherF2, FresherF3, FresherF4, FresherF5,
+  StudentS1, StudentS2, StudentS3, StudentS4, StudentS5
 } from '../../components/Templates/ServiceAndEntryTemplates';
 
 const TEMPLATE_MAP = {
@@ -118,10 +118,12 @@ const Builder = () => {
   const [profileApplied, setProfileApplied] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [errors, setErrors] = useState({});
-  
+
   const [resumeData, setResumeData] = useState({
     title: 'Untitled Resume',
     template: 'modern',
+    hasUsedAI: false,
+    hasUsedPremiumTemplate: false,
     personalDetails: { fullName: '', jobTitle: '', email: '', phone: '', address: '', linkedin: '', github: '', summary: '', photo: null },
     education: [],
     experience: [],
@@ -137,20 +139,48 @@ const Builder = () => {
   const steps = ['Personal Details', 'Education', 'Experience', 'Skills', 'Projects', 'Languages'];
 
   const previewContainerRef = useRef(null);
+  const resumeContentRef = useRef(null);
   const [scaleFactor, setScaleFactor] = useState(0.5);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (!previewContainerRef.current) return;
+
     const updateScale = () => {
-      if (previewContainerRef.current) {
-        const containerWidth = previewContainerRef.current.offsetWidth;
-        const newScale = Math.min(containerWidth / 816, 1); // Max scale of 1
-        setScaleFactor(newScale);
-      }
+      const container = previewContainerRef.current;
+      if (!container) return;
+
+      const rect = container.getBoundingClientRect();
+      const containerWidth = rect.width || container.offsetWidth;
+      const containerHeight = rect.height || container.offsetHeight;
+
+      if (!containerWidth || !containerHeight) return;
+
+      // Remove bezel/margin for true full-screen fit
+      const availableWidth = Math.max(containerWidth, 100);
+      const availableHeight = Math.max(containerHeight, 100);
+
+      // A4 dimensions base: 816px x 1123px
+      const scaleX = availableWidth / 816;
+      const scaleY = availableHeight / 1123;
+
+      // Fit to screen exactly hitting edges
+      const newScale = Math.max(Math.min(scaleX, scaleY), 0.1);
+      setScaleFactor(newScale);
     };
 
+    const observer = new ResizeObserver(() => {
+      window.requestAnimationFrame(updateScale);
+    });
+    observer.observe(previewContainerRef.current);
+
+    // Initial and periodic check to prevent blank screen
     updateScale();
-    window.addEventListener('resize', updateScale);
-    return () => window.removeEventListener('resize', updateScale);
+    const timer = setTimeout(updateScale, 500);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(timer);
+    };
   }, []);
 
   useEffect(() => {
@@ -158,9 +188,9 @@ const Builder = () => {
       try {
         const user = JSON.parse(localStorage.getItem('resumify_user'));
         if (!user) return navigate('/login');
-        
+
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes/${id}`);
-        
+
         const fetchedData = {
           title: res.data.title || 'Untitled Resume',
           template: res.data.template || 'modern',
@@ -174,7 +204,7 @@ const Builder = () => {
 
         // AUTO-FILL LOGIC: If this is a fresh resume, try to fetch and apply Master Profile
         const isFreshResume = !fetchedData.personalDetails.fullName && fetchedData.education.length === 0 && fetchedData.experience.length === 0;
-        
+
         if (isFreshResume && fetchedData.title !== '___MASTER_PROFILE___') {
           try {
             const allResumes = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes`);
@@ -206,7 +236,7 @@ const Builder = () => {
 
   const validateStep = (stepIndex = activeStep) => {
     const newErrors = {};
-    
+
     if (stepIndex === 0) {
       if (!resumeData.personalDetails.fullName?.trim()) newErrors.fullName = 'Full Name is required';
       if (!resumeData.personalDetails.jobTitle?.trim()) newErrors.jobTitle = 'Job Title is required';
@@ -217,7 +247,7 @@ const Builder = () => {
       }
       if (!resumeData.personalDetails.phone?.trim()) newErrors.phone = 'Phone number is required';
       // Professional summary is now optional to prevent blocking the user
-    } 
+    }
     else if (stepIndex === 1) {
       resumeData.education.forEach((edu, idx) => {
         if (!edu.degree?.trim()) newErrors[`edu_${idx}_degree`] = 'Degree is required';
@@ -258,7 +288,7 @@ const Builder = () => {
     }
 
     setErrors(newErrors);
-    
+
     // Always return true to prevent blocking save/navigation, 
     // even if errors are present (they will still be shown in red in the UI).
     return true;
@@ -266,15 +296,15 @@ const Builder = () => {
 
   const handleSave = async (showNotification = true, isNavigating = false) => {
     // Perform validation to update UI error indicators, but don't let it block the save.
-    validateStep(); 
-    
+    validateStep();
+
     if (isNavigating) setIsPreviewing(true);
     else setIsSaving(true);
 
     try {
       const user = JSON.parse(localStorage.getItem('resumify_user'));
       if (!user) return navigate('/login');
-      
+
       await axios.put(`${import.meta.env.VITE_API_URL}/api/resumes/${id}`, resumeData);
       if (showNotification) alert('Resume saved successfully!');
       return true;
@@ -292,7 +322,7 @@ const Builder = () => {
 
   const handleNavigate = async (path) => {
     // Auto-save doesn't block navigation anymore, but we show a different loader
-    await handleSave(false, true); 
+    await handleSave(false, true);
     navigate(path);
   };
 
@@ -350,12 +380,13 @@ const Builder = () => {
     });
   };
 
-  const updateArrayItem = (field, index, key, value) => {
+  const updateArrayItem = (field, index, key, value, aiUsed = false) => {
     const newArray = [...resumeData[field]];
     newArray[index] = { ...newArray[index], [key]: value };
     setResumeData({
       ...resumeData,
-      [field]: newArray
+      [field]: newArray,
+      hasUsedAI: resumeData.hasUsedAI || aiUsed
     });
   };
 
@@ -374,34 +405,34 @@ const Builder = () => {
 
   return (
     <div className="builder-page" style={{ '--primary': accentColor }}>
-      
+
       {/* Top Header */}
       <div className="builder-header">
-         <h1 className="text-gradient">Resumify Builder</h1>
-          <div className="builder-header-actions" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-            <ThemeToggle />
-            <button 
-              className="btn btn-secondary btn-sm" 
-              onClick={() => navigate('/dashboard')}
-              disabled={isSaving}
-            >
-              Dashboard
-            </button>
-            <button 
-               className="btn btn-secondary btn-sm" 
-               onClick={() => handleNavigate(`/preview/${id}`)}
-               disabled={isSaving || isPreviewing}
-             >
-               {isPreviewing ? 'Loading...' : 'Preview'}
-             </button>
-             <button 
-               className="btn btn-primary btn-sm" 
-               onClick={() => handleSave(true)}
-               disabled={isSaving || isPreviewing}
-             >
-               {isSaving ? 'Saving...' : 'Save'}
-             </button>
-          </div>
+        <h1 className="text-gradient">Resumify Builder</h1>
+        <div className="builder-header-actions" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          <ThemeToggle />
+          <button
+            className="btn btn-secondary btn-sm"
+            onClick={() => navigate('/dashboard')}
+            disabled={isSaving}
+          >
+            Dashboard
+          </button>
+          <button
+            className="btn btn-secondary btn-sm"
+            onClick={() => handleNavigate(`/preview/${id}`)}
+            disabled={isSaving || isPreviewing}
+          >
+            {isPreviewing ? 'Loading...' : 'Preview'}
+          </button>
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={() => handleSave(true)}
+            disabled={isSaving || isPreviewing}
+          >
+            {isSaving ? 'Saving...' : 'Save'}
+          </button>
+        </div>
       </div>
 
       <div className="builder-body">
@@ -412,7 +443,7 @@ const Builder = () => {
             <h2 style={{ paddingLeft: '0.5rem', marginBottom: '1.25rem', fontSize: '0.9rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Sections</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
               {steps.map((step, index) => (
-                <button 
+                <button
                   key={index}
                   className={`builder-nav-item ${activeStep === index ? 'active' : ''}`}
                   onClick={() => setActiveStep(index)}
@@ -447,37 +478,37 @@ const Builder = () => {
                     ✨ Profile Applied
                   </div>
                 ) : (
-                  <button 
-                    className="btn btn-secondary" 
+                  <button
+                    className="btn btn-secondary"
                     style={{ fontSize: '0.7rem', padding: '0.3rem 0.6rem', borderStyle: 'dashed' }}
                     disabled={isSyncing}
                     onClick={async () => {
-                        setIsSyncing(true);
-                        try {
-                          const user = JSON.parse(localStorage.getItem('resumify_user'));
-                          const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes`);
-                          const master = res.data.find(r => r.title === '___MASTER_PROFILE___');
-                          
-                          if (master) {
-                            setResumeData(prev => ({
-                              ...prev,
-                              personalDetails: { ...prev.personalDetails, ...master.personalDetails },
-                              skills: master.skills?.length ? master.skills : prev.skills,
-                              experience: master.experience?.length ? master.experience : prev.experience,
-                              education: master.education?.length ? master.education : prev.education,
-                              languages: master.languages?.length ? master.languages : prev.languages
-                            }));
-                            setProfileApplied(true);
-                            // alert Removed to use non-blocking feedback if we had a toast system, but keeping it for now with isSyncing check
-                          } else {
-                            alert('No Master Profile found. Please go to Settings to create one!');
-                          }
-                        } catch (err) {
-                          console.error('Manual sync failed:', err);
-                          alert('Failed to sync profile. Please check your connection.');
-                        } finally {
-                          setIsSyncing(false);
+                      setIsSyncing(true);
+                      try {
+                        const user = JSON.parse(localStorage.getItem('resumify_user'));
+                        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes`);
+                        const master = res.data.find(r => r.title === '___MASTER_PROFILE___');
+
+                        if (master) {
+                          setResumeData(prev => ({
+                            ...prev,
+                            personalDetails: { ...prev.personalDetails, ...master.personalDetails },
+                            skills: master.skills?.length ? master.skills : prev.skills,
+                            experience: master.experience?.length ? master.experience : prev.experience,
+                            education: master.education?.length ? master.education : prev.education,
+                            languages: master.languages?.length ? master.languages : prev.languages
+                          }));
+                          setProfileApplied(true);
+                          // alert Removed to use non-blocking feedback if we had a toast system, but keeping it for now with isSyncing check
+                        } else {
+                          alert('No Master Profile found. Please go to Settings to create one!');
                         }
+                      } catch (err) {
+                        console.error('Manual sync failed:', err);
+                        alert('Failed to sync profile. Please check your connection.');
+                      } finally {
+                        setIsSyncing(false);
+                      }
                     }}
                   >
                     {isSyncing ? '⌛ Syncing...' : '✨ Sync Profile'}
@@ -494,7 +525,7 @@ const Builder = () => {
                       {resumeData.personalDetails?.photo ? (
                         <>
                           <img src={resumeData.personalDetails.photo} alt="Profile" />
-                          <button 
+                          <button
                             className="photo-remove-btn"
                             onClick={(e) => { e.stopPropagation(); removePhoto(); }}
                           >✕</button>
@@ -507,20 +538,20 @@ const Builder = () => {
                       )}
                     </div>
                     <div style={{ flex: 1 }}>
-                       <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>Profile Photo</h3>
-                       <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
-                         Clear face photos work best for premium templates.
-                       </p>
-                       <input 
-                         id="photo-input"
-                         type="file" 
-                         accept="image/*"
-                         onChange={handlePhotoUpload}
-                         style={{ display: 'none' }}
-                       />
-                       <button className="btn btn-secondary btn-sm" onClick={() => document.getElementById('photo-input').click()} style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
-                         Change Image
-                       </button>
+                      <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>Profile Photo</h3>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+                        Clear face photos work best for premium templates.
+                      </p>
+                      <input
+                        id="photo-input"
+                        type="file"
+                        accept="image/*"
+                        onChange={handlePhotoUpload}
+                        style={{ display: 'none' }}
+                      />
+                      <button className="btn btn-secondary btn-sm" onClick={() => document.getElementById('photo-input').click()} style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
+                        Change Image
+                      </button>
                     </div>
                   </div>
                 )}
@@ -528,42 +559,42 @@ const Builder = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                   <div className="form-group">
                     <label className="form-label">Full Name <span className="required-star">*</span></label>
-                    <input 
-                      name="fullName" 
-                      className={`form-input ${errors.fullName ? 'is-invalid' : ''}`} 
-                      value={resumeData.personalDetails?.fullName || ''} 
-                      onChange={handlePersonalChange} 
+                    <input
+                      name="fullName"
+                      className={`form-input ${errors.fullName ? 'is-invalid' : ''}`}
+                      value={resumeData.personalDetails?.fullName || ''}
+                      onChange={handlePersonalChange}
                     />
                     {errors.fullName && <span className="error-text">{errors.fullName}</span>}
                   </div>
                   <div className="form-group" style={{ position: 'relative' }}>
                     <label className="form-label">Job Title <span className="required-star">*</span></label>
-                    <input 
-                      name="jobTitle" 
-                      className={`form-input ${errors.jobTitle ? 'is-invalid' : ''}`} 
-                      value={resumeData.personalDetails?.jobTitle || ''} 
-                      onChange={handlePersonalChange} 
+                    <input
+                      name="jobTitle"
+                      className={`form-input ${errors.jobTitle ? 'is-invalid' : ''}`}
+                      value={resumeData.personalDetails?.jobTitle || ''}
+                      onChange={handlePersonalChange}
                     />
                     {errors.jobTitle && <span className="error-text">{errors.jobTitle}</span>}
                   </div>
                   <div className="form-group">
                     <label className="form-label">Email <span className="required-star">*</span></label>
-                    <input 
-                      name="email" 
-                      type="email" 
-                      className={`form-input ${errors.email ? 'is-invalid' : ''}`} 
-                      value={resumeData.personalDetails?.email || ''} 
-                      onChange={handlePersonalChange} 
+                    <input
+                      name="email"
+                      type="email"
+                      className={`form-input ${errors.email ? 'is-invalid' : ''}`}
+                      value={resumeData.personalDetails?.email || ''}
+                      onChange={handlePersonalChange}
                     />
                     {errors.email && <span className="error-text">{errors.email}</span>}
                   </div>
                   <div className="form-group">
                     <label className="form-label">Phone <span className="required-star">*</span></label>
-                    <input 
-                      name="phone" 
-                      className={`form-input ${errors.phone ? 'is-invalid' : ''}`} 
-                      value={resumeData.personalDetails?.phone || ''} 
-                      onChange={handlePersonalChange} 
+                    <input
+                      name="phone"
+                      className={`form-input ${errors.phone ? 'is-invalid' : ''}`}
+                      value={resumeData.personalDetails?.phone || ''}
+                      onChange={handlePersonalChange}
                     />
                     {errors.phone && <span className="error-text">{errors.phone}</span>}
                   </div>
@@ -582,24 +613,25 @@ const Builder = () => {
                   <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                       <label className="form-label" style={{ margin: 0 }}>Professional Summary</label>
-                      <AIEnhancer 
-                        text={resumeData.personalDetails?.summary || ''} 
+                      <AIEnhancer
+                        text={resumeData.personalDetails?.summary || ''}
                         onApply={(val) => {
                           setResumeData({
                             ...resumeData,
+                            hasUsedAI: true,
                             personalDetails: { ...resumeData.personalDetails, summary: val }
                           });
-                          if(errors.summary) setErrors({...errors, summary: null});
+                          if (errors.summary) setErrors({ ...errors, summary: null });
                         }}
                         type="summary"
                         contextData={{ jobTitle: resumeData.personalDetails?.jobTitle }}
                       />
                     </div>
-                    <textarea 
-                      name="summary" 
-                      className={`form-input ${errors.summary ? 'is-invalid' : ''}`} 
-                      rows="5" 
-                      value={resumeData.personalDetails?.summary || ''} 
+                    <textarea
+                      name="summary"
+                      className={`form-input ${errors.summary ? 'is-invalid' : ''}`}
+                      rows="5"
+                      value={resumeData.personalDetails?.summary || ''}
                       onChange={handlePersonalChange}
                     ></textarea>
                     {errors.summary && <span className="error-text">{errors.summary}</span>}
@@ -609,8 +641,8 @@ const Builder = () => {
             )}
 
             {activeStep === 1 && (
-              <EducationForm 
-                education={resumeData.education} 
+              <EducationForm
+                education={resumeData.education}
                 errors={errors}
                 onChange={(index, key, val) => {
                   updateArrayItem('education', index, key, val);
@@ -626,8 +658,8 @@ const Builder = () => {
             )}
 
             {activeStep === 2 && (
-              <ExperienceForm 
-                experience={resumeData.experience} 
+              <ExperienceForm
+                experience={resumeData.experience}
                 errors={errors}
                 onChange={(index, key, val) => {
                   updateArrayItem('experience', index, key, val);
@@ -643,8 +675,8 @@ const Builder = () => {
             )}
 
             {activeStep === 3 && (
-              <SkillsForm 
-                skills={resumeData.skills} 
+              <SkillsForm
+                skills={resumeData.skills}
                 errors={errors}
                 onChange={(index, key, val) => {
                   updateArrayItem('skills', index, key, val);
@@ -660,8 +692,8 @@ const Builder = () => {
             )}
 
             {activeStep === 4 && (
-              <ProjectsForm 
-                projects={resumeData.projects} 
+              <ProjectsForm
+                projects={resumeData.projects}
                 errors={errors}
                 onChange={(index, key, val) => {
                   updateArrayItem('projects', index, key, val);
@@ -677,8 +709,8 @@ const Builder = () => {
             )}
 
             {activeStep === 5 && (
-              <LanguagesForm 
-                languages={resumeData.languages} 
+              <LanguagesForm
+                languages={resumeData.languages}
                 errors={errors}
                 onChange={(index, key, val) => {
                   updateArrayItem('languages', index, key, val);
@@ -695,19 +727,19 @@ const Builder = () => {
 
             {/* Navigation Controls */}
             <div className="builder-nav-controls">
-              <button 
+              <button
                 className="btn btn-secondary"
                 onClick={() => {
-                   setActiveStep(activeStep - 1);
-                   window.scrollTo({ top: 0, behavior: 'smooth' });
+                  setActiveStep(activeStep - 1);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 disabled={activeStep === 0}
               >
                 ← Back
               </button>
-              
+
               {activeStep < steps.length - 1 ? (
-                <button 
+                <button
                   className="btn btn-primary"
                   onClick={() => {
                     validateStep();
@@ -718,7 +750,7 @@ const Builder = () => {
                   Next: {steps[activeStep + 1]} →
                 </button>
               ) : (
-                <button 
+                <button
                   className="btn btn-success"
                   onClick={() => handleSave(true)}
                 >
@@ -739,35 +771,24 @@ const Builder = () => {
               <span className="builder-preview-dot red"></span>
               <span className="builder-preview-title">Live Preview</span>
             </div>
-            <button 
-              className="btn btn-secondary btn-sm" 
-              style={{ padding: '0.2rem 0.6rem', fontSize: '0.7rem' }}
-              onClick={() => setShowMobilePreview(false)}
-            >
-              Close
-            </button>
+            {/* Removed Close button per user request */}
           </div>
           <div className="builder-preview-scroll" ref={previewContainerRef}>
-            <div className="builder-preview-scaler" style={{ 
-              transform: `scale(${scaleFactor})`, 
-              transformOrigin: 'top center',
-              width: '816px',
-              margin: '0 auto'
-            }}>
-              <TemplateComponent data={filteredData} />
+            <div className="builder-preview-scaler" style={{ transform: `scale(${scaleFactor})` }}>
+              <TemplateComponent ref={resumeContentRef} data={filteredData} />
             </div>
           </div>
         </div>
       </div>
-      
+
       {/* Floating Preview Toggle for Mobile */}
-      <button 
+      <button
         className="btn btn-primary"
-        style={{ 
-          position: 'fixed', 
-          bottom: '1.5rem', 
-          right: '1.5rem', 
-          zIndex: 100, 
+        style={{
+          position: 'fixed',
+          bottom: '1.5rem',
+          right: '1.5rem',
+          zIndex: 100,
           borderRadius: '50px',
           boxShadow: '0 8px 25px rgba(99, 102, 241, 0.4)',
           padding: '0.75rem 1.5rem',

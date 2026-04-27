@@ -4,6 +4,7 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
   if (!isOpen) return null;
 
   const isSuccess = type === 'success';
+  const isLoading = type === 'loading';
 
   return (
     <div style={{
@@ -18,7 +19,7 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
     }}>
       {/* Backdrop */}
       <div 
-        onClick={onClose}
+        onClick={isLoading ? undefined : onClose}
         style={{
           position: 'absolute',
           inset: 0,
@@ -35,52 +36,64 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
         maxWidth: '400px',
         padding: '2.5rem',
         textAlign: 'center',
-        border: `1px solid ${isSuccess ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
-        boxShadow: `0 25px 70px -12px ${isSuccess ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)'}`,
+        border: `1px solid ${isLoading ? 'var(--primary)' : (isSuccess ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)')}`,
+        boxShadow: `0 25px 70px -12px ${isLoading ? 'rgba(99, 102, 241, 0.2)' : (isSuccess ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)')}`,
         background: 'var(--card-bg)',
       }}>
         <div style={{ 
           fontSize: '4rem', 
           marginBottom: '1rem',
-          filter: isSuccess ? 'drop-shadow(0 0 15px rgba(34, 197, 94, 0.4))' : 'drop-shadow(0 0 15px rgba(239, 68, 68, 0.4))'
+          filter: isLoading ? 'none' : (isSuccess ? 'drop-shadow(0 0 15px rgba(34, 197, 94, 0.4))' : 'drop-shadow(0 0 15px rgba(239, 68, 68, 0.4))')
         }}>
-          {isSuccess ? '✅' : '❌'}
+          {isLoading ? (
+             <div className="loader-spinner" style={{ width: '60px', height: '60px', border: '5px solid rgba(99, 102, 241, 0.2)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto' }} />
+          ) : (
+            isSuccess ? '✅' : '❌'
+          )}
         </div>
         
         <h2 className="text-gradient" style={{ 
           fontSize: '1.5rem', 
           marginBottom: '1rem',
-          background: isSuccess 
-            ? 'linear-gradient(to right, #22c55e, #10b981)' 
-            : 'linear-gradient(to right, #ef4444, #f87171)',
+          background: isLoading
+            ? 'var(--primary)'
+            : (isSuccess 
+              ? 'linear-gradient(to right, #22c55e, #10b981)' 
+              : 'linear-gradient(to right, #ef4444, #f87171)'),
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent'
         }}>
-          {title || (isSuccess ? 'Success!' : 'Oops!')}
+          {title || (isLoading ? 'Processing...' : (isSuccess ? 'Success!' : 'Oops!'))}
         </h2>
         
         <p style={{ 
           color: 'var(--text-main)', 
-          marginBottom: '2rem', 
+          marginBottom: isLoading ? '0' : '2rem', 
           lineHeight: '1.6',
           fontSize: '1rem'
         }}>
           {message}
         </p>
         
-        <button 
-          className={`btn ${isSuccess ? 'btn-primary' : 'btn-danger'}`}
-          style={{ width: '100%', padding: '0.875rem' }}
-          onClick={onClose}
-        >
-          {buttonText}
-        </button>
+        {!isLoading && (
+          <button 
+            className={`btn ${isSuccess ? 'btn-primary' : 'btn-danger'}`}
+            style={{ width: '100%', padding: '0.875rem' }}
+            onClick={onClose}
+          >
+            {buttonText}
+          </button>
+        )}
       </div>
 
       <style>{`
         @keyframes modalSlideIn {
           from { opacity: 0; transform: translateY(20px) scale(0.9); }
           to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
         .btn-danger {
           background: #ef4444;

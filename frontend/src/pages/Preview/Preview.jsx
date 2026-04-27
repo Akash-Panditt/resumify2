@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useLayoutEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useReactToPrint } from 'react-to-print';
@@ -73,19 +73,44 @@ const Preview = () => {
 
   const user = JSON.parse(localStorage.getItem('resumify_user') || '{}');
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (!previewContainerRef.current) return;
+
     const updateScale = () => {
-      if (previewContainerRef.current) {
-        const containerWidth = previewContainerRef.current.offsetWidth;
-        const availableWidth = containerWidth - 40; // 20px padding each side
-        const newScale = Math.min(availableWidth / 816, 1);
-        setScaleFactor(newScale);
-      }
+      const container = previewContainerRef.current;
+      if (!container) return;
+
+      const rect = container.getBoundingClientRect();
+      const containerWidth = rect.width || container.offsetWidth;
+      const containerHeight = rect.height || container.offsetHeight;
+
+      if (!containerWidth || !containerHeight) return;
+
+      // Remove bezel/margin for true full-screen fit
+      const availableWidth = Math.max(containerWidth, 100);
+      const availableHeight = Math.max(containerHeight, 100);
+
+      // A4 dimensions at 96 DPI: 816px x 1123px
+      const scaleX = availableWidth / 816;
+      const scaleY = availableHeight / 1123;
+
+      // Fit to screen exactly hitting edges
+      const newScale = Math.max(Math.min(scaleX, scaleY), 0.1);
+      setScaleFactor(newScale);
     };
 
+    const observer = new ResizeObserver(() => {
+      window.requestAnimationFrame(updateScale);
+    });
+    observer.observe(previewContainerRef.current);
+
     updateScale();
-    window.addEventListener('resize', updateScale);
-    return () => window.removeEventListener('resize', updateScale);
+    const timer = setTimeout(updateScale, 500);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(timer);
+    };
   }, [loading]);
 
   useEffect(() => {
@@ -93,7 +118,7 @@ const Preview = () => {
       try {
         const storedUser = JSON.parse(localStorage.getItem('resumify_user') || '{}');
         if (!storedUser?.token) return navigate('/login');
-        
+
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes/${id}`, {
           headers: { Authorization: `Bearer ${storedUser.token}` }
         });
@@ -125,7 +150,7 @@ const Preview = () => {
         // Update local user download count
         const updatedUser = { ...user, download_count: res.data.download_count };
         localStorage.setItem('resumify_user', JSON.stringify(updatedUser));
-        
+
         // Track the recent download timestamp locally
         const dlKey = `resumify_downloads_${user.id}`;
         const downloads = JSON.parse(localStorage.getItem(dlKey) || '[]');
@@ -140,11 +165,11 @@ const Preview = () => {
     } catch (err) {
       if (err.response?.status === 403) {
         const errorData = err.response.data;
-        if (errorData.type === 'TEMPLATE_PURCHASE_REQUIRED') {
+        if (errorData.type === 'PAYMENT_REQUIRED' || errorData.type === 'TEMPLATE_PURCHASE_REQUIRED') {
           setPaymentData({
-            templateId: errorData.templateId,
-            templateName: resumeData.template,
-            price: errorData.price
+            resumeId: id,
+            price: errorData.price || 9,
+            message: errorData.message
           });
           setIsPaymentPopupOpen(true);
         } else {
@@ -169,10 +194,10 @@ const Preview = () => {
   const downloadsRemaining = Math.max(0, maxDownloads - currentDownloads);
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem', minHeight: '100vh' }}>
-      
+    <div style={{ padding: '1rem', width: '100%', display: 'flex', flexDirection: 'column', gap: '1.5rem', minHeight: '100vh', background: 'var(--bg-color)' }}>
+
       {/* Action Bar */}
-      <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem', flexWrap: 'wrap', gap: '1.5rem' }}>
+      <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem', flexWrap: 'wrap', gap: '1.25rem' }}>
         <div>
           <h1 className="text-gradient" style={{ fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', marginBottom: '0.25rem' }}>{resumeData.title}</h1>
           <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
@@ -182,32 +207,31 @@ const Preview = () => {
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flex: '1 1 auto' }}>
             <ThemeToggle />
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '0.5rem', 
-              padding: '0.4rem 1rem', 
-              borderRadius: 'var(--radius-full)', 
-              background: downloadsRemaining <= 0 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)', 
-              border: `1px solid ${downloadsRemaining <= 0 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)'}` 
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.4rem 1rem',
+              borderRadius: 'var(--radius-full)',
+              background: downloadsRemaining <= 0 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+              border: `1px solid ${downloadsRemaining <= 0 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)'}`
             }}>
               <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '500' }}>Downloads Left:</span>
-              <span style={{ 
-                fontSize: '0.95rem', 
-                fontWeight: '700', 
+              <span style={{
+                fontSize: '0.95rem',
+                fontWeight: '700',
                 color: downloadsRemaining <= 0 ? 'var(--error)' : 'var(--success)',
               }}>
                 {maxDownloads === Infinity ? '∞' : downloadsRemaining}
               </span>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '0.75rem', width: '100%', justifyContent: 'flex-end', flex: '1 1 100%' }}>
-            <button className="btn btn-secondary btn-sm" style={{ flex: 1 }} onClick={() => navigate(`/builder/${id}`)}>Edit</button>
-            <button 
-              className="btn btn-primary btn-sm" 
-              onClick={handleDownload} 
+          <div style={{ display: 'flex', gap: '0.75rem', width: 'auto' }}>
+            <button className="btn btn-secondary btn-sm" onClick={() => navigate(`/builder/${id}`)}>Edit</button>
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={handleDownload}
               disabled={downloading}
-              style={{ flex: 2 }}
             >
               {downloading ? 'Processing...' : 'Download PDF'}
             </button>
@@ -216,33 +240,29 @@ const Preview = () => {
       </div>
 
       {/* Template Viewer */}
-      <div 
+      <div
         ref={previewContainerRef}
-        style={{ 
+        style={{
           flex: 1,
-          padding: '2rem 1rem', 
-          backgroundColor: 'rgba(15, 23, 42, 0.2)', 
-          borderRadius: 'var(--radius-lg)', 
+          padding: '5mm', // Exact 5mm bezel
+          backgroundColor: 'rgba(15, 23, 42, 0.2)',
+          borderRadius: 'var(--radius-lg)',
           border: '1px solid var(--surface-border)',
-          overflow: 'hidden',
+          overflow: 'auto',
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'flex-start'
+          alignItems: 'center', // Vertically center
+          scrollBehavior: 'smooth'
         }}
       >
-        <div style={{ 
-          transform: `scale(${scaleFactor})`, 
-          transformOrigin: 'top center',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-          transition: 'transform 0.3s ease-out'
-        }}>
-           <TemplateComponent ref={componentRef} data={resumeData} />
+        <div style={{ transform: `scale(${scaleFactor})`, transformOrigin: 'center center' }} className="builder-preview-scaler">
+          <TemplateComponent ref={componentRef} data={resumeData} />
         </div>
       </div>
-      <UpgradeModal 
-        isOpen={isUpgradeModalOpen} 
-        onClose={() => setIsUpgradeModalOpen(false)} 
-        data={upgradeModalData} 
+      <UpgradeModal
+        isOpen={isUpgradeModalOpen}
+        onClose={() => setIsUpgradeModalOpen(false)}
+        data={upgradeModalData}
       />
       <PaymentPopup
         isOpen={isPaymentPopupOpen}

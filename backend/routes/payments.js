@@ -24,15 +24,8 @@ router.post('/checkout', protect, async (req, res) => {
 
     if (txErr) throw txErr;
 
-    // 2. Mark the user record as having a pending request (Triggers Admin Notifications)
+    // 2. Process side effects based on type
     if (type === 'plan') {
-        const { error: uErr } = await supabase
-          .from('users')
-          .update({ requested_plan: itemId })
-          .eq('id', req.user.id);
-        
-        if (uErr) console.warn('[Payments] Could not update user requested_plan:', uErr.message);
-    }
       // Update user plan
       const expiresAt = new Date();
       if (itemId === 'pro') {

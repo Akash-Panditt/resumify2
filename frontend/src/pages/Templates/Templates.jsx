@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../../components/Navbar';
+import GoldStar from '../../components/GoldStar';
 
 const SvgIcon = ({ children }) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     {children}
   </svg>
 );
@@ -23,141 +24,128 @@ const CATEGORIES = [
   { id: 'Student', icon: <SvgIcon><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></SvgIcon> }
 ];
 
-import GoldStar from '../../components/GoldStar';
-
 const TEMPLATES = [
-  // ATS FRIENDLY (Curated for readability)
   { id: 'ats-1', name: 'Standard Professional', category: 'ATS Friendly', description: 'Classic executive layout optimized for AI parsers.', isPremium: false, popular: true },
   { id: 'ats-2', name: 'Technical Grid', category: 'ATS Friendly', description: 'Structured layout focusing on technical toolsets.', isPremium: false },
   { id: 'ats-3', name: 'Clean Minimalist', category: 'ATS Friendly', description: 'Elegant and airy design with maximum clarity.', isPremium: false },
   { id: 'ats-4', name: 'Corporate Sidebar', category: 'ATS Friendly', description: 'Organized hierarchy for easy scanning.', isPremium: false },
   { id: 'ats-5', name: 'Executive Master', category: 'ATS Friendly', description: 'Traditional serif design for senior leadership.', isPremium: true },
-
-  // PROFESSION SPECIFIC
   { id: 'dr-1', name: 'Clinical Specialist', category: 'Doctor', description: 'Authoritative layout for senior medical professionals.', isPremium: true, popular: true },
   { id: 'dr-2', name: 'Medical Associate', category: 'Doctor', description: 'Clean practice-focused layout with detailed sections.', isPremium: true },
   { id: 'dr-3', name: 'Medical Researcher', category: 'Doctor', description: 'Minimalist academic-style template for clinical research.', isPremium: true },
   { id: 'dr-4', name: 'ER Specialist', category: 'Doctor', description: 'High-density focus on procedures and credentials.', isPremium: true },
   { id: 'dr-5', name: 'Private Practice', category: 'Doctor', description: 'Refined classic layout for independent doctors.', isPremium: false },
-
-  { id: 'ns-1', name: 'Head Nurse Pro', category: 'Nurse', description: 'Skill-intensive layout for nursing leadership.', isPremium: false },
-  { id: 'ns-2', name: 'Clinical Nurse', category: 'Nurse', description: 'Hospital-ready design with certification focus.', isPremium: false },
-  { id: 'ns-3', name: 'Patient Care Pro', category: 'Nurse', description: 'Warm approach with clean professional lines.', isPremium: false },
-  { id: 'ns-4', name: 'Certified Nurse', category: 'Nurse', description: 'Technical layout for specialized departments.', isPremium: false },
-  { id: 'ns-5', name: 'Home Health Pro', category: 'Nurse', description: 'Soft modern layout for healthcare services.', isPremium: false },
-
+  { id: 'ns-1', name: 'Head Nurse Pro', category: 'Nurse', description: 'Skill-intensive layout for nursing leadership.', isPremium: true, popular: true },
+  { id: 'ns-2', name: 'Clinical Nurse', category: 'Nurse', description: 'Hospital-ready design with certification focus.', isPremium: true },
+  { id: 'ns-3', name: 'Patient Care Pro', category: 'Nurse', description: 'Warm approach with clean professional lines.', isPremium: true },
+  { id: 'ns-4', name: 'Certified Nurse', category: 'Nurse', description: 'Technical layout for specialized departments.', isPremium: true },
+  { id: 'ns-5', name: 'Home Health Pro', category: 'Nurse', description: 'Soft modern layout for healthcare services.', isPremium: true },
   { id: 'lw-1', name: 'Senior Attorney', category: 'Lawyer', description: 'Prestigious layout for legal experts.', isPremium: true, popular: true },
   { id: 'lw-2', name: 'Legal Counsel', category: 'Lawyer', description: 'Balanced two-column design for corporate law.', isPremium: true },
   { id: 'lw-3', name: 'Barrister Classic', category: 'Lawyer', description: 'Traditional serif layout for litigation.', isPremium: true },
   { id: 'lw-4', name: 'Law Associate', category: 'Lawyer', description: 'Research-focused technical design.', isPremium: true },
-  { id: 'lw-5', name: 'Judicial Clerk', category: 'Lawyer', description: 'Sophisticated academic legal template.', isPremium: false },
-
-  { id: 'tc-1', name: 'Senior Educator', category: 'Teacher', description: 'Modern layout for academic leadership.', isPremium: false },
-  { id: 'tc-2', name: 'Secondary Teacher', category: 'Teacher', description: 'Friendly and informative classroom layout.', isPremium: false },
-  { id: 'tc-3', name: 'College Professor', category: 'Teacher', description: 'Academic-focused minimalist design.', isPremium: false },
-  { id: 'tc-4', name: 'EdTech Pro', category: 'Teacher', description: 'Technical grid focusing on digital tools.', isPremium: false },
-  { id: 'tc-5', name: 'Student Engagement', category: 'Teacher', description: 'Warm vibrant layout for mentoring roles.', isPremium: false },
-
+  { id: 'lw-5', name: 'Judicial Clerk', category: 'Lawyer', description: 'Sophisticated academic legal template.', isPremium: true },
+  { id: 'tc-1', name: 'Senior Educator', category: 'Teacher', description: 'Modern layout for academic leadership.', isPremium: true },
+  { id: 'tc-2', name: 'Secondary Teacher', category: 'Teacher', description: 'Friendly and informative classroom layout.', isPremium: true, popular: true },
+  { id: 'tc-3', name: 'College Professor', category: 'Teacher', description: 'Academic-focused minimalist design.', isPremium: true },
+  { id: 'tc-4', name: 'EdTech Pro', category: 'Teacher', description: 'Technical grid focusing on digital tools.', isPremium: true },
+  { id: 'tc-5', name: 'Student Engagement', category: 'Teacher', description: 'Warm vibrant layout for mentoring roles.', isPremium: true },
   { id: 'mk-1', name: 'Growth Marketer', category: 'Marketing', description: 'KPI-driven layout for performance marketing.', isPremium: true },
   { id: 'mk-2', name: 'Brand Manager', category: 'Marketing', description: 'Vibrant creative layout focusing on impact.', isPremium: true, popular: true },
   { id: 'mk-3', name: 'Digital Strategist', category: 'Marketing', description: 'Modern minimalist design for tech marketing.', isPremium: true },
   { id: 'mk-4', name: 'SEO Specialist', category: 'Marketing', description: 'Detailed grid for analytical toolsets.', isPremium: true },
-  { id: 'mk-5', name: 'Content Creator', category: 'Marketing', description: 'Dynamic split layout for creative pros.', isPremium: false },
-
+  { id: 'mk-5', name: 'Content Creator', category: 'Marketing', description: 'Dynamic split layout for creative pros.', isPremium: true },
   { id: 'ds-1', name: 'UX Designer Pro', category: 'Designer', description: 'Portfolio-style layout for UI/UX experts.', isPremium: true, popular: true },
   { id: 'ds-2', name: 'Art Director', category: 'Designer', description: 'Bold high-contrast creative design.', isPremium: true },
   { id: 'ds-3', name: 'Visual Creative', category: 'Designer', description: 'Ultra-clean whitespace for artistic focus.', isPremium: true },
   { id: 'ds-4', name: 'Product Architect', category: 'Designer', description: 'Structured technical design for product roles.', isPremium: true },
-  { id: 'ds-5', name: 'Digital Designer', category: 'Designer', description: 'Soft modern palette for creative services.', isPremium: false },
+  { id: 'ds-5', name: 'Digital Designer', category: 'Designer', description: 'Soft modern palette for creative services.', isPremium: true },
+  { id: 'rt-1', name: 'Retail Professional', category: 'Retail', description: 'Clean layout for retail managers and associates.', isPremium: true, popular: true },
+  { id: 'rt-2', name: 'Store Manager', category: 'Retail', description: 'Executive layout focusing on store operations.', isPremium: true },
+  { id: 'rt-3', name: 'Sales Associate', category: 'Retail', description: 'Minimalist design for sales and inventory care.', isPremium: false },
+  { id: 'rt-4', name: 'Retail Systems', category: 'Retail', description: 'Technical layout for retail operations.', isPremium: true },
+  { id: 'rt-5', name: 'Team Leader', category: 'Retail', description: 'Modern sidebar layout for team leadership.', isPremium: true },
+  { id: 'fr-1', name: 'Junior Dev', category: 'Fresher', description: 'Modern layout for internships and volunteering.', isPremium: false },
+  { id: 'fr-2', name: 'Academic Star', category: 'Fresher', description: 'Executive layout focusing on academic projects.', isPremium: true, popular: true },
+  { id: 'fr-3', name: 'Early Career', category: 'Fresher', description: 'Minimalist layout for early career history.', isPremium: true },
+  { id: 'fr-4', name: 'Tech Fresher', category: 'Fresher', description: 'Technical layout for showcasing toolbox.', isPremium: true },
+  { id: 'fr-5', name: 'Campus Leader', category: 'Fresher', description: 'Modern sidebar layout for university contributions.', isPremium: true },
+  { id: 'st-1', name: 'High School', category: 'Student', description: 'Modern layout for school involvement.', isPremium: false },
+  { id: 'st-2', name: 'Honor Roll', category: 'Student', description: 'Executive layout focusing on academic excellence.', isPremium: true, popular: true },
+  { id: 'st-3', name: 'College Grad', category: 'Student', description: 'Minimalist layout for coursework and GPA.', isPremium: true },
+  { id: 'st-4', name: 'STEM Student', category: 'Student', description: 'Technical layout for academic tools.', isPremium: true },
+  { id: 'st-5', name: 'Student Athlete', category: 'Student', description: 'Modern sidebar layout for leadership and sports.', isPremium: true },
 ];
 
 const ACCENT_COLORS = [
-  { id: 'indigo',  hex: '#6366f1', name: 'Royal Indigo' },
-  { id: 'rose',    hex: '#f43f5e', name: 'Elegant Rose' },
-  { id: 'emerald', hex: '#10b981', name: 'Fresh Emerald' },
-  { id: 'amber',   hex: '#f59e0b', name: 'Sun Amber' },
-  { id: 'slate',   hex: '#475569', name: 'Slate Pro' },
-  { id: 'purple',  hex: '#a855f7', name: 'Magic Purple' },
+  { id: 'indigo',  hex: '#6366f1', name: 'Indigo' },
+  { id: 'emerald', hex: '#10b981', name: 'Emerald' },
+  { id: 'rose',    hex: '#f43f5e', name: 'Rose' },
+  { id: 'amber',   hex: '#f59e0b', name: 'Amber' },
+  { id: 'purple',  hex: '#a855f7', name: 'Purple' },
+  { id: 'slate',   hex: '#475569', name: 'Slate' },
 ];
 
-const PLAN_RANK = { free: 0, basic: 1, pro: 2 };
-
-// Renders a tiny static preview of each template
 const TemplateMiniPreview = ({ templateId }) => {
   const sampleData = {
-    personalDetails: { fullName: 'Alex Johnson', jobTitle: 'Software Engineer', email: 'alex@example.com', summary: 'Passionate developer with 5+ years building modern web apps.' },
-    experience: [{ jobTitle: 'Full Stack Dev', company: 'TechCorp', startDate: '2021', endDate: 'Present', description: 'Built scalable microservices.' }],
-    education: [{ degree: 'B.S. Computer Science', school: 'MIT', startDate: '2017', endDate: '2021' }],
-    skills: [{ name: 'React', level: 'Expert' }, { name: 'Node.js', level: 'Advanced' }, { name: 'PostgreSQL', level: 'Intermediate' }],
-    projects: [{ name: 'Portfolio', technologies: 'React, Vite', description: 'A personal portfolio site.' }]
+    personalDetails: { fullName: 'Alex Johnson', jobTitle: 'Software Engineer', email: 'alex@example.com', summary: 'Passionate developer building modern web apps.' },
+    experience: [{ jobTitle: 'Full Stack Dev', company: 'TechCorp', startDate: '2021', endDate: 'Present' }],
+    education: [{ degree: 'B.S. CS', school: 'MIT', startDate: '2017', endDate: '2021' }],
+    skills: [{ name: 'React', level: 'Expert' }, { name: 'Node.js', level: 'Advanced' }],
+    languages: [{ name: 'English', level: 5 }]
   };
 
-  // Lazy import to avoid circular deps
   const templates = {
-    // MEDICAL
     'dr-1': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.DoctorD1 }))),
     'dr-2': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.DoctorD2 }))),
     'dr-3': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.DoctorD3 }))),
     'dr-4': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.DoctorD4 }))),
     'dr-5': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.DoctorD5 }))),
-    
     'ns-1': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.NurseN1 }))),
     'ns-2': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.NurseN2 }))),
     'ns-3': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.NurseN3 }))),
     'ns-4': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.NurseN4 }))),
     'ns-5': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.NurseN5 }))),
-
-    // LEGAL & EDU
     'lw-1': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.LawyerL1 }))),
     'lw-2': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.LawyerL2 }))),
     'lw-3': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.LawyerL3 }))),
     'lw-4': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.LawyerL4 }))),
     'lw-5': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.LawyerL5 }))),
-
     'tc-1': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.TeacherT1 }))),
     'tc-2': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.TeacherT2 }))),
     'tc-3': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.TeacherT3 }))),
     'tc-4': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.TeacherT4 }))),
     'tc-5': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.TeacherT5 }))),
-
-    // CREATIVE & MARKETING
     'mk-1': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.MarketingM1 }))),
     'mk-2': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.MarketingM2 }))),
     'mk-3': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.MarketingM3 }))),
     'mk-4': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.MarketingM4 }))),
     'mk-5': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.MarketingM5 }))),
-
     'ds-1': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.DesignerDS1 }))),
     'ds-2': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.DesignerDS2 }))),
     'ds-3': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.DesignerDS3 }))),
     'ds-4': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.DesignerDS4 }))),
     'ds-5': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.DesignerDS5 }))),
-
-    // SERVICE & ENTRY
-    'rt-1': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR1 }))),
-    'rt-2': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR2 }))),
-    'rt-3': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR3 }))),
-    'rt-4': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR4 }))),
-    'rt-5': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR5 }))),
-
-    'fr-1': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF1 }))),
-    'fr-2': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF2 }))),
-    'fr-3': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF3 }))),
-    'fr-4': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF4 }))),
-    'fr-5': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF5 }))),
-
-    'st-1': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS1 }))),
-    'st-2': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS2 }))),
-    'st-3': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS3 }))),
-    'st-4': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS4 }))),
-    'st-5': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS5 }))),
-
-    // ATS FRIENDLY MAPPINGS
     'ats-1': React.lazy(() => import('../../components/Templates/ProfessionalTemplate')),
     'ats-2': React.lazy(() => import('../../components/Templates/TechTemplate')),
     'ats-3': React.lazy(() => import('../../components/Templates/MinimalistTemplate')),
     'ats-4': React.lazy(() => import('../../components/Templates/ModernTemplate')),
     'ats-5': React.lazy(() => import('../../components/Templates/FormalTemplate')),
+    'rt-1': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR1 }))),
+    'rt-2': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR2 }))),
+    'rt-3': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR3 }))),
+    'rt-4': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR4 }))),
+    'rt-5': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR5 }))),
+    'fr-1': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF1 }))),
+    'fr-2': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF2 }))),
+    'fr-3': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF3 }))),
+    'fr-4': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF4 }))),
+    'fr-5': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF5 }))),
+    'st-1': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS1 }))),
+    'st-2': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS2 }))),
+    'st-3': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS3 }))),
+    'st-4': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS4 }))),
+    'st-5': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS5 }))),
   };
 
   const TemplateComponent = templates[templateId];
@@ -176,23 +164,20 @@ const Templates = () => {
   const [selectedCategory, setSelectedCategory] = useState("All templates");
   const [selectedAccent, setSelectedAccent] = useState(ACCENT_COLORS[0]);
   const user = JSON.parse(localStorage.getItem('resumify_user') || '{}');
-  const userPlan = user?.plan || 'free';
-
-  const canAccess = (minPlan) => {
-    if (user?.role === 'admin') return true;
-    return PLAN_RANK[userPlan] >= PLAN_RANK[minPlan];
-  };
 
   const handleSelect = async (templateId) => {
     if (!user?.token) return navigate('/login');
     setLoading(true);
     try {
-      // Save accent color preference for the builder to pick up
       localStorage.setItem('resumify_accent_color', selectedAccent.hex);
+      const isPremium = TEMPLATES.find(t => t.id === templateId)?.isPremium || false;
       
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes`, { 
         template: templateId,
-        color: selectedAccent.hex // Attempt to save color to backend
+        color: selectedAccent.hex,
+        hasUsedPremiumTemplate: isPremium
+      }, {
+        headers: { Authorization: `Bearer ${user.token}` }
       });
       navigate(`/builder/${res.data._id}`);
     } catch (err) {
@@ -208,262 +193,398 @@ const Templates = () => {
       minHeight: '100vh',
       background: 'var(--bg-color)',
       '--primary': selectedAccent.hex,
-      '--primary-hover': selectedAccent.hex + 'cc'
     }}>
       <Navbar user={user} />
       
-      <div style={{ 
-        padding: '2rem 1rem', 
-        maxWidth: '1200px', 
-        margin: '0 auto', 
-      }}>
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 className="text-gradient" style={{ 
-            backgroundImage: `linear-gradient(to right, ${selectedAccent.hex}, #a855f7)` 
-          }}>Select Template</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            Select any template to start building. Premium templates (<GoldStar size={18} />) require an upgrade only when you download.
-          </p>
+      <main className="templates-container">
+        {/* Cinematic Header */}
+        <div className="templates-header">
+          <div className="header-badge">Design Your Future</div>
+          <h1 className="text-gradient cinematic-title">Select Template</h1>
+          <div className="header-line"></div>
         </div>
 
-      {/* Main Layout Filter */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.85rem', marginBottom: '2rem', padding: '0.5rem' }}>
-        {CATEGORIES.slice(0, 2).map((cat) => {
-          const isActive = selectedCategory === cat.id;
-          return (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.5rem',
-                padding: '0.75rem 1.4rem',
-                borderRadius: 'var(--radius-full)',
-                border: isActive ? '1px solid var(--primary)' : '1px solid var(--surface-border)',
-                background: isActive ? 'var(--primary)' : 'rgba(255, 255, 255, 0.03)',
-                color: isActive ? 'white' : 'var(--text-main)',
-                fontSize: '0.9rem',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: isActive ? '0 10px 25px -5px rgba(99, 102, 241, 0.4)' : 'var(--shadow-sm)',
-                backdropFilter: 'blur(8px)'
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.borderColor = 'var(--primary)';
-                  e.currentTarget.style.background = 'rgba(99, 102, 241, 0.05)';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.borderColor = 'var(--surface-border)';
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }
-              }}
-            >
-              <span style={{ fontSize: '1.1rem', display: 'flex', opacity: isActive ? 1 : 0.7 }}>{cat.icon}</span>
-              {cat.id}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Profession Filter */}
-      <div style={{ 
-        display: 'flex', 
-        flexWrap: 'wrap', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        gap: '0.5rem', 
-        marginBottom: '3.5rem', 
-        padding: '0.75rem 1.5rem', 
-        background: 'rgba(255, 255, 255, 0.02)', 
-        backdropFilter: 'blur(20px)',
-        borderRadius: 'var(--radius-xl)', 
-        border: '1px solid var(--surface-border)',
-        boxShadow: 'inset 0 0 20px rgba(0,0,0,0.02)'
-      }}>
-        <span style={{ 
-          fontSize: '0.75rem', 
-          color: 'var(--text-muted)', 
-          fontWeight: '800', 
-          textTransform: 'uppercase', 
-          letterSpacing: '0.15em', 
-          marginRight: '1rem',
-          opacity: 0.8
-        }}>
-          Professions:
-        </span>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
-          {CATEGORIES.slice(2).map((cat) => {
-            const isActive = selectedCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '0.4rem',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '10px',
-                  border: isActive ? '1px solid var(--primary)' : '1px solid transparent',
-                  background: isActive ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
-                  color: isActive ? 'var(--primary)' : 'var(--text-main)',
-                  fontSize: '0.85rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                    e.currentTarget.style.transform = 'scale(1.02)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.transform = 'scale(1)';
-                  }
-                }}
-              >
-                <span style={{ fontSize: '1rem', opacity: isActive ? 1 : 0.6, display: 'flex' }}>{cat.icon}</span>
-                {cat.id}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Color Palette Selector */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        gap: '1.5rem', 
-        marginBottom: '2.5rem',
-        padding: '1.25rem',
-        background: 'rgba(255, 255, 255, 0.03)',
-        backdropFilter: 'blur(10px)',
-        borderRadius: 'var(--radius-xl)', 
-        border: '1px solid var(--surface-border)',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
-      }}>
-        <span style={{ 
-          fontSize: '0.7rem', 
-          color: 'var(--text-muted)', 
-          fontWeight: '800', 
-          textTransform: 'uppercase', 
-          letterSpacing: '0.15em'
-        }}>
-          Theme Accent:
-        </span>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          {ACCENT_COLORS.map((color) => {
-            const isActive = selectedAccent.id === color.id;
-            return (
-              <button
-                key={color.id}
-                onClick={() => setSelectedAccent(color)}
-                style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '50%',
-                  background: color.hex,
-                  border: isActive ? `3px solid white` : '3px solid transparent',
-                  boxShadow: isActive ? `0 0 15px ${color.hex}` : 'none',
-                  cursor: 'pointer',
-                  padding: 0,
-                  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  transform: isActive ? 'scale(1.2)' : 'scale(1)',
-                }}
-                title={color.name}
-              />
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="responsive-grid">
-        {TEMPLATES.filter(t => selectedCategory === 'All templates' || t.category === selectedCategory).map((t) => {
-          const isPremium = t.isPremium;
-          const isPopular = t.popular;
-          
-          return (
-            <div key={t.id} className="template-card" onClick={() => !loading && handleSelect(t.id)}>
-              {isPremium && (
-                <div style={{ 
-                  position: 'absolute', 
-                  top: '1rem', 
-                  right: '1rem', 
-                  zIndex: 10, 
-                  background: 'rgba(15, 23, 42, 0.7)', 
-                  backdropFilter: 'blur(8px)', 
-                  padding: '0.4rem', 
-                  borderRadius: '12px', 
-                  border: '1px solid rgba(251, 191, 36, 0.3)', 
-                  boxShadow: '0 8px 16px rgba(0,0,0,0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }} title="Premium Template">
-                  <GoldStar size={18} />
-                </div>
-              )}
-
-              {isPopular && (
-                <div style={{ 
-                  position: 'absolute', 
-                  top: '1rem', 
-                  left: '1rem', 
-                  zIndex: 10, 
-                  background: 'var(--primary)', 
-                  color: 'white',
-                  padding: '0.2rem 0.6rem', 
-                  borderRadius: '8px', 
-                  fontSize: '0.65rem',
-                  fontWeight: 900,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  boxShadow: '0 4px 12px rgba(99, 102, 241, 0.4)'
-                }}>
-                  Popular
-                </div>
-              )}
-
-              <div className="template-preview" style={{ opacity: 1 }}>
-                <div style={{ transform: 'scale(0.3)', transformOrigin: 'top center', width: '816px', pointerEvents: 'none' }}>
-                  <TemplateMiniPreview templateId={t.id} />
-                </div>
-              </div>
-              <div className="template-info">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <h3 style={{ fontSize: '1rem' }}>{t.name}</h3>
-                  {isPremium && <span className="badge badge-purple" style={{ fontSize: '0.6rem' }}>PREMIUM</span>}
-                </div>
-                <p style={{ fontSize: '0.8rem' }}>{t.description}</p>
-              </div>
+        {/* Premium Control Center */}
+        <div className="control-center">
+          {/* Theme Color Picker */}
+          <div className="color-section">
+            <span className="control-label">Visual Theme</span>
+            <div className="color-palette">
+              {ACCENT_COLORS.map((color) => {
+                const isActive = selectedAccent.id === color.id;
+                return (
+                  <button
+                    key={color.id}
+                    onClick={() => setSelectedAccent(color)}
+                    className={`color-bubble ${isActive ? 'active' : ''}`}
+                    style={{ background: color.hex }}
+                    title={color.name}
+                  />
+                );
+              })}
             </div>
-          );
-        })}
-      </div>
-      </div>
+          </div>
+
+          {/* Categories Grid */}
+          <div className="category-section">
+            <div className="category-scroll">
+              {CATEGORIES.map((cat) => {
+                const isActive = selectedCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`category-pill ${isActive ? 'active' : ''}`}
+                  >
+                    <span className="pill-icon">{cat.icon}</span>
+                    <span className="pill-text">{cat.id}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Templates Grid */}
+        <div className="responsive-grid templates-grid">
+          {TEMPLATES.filter(t => selectedCategory === 'All templates' || t.category === selectedCategory).map((t) => {
+            const isPremium = t.isPremium;
+            const isPopular = t.popular;
+            
+            return (
+              <div key={t.id} className={`template-card-pro ${isPremium ? 'is-premium' : ''}`} onClick={() => !loading && handleSelect(t.id)}>
+                <div className="card-media">
+                   <div className="preview-scaler">
+                      <TemplateMiniPreview templateId={t.id} />
+                   </div>
+                   <div className="card-overlay">
+                      <button className="btn btn-primary select-btn">Use This Template</button>
+                   </div>
+                   {isPremium && (
+                      <div className="premium-tag">
+                        <GoldStar size={14} />
+                        <span>Premium</span>
+                      </div>
+                   )}
+                   {isPopular && <div className="popular-tag">Trending</div>}
+                </div>
+                
+                <div className="card-content">
+                  <div className="content-main">
+                    <h3 className="template-name">{t.name}</h3>
+                    <p className="template-desc">{t.description}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <style>{`
+          .templates-container {
+            padding: clamp(1rem, 5vw, 4rem) 1rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+          }
+
+          .templates-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .header-badge {
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            background: rgba(var(--primary-rgb, 99, 102, 241), 0.1);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+          }
+
+          .cinematic-title {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+          }
+
+          .header-line {
+            width: 60px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+            box-shadow: 0 0 15px var(--primary);
+          }
+
+          .control-center {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--radius-2xl);
+            padding: 1.5rem 2rem;
+            margin-bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 20px 50px -20px rgba(0,0,0,0.3);
+          }
+
+          @media (min-width: 1024px) {
+            .control-center {
+              flex-direction: row;
+              align-items: center;
+              padding: 1.5rem;
+            }
+            
+            .color-section {
+              flex-shrink: 0;
+              padding-right: 2rem;
+              border-right: 1px solid var(--surface-border);
+            }
+
+            .category-section {
+              flex: 1;
+              min-width: 0;
+            }
+          }
+
+          .control-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            display: block;
+          }
+
+          .color-palette {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+          }
+
+          .color-bubble {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          }
+
+          .color-bubble.active {
+            border-color: white;
+            box-shadow: 0 0 15px var(--primary);
+            transform: scale(1.15);
+          }
+
+          .category-scroll {
+            display: flex;
+            gap: 0.75rem;
+            overflow-x: auto;
+            padding-bottom: 0.75rem;
+            -webkit-overflow-scrolling: touch;
+            /* Allow scroll to edge to prevent awkward clipping */
+            margin: 0 -2rem;
+            padding: 0 2rem 0.75rem 2rem;
+            
+            /* Custom Scrollbar for visibility */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+          }
+
+          @media (min-width: 1024px) {
+            .category-scroll {
+              margin: 0 -1.5rem 0 0;
+              padding: 0 1.5rem 0.75rem 0;
+            }
+          }
+
+          .category-scroll::-webkit-scrollbar {
+            height: 4px;
+          }
+
+          .category-scroll::-webkit-scrollbar-track {
+            background: transparent;
+          }
+
+          .category-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+          }
+
+          .category-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+          }
+
+          .category-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            background: rgba(var(--bg-rgb), 0.4);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--radius-xl);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            flex-shrink: 0; /* Prevents pill overlapping/squishing */
+          }
+
+          .category-pill.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px -5px rgba(var(--primary-rgb, 99, 102, 241), 0.4);
+          }
+
+          .category-pill .pill-icon {
+            opacity: 0.7;
+            transition: transform 0.3s ease;
+          }
+
+          .category-pill.active .pill-icon {
+            opacity: 1;
+            transform: scale(1.1);
+          }
+
+          .templates-grid {
+            gap: 2.5rem;
+          }
+
+          .template-card-pro {
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--radius-2xl);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+          }
+
+          .template-card-pro:hover {
+            transform: translateY(-12px);
+            border-color: var(--primary);
+            box-shadow: 0 30px 60px -20px rgba(0,0,0,0.5);
+          }
+
+          .card-media {
+            position: relative;
+            height: 380px;
+            background: rgba(var(--bg-rgb), 0.2);
+            overflow: hidden;
+          }
+
+          .preview-scaler {
+            transform: scale(0.42);
+            transform-origin: top center;
+            width: 816px;
+            margin: 0 auto;
+            transition: transform 0.6s ease;
+          }
+
+          .template-card-pro:hover .preview-scaler {
+            transform: scale(0.45);
+          }
+
+          .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+          }
+
+          .template-card-pro:hover .card-overlay {
+            opacity: 1;
+          }
+
+          .select-btn {
+            transform: translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          }
+
+          .template-card-pro:hover .select-btn {
+            transform: translateY(0);
+          }
+
+          .premium-tag {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #fbbf24;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+          }
+
+          .popular-tag {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(var(--primary-rgb, 99, 102, 241), 0.4);
+          }
+
+          .card-content {
+            padding: 1.5rem;
+          }
+
+          .template-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+          }
+
+          .template-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+          }
+
+          @media (max-width: 768px) {
+            .control-center { padding: 1.25rem 1.5rem; gap: 1rem; margin-bottom: 2rem; }
+            .templates-header { margin-bottom: 2rem; }
+            .card-media { height: 320px; }
+            .category-scroll { margin: 0 -1.5rem; padding: 0 1.5rem 0.5rem 1.5rem; }
+          }
+          @media (max-width: 480px) {
+            .control-center { padding: 1rem; margin-bottom: 1.5rem; }
+            .category-scroll { margin: 0 -1rem; padding: 0 1rem 0.5rem 1rem; }
+            .cinematic-title { font-size: 2rem; }
+          }
+        `}</style>
+      </main>
     </div>
   );
 };
 
-
 export default Templates;
-
-// Inject hover styles for the lock notice
-if (typeof document !== 'undefined') {
-  const style = document.createElement('style');
-  style.innerHTML = `
-    .template-card:hover .hover-lock-notice {
-      opacity: 1 !important;
-      backdrop-filter: blur(2px) !important;
-    }
-  `;
-  document.head.appendChild(style);
-}

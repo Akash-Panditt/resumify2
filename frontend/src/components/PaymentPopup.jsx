@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const PaymentPopup = ({ isOpen, onClose, templateName, templateId, price, onSuccess }) => {
+const PaymentPopup = ({ isOpen, onClose, templateName, templateId, resumeId, price, onSuccess, message }) => {
   const [loading, setLoading] = useState(false);
   const user = JSON.parse(localStorage.getItem('resumify_user') || '{}');
 
@@ -10,15 +10,30 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, price, onSucc
   const handlePayment = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/checkout`, {
-        type: 'template',
-        itemId: templateId,
+      // Step 1: Create Payment Session
+      const checkoutRes = await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/checkout`, {
+        type: resumeId ? 'resume_download' : 'template',
+        itemId: resumeId || templateId,
         amount: price
       }, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
 
-      if (res.data.success) {
+      const { transactionId } = checkoutRes.data;
+
+      // Step 2: Verification step
+      // In a real app, this is where the Razorpay/Stripe modal would open
+      // and we would get a paymentId/signature.
+      
+      const verifyRes = await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/verify`, {
+        transactionId,
+        itemId: resumeId || templateId,
+        type: resumeId ? 'resume_download' : 'template'
+      }, {
+        headers: { Authorization: `Bearer ${user.token}` }
+      });
+
+      if (verifyRes.data.success) {
         onSuccess();
         onClose();
       }
@@ -64,13 +79,16 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, price, onSucc
           margin: '0 auto 1.5rem',
           fontSize: '1.5rem'
         }}>
-          ✨
+          {resumeId ? '🚀' : '✨'}
         </div>
         
-        <h3 style={{ fontSize: '1.5rem', marginBottom: '0.75rem', fontWeight: 800 }}>Unlock Template</h3>
+        <h3 style={{ fontSize: '1.5rem', marginBottom: '0.75rem', fontWeight: 800 }}>
+          {resumeId ? 'Unlock Download' : 'Unlock Template'}
+        </h3>
         <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', lineHeight: 1.6 }}>
-          The <strong style={{ color: 'var(--text-main)' }}>{templateName}</strong> is a premium template.
-          Pay a one-time fee to download this resume.
+          {message || (resumeId 
+            ? "Pay a small fee to download your AI-enhanced resume."
+            : `The ${templateName} is a premium template. Pay a one-time fee to download this resume.`)}
         </p>
 
         <div style={{
@@ -81,7 +99,7 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, price, onSucc
           border: '1px dashed var(--surface-border)'
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span style={{ color: 'var(--text-muted)' }}>Template Fee:</span>
+            <span style={{ color: 'var(--text-muted)' }}>{resumeId ? 'Unlock Fee:' : 'Template Fee:'}</span>
             <span style={{ fontWeight: 700 }}>₹{price}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -97,7 +115,7 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, price, onSucc
             onClick={handlePayment}
             disabled={loading}
           >
-            {loading ? 'Processing...' : `Pay & Download`}
+            {loading ? 'Processing...' : `Pay ₹${price} & Download`}
           </button>
           <button 
             className="btn btn-secondary"

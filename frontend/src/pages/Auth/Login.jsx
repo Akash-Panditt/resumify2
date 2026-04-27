@@ -90,12 +90,12 @@ const Login = () => {
   };
 
   return (
-    <div style={{ padding: '3rem 1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+    <div style={{ padding: 'clamp(1rem, 5vw, 3rem) 1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <h1 className="text-gradient" style={{ fontSize: 'clamp(2.5rem, 8vw, 3.5rem)', marginBottom: '1rem' }}>Resumify</h1>
       </div>
       
-      <div className="card" style={{ width: '100%', maxWidth: '400px', padding: 'clamp(1.5rem, 5vw, 2.5rem)' }}>
+      <div className="card" style={{ width: '100%', maxWidth: '420px', padding: 'clamp(1.25rem, 5vw, 2.5rem)' }}>
         <h2 style={{ marginBottom: '0.5rem' }}>Welcome Back</h2>
         <p style={{ marginBottom: '2rem', color: 'var(--text-muted)' }}>Sign in to continue to your dashboard.</p>
         
@@ -184,14 +184,16 @@ const Login = () => {
                 <div style={{ flex: 1, height: '1px', background: 'var(--surface-border)' }}></div>
               </div>
               
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <GoogleLogin 
-                  onSuccess={handleGoogleSuccess} 
-                  onError={() => setError('Google Authentication Failed')} 
-                  text="signin_with" 
-                  shape="rectangular" 
-                  width="350"
-                />
+              <div style={{ width: '100%', display: 'flex', justifyContent: 'center', overflow: 'hidden' }}>
+                <div style={{ width: '100%', maxWidth: '320px' }}>
+                  <GoogleLogin 
+                    onSuccess={handleGoogleSuccess} 
+                    onError={() => setError('Google Authentication Failed')} 
+                    text="signin_with" 
+                    shape="rectangular" 
+                    width="100%"
+                  />
+                </div>
               </div>
             </div>
           </form>

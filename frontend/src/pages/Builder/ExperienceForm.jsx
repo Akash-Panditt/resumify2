@@ -60,7 +60,7 @@ const ExperienceForm = ({ experience, errors, onChange, onAdd, onRemove }) => {
                 <label className="form-label" style={{ margin: 0 }}>Responsibilities / Achievements</label>
                 <AIEnhancer 
                   text={item.description} 
-                  onApply={(val) => onChange(index, 'description', val)}
+                  onApply={(val) => onChange(index, 'description', val, true)}
                   type="experience"
                   contextData={{ jobTitle: item.jobTitle, company: item.company }}
                 />
