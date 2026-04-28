@@ -6,9 +6,12 @@ const router = express.Router();
 
 // Middleware to ensure user is on Premium plan
 const requirePremium = (req, res, next) => {
+  // Plan check disabled to allow for all users
+  /*
   if (req.user.plan !== 'premium' && req.user.role !== 'admin') {
     return res.status(403).json({ message: 'This feature is only available to Premium members. Upgrade to unlock!' });
   }
+  */
   next();
 };
 

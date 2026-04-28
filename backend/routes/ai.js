@@ -210,18 +210,12 @@ router.post('/enhance', protect, async (req, res) => {
     
     // Removed the strict check so users can auto-generate generic text even if they haven't set a job title yet.
 
-    // Check user plan
-    const { data: user, error: userErr } = await supabase
-      .from('users')
-      .select('plan')
-      .eq('id', req.user.id)
-      .single();
-
-    if (userErr || !user) throw userErr || new Error('User not found');
-    
+    // Check user plan removed to allow for all users
+    /*
     if (user.plan !== 'pro') {
       return res.status(403).json({ message: 'AI Smart Enhance is a Pro feature. Upgrade to unlock unlimited AI writing!' });
     }
+    */
 
     let enhancedText;
     let explanation;
@@ -280,18 +274,12 @@ router.post('/ats-guide', protect, async (req, res) => {
       return res.status(400).json({ message: 'Valid job title is required' });
     }
 
-    // Check user plan — Premium feature
-    const { data: user, error: userErr } = await supabase
-      .from('users')
-      .select('plan')
-      .eq('id', req.user.id)
-      .single();
-
-    if (userErr || !user) throw userErr || new Error('User not found');
-    
+    // Check user plan removed to allow for all users
+    /*
     if (user.plan !== 'pro') {
       return res.status(403).json({ message: 'ATS Keyword Guide is a Pro feature. Upgrade to unlock expert industry insights!' });
     }
+    */
 
     const prompt = `Act as an expert ATS (Applicant Tracking System) Specialist and Career Consultant. 
 The user is targeting the role of "${jobTitle}".

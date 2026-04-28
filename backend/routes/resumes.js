@@ -18,6 +18,9 @@ const mapResumeFields = (resume) => {
     personalDetails: resume.personal_details,
     // Add logic to extract nested languages if they exist in personal_details
     languages: resume.languages || resume.personal_details?.languages || [],
+    hasUsedAI: resume.has_used_ai || false,
+    hasUsedPremiumTemplate: resume.has_used_premium_template || false,
+    paidForDownload: resume.paid_for_download || false,
     createdAt: resume.created_at,
     updatedAt: resume.updated_at
   };
@@ -38,6 +41,13 @@ const mapPayloadToColumns = (body) => {
     payload.personal_details = { ...(payload.personal_details || {}), languages: payload.languages };
   }
 
+  if (payload.hasUsedAI !== undefined) payload.has_used_ai = payload.hasUsedAI;
+  if (payload.hasUsedPremiumTemplate !== undefined) payload.has_used_premium_template = payload.hasUsedPremiumTemplate;
+  if (payload.paidForDownload !== undefined) payload.paid_for_download = payload.paidForDownload;
+
+  delete payload.hasUsedAI;
+  delete payload.hasUsedPremiumTemplate;
+  delete payload.paidForDownload;
   delete payload.languages; // Remove from root to avoid DB error
   delete payload._id;
   delete payload.id;
@@ -82,7 +92,7 @@ const extractJSON = (text) => {
 
 // AI Access logic
 const canUserAccessAI = (userPlan) => {
-  return userPlan === 'pro';
+  return true; // Allowed for all users
 };
 
 
@@ -143,31 +153,25 @@ router.post('/download/:id', protect, async (req, res) => {
 
     const isPremium = templateData?.is_premium || false;
 
-    // 2. Logic: Pro users have full access. Others must pay for premium templates.
-    if (user.plan !== 'pro' && isPremium) {
-      // Check if user has a single template purchase
-      const { data: purchase } = await supabase
-        .from('downloads')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('template_id', templateData.id)
-        .maybeSingle();
-
-      if (!purchase) {
-        return res.status(403).json({
-          message: `The "${resume.template}" template is PREMIUM. Pay ₹9 to download or upgrade to PRO.`,
-          isPremium: true,
-          templateId: templateData.id,
-          price: 9,
-          type: 'TEMPLATE_PURCHASE_REQUIRED'
-        });
-      }
-    }
-
-    // 3. Check general download limits (only for Free/Basic)
-    if (user.plan !== 'pro' && user.download_count >= maxDownloads) {
+    // Logic: Pro users have full access.
+    // Try Before You Buy: If AI or Premium template was used, allow for all users now
+    const needsPayment = false; // Disabled payment requirement for all users
+    
+    /*
+    if (user.plan !== 'pro' && needsPayment) {
       return res.status(403).json({
-        message: `Download limit reached for ${user.plan} plan. Upgrade to get more downloads.`,
+        message: `Premium features used (AI or Premium Template). Pay ₹9 to unlock this download.`,
+        isPremium: true,
+        price: 9,
+        type: 'PAYMENT_REQUIRED'
+      });
+    }
+    */
+
+    // 3. Fallback to general download limits if NO premium features were used
+    if (user.plan === 'free' && user.download_count >= maxDownloads && !needsPayment) {
+      return res.status(403).json({
+        message: `Free download limit reached. Upgrade to get more downloads.`,
         limit: maxDownloads,
         used: user.download_count,
         plan: user.plan,

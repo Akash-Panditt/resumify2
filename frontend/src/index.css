@@ -1734,3 +1734,36 @@ body {
     radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.08), transparent 40%),
     radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08), transparent 40%);
 }
+
+/* Print Styles for Perfect PDF Export */
+@media print {
+  @page {
+    margin: 0;
+    size: auto;
+  }
+  
+  body {
+    margin: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: white !important;
+    background-image: none !important;
+  }
+
+  /* Hide scrollbars during print */
+  ::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  /* Ensure the builder-preview-scaler wrapper doesn't force a page break */
+  .builder-preview-scaler {
+    transform: none !important; /* React-to-print extracts the content, but just in case */
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Prevent forced page breaks inside template containers */
+  * {
+    page-break-inside: avoid;
+  }
+}
