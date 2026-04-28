@@ -1488,7 +1488,7 @@ h6 {
   height: 8px;
 }
 
-...::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: transparent;
 }
 
