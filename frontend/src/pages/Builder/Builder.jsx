@@ -406,8 +406,8 @@ const Builder = () => {
   return (
     <div className="builder-page" style={{ '--primary': accentColor }}>
 
-      {/* Top Header */}
-      <div className="builder-header">
+      {/* Desktop Header */}
+      <div className="builder-header desktop-only">
         <h1 className="text-gradient">Resumify Builder</h1>
         <div className="builder-header-actions" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <ThemeToggle />
@@ -435,11 +435,12 @@ const Builder = () => {
         </div>
       </div>
 
+
       <div className="builder-body">
         {/* Left Column: Sidebar + Form */}
         <div className="builder-left">
           {/* Sidebar / Steps */}
-          <div className="card builder-sidebar" style={{ padding: '1.5rem 1.25rem' }}>
+          <div className="card builder-sidebar desktop-only" style={{ padding: '1.5rem 1.25rem' }}>
             <h2 style={{ paddingLeft: '0.5rem', marginBottom: '1.25rem', fontSize: '0.9rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Sections</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
               {steps.map((step, index) => (
@@ -457,14 +458,35 @@ const Builder = () => {
 
           {/* Form Area */}
           <div className="card builder-form">
+            {/* Mobile Action Bar */}
+            <div className="mobile-action-bar mobile-only">
+              <button
+                className="btn btn-secondary btn-sm"
+                onClick={() => navigate('/dashboard')}
+                disabled={isSaving}
+              >
+                Dashboard
+              </button>
+              <button
+                className="btn btn-secondary btn-sm"
+                onClick={() => handleNavigate(`/preview/${id}`)}
+                disabled={isSaving || isPreviewing}
+              >
+                Preview
+              </button>
+            </div>
+
             {/* Progress Stepper */}
             <div className="builder-stepper">
-              {steps.map((step, index) => (
-                <div key={index} className={`step-item ${activeStep === index ? 'active' : ''} ${activeStep > index ? 'completed' : ''}`}>
-                  <div className="step-dot">{activeStep > index ? '✓' : index + 1}</div>
-                  <span className="step-label">{index === activeStep || activeStep > index ? step.split(' ')[0] : (index + 1)}</span>
-                </div>
-              ))}
+              {steps.map((step, index) => {
+                const shortLabels = ['Basic', 'Edu', 'Exp', 'Skills', 'Proj', 'Lang'];
+                return (
+                  <div key={index} className={`step-item ${activeStep === index ? 'active' : ''} ${activeStep > index ? 'completed' : ''}`}>
+                    <div className="step-dot">{activeStep > index ? '✓' : index + 1}</div>
+                    <span className="step-label">{shortLabels[index]}</span>
+                  </div>
+                );
+              })}
             </div>
 
             <div style={{ marginBottom: '2rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
@@ -480,7 +502,7 @@ const Builder = () => {
                 ) : (
                   <button
                     className="btn btn-secondary"
-                    style={{ fontSize: '0.7rem', padding: '0.3rem 0.6rem', borderStyle: 'dashed' }}
+                    style={{ fontSize: '0.65rem', padding: '0.25rem 0.5rem', borderStyle: 'dashed', width: 'auto', minWidth: 'unset', flex: 'none' }}
                     disabled={isSyncing}
                     onClick={async () => {
                       setIsSyncing(true);

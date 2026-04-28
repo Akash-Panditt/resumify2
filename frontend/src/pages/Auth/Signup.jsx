@@ -53,6 +53,26 @@ const Signup = () => {
         
         {error && <div style={{ color: 'var(--error)', padding: '0.75rem', backgroundColor: 'rgba(239, 68, 68, 0.1)', borderRadius: 'var(--radius-md)', marginBottom: '1.5rem', border: '1px solid rgba(239, 68, 68, 0.2)' }}>{error}</div>}
         
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+          <div style={{ width: '100%', display: 'flex', justifyContent: 'center', overflow: 'hidden' }}>
+            <div style={{ width: '100%', maxWidth: '320px' }}>
+              <GoogleLogin 
+                onSuccess={handleGoogleSuccess} 
+                onError={() => setError('Google Authentication Failed')} 
+                text="signup_with" 
+                shape="rectangular" 
+                width="100%"
+              />
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', margin: '0.5rem 0', color: 'var(--text-muted)' }}>
+            <div style={{ flex: 1, height: '1px', background: 'var(--surface-border)' }}></div>
+            <span style={{ padding: '0 1rem', fontSize: '0.875rem' }}>OR SIGN UP WITH EMAIL</span>
+            <div style={{ flex: 1, height: '1px', background: 'var(--surface-border)' }}></div>
+          </div>
+        </div>
+
         <form onSubmit={handleSignup}>
           <div className="form-group">
             <label className="form-label">Full Name</label>
@@ -64,7 +84,7 @@ const Signup = () => {
             <input type="email" className="form-input" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </div>
           
-          <div className="form-group" style={{ marginBottom: '2rem' }}>
+          <div className="form-group" style={{ marginBottom: '2.5rem' }}>
             <label className="form-label">Password</label>
             <div style={{ position: 'relative' }}>
               <input 
@@ -109,29 +129,13 @@ const Signup = () => {
             </div>
           </div>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Sign Up</button>
-            <Link to="/login" className="btn btn-secondary" style={{ width: '100%', textDecoration: 'none', textAlign: 'center' }}>Already have an account?</Link>
-            
-            <div style={{ display: 'flex', alignItems: 'center', margin: '0.5rem 0', color: 'var(--text-muted)' }}>
-              <div style={{ flex: 1, height: '1px', background: 'var(--surface-border)' }}></div>
-              <span style={{ padding: '0 1rem', fontSize: '0.875rem' }}>OR</span>
-              <div style={{ flex: 1, height: '1px', background: 'var(--surface-border)' }}></div>
-            </div>
-            
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', overflow: 'hidden' }}>
-              <div style={{ width: '100%', maxWidth: '320px' }}>
-                <GoogleLogin 
-                  onSuccess={handleGoogleSuccess} 
-                  onError={() => setError('Google Authentication Failed')} 
-                  text="signup_with" 
-                  shape="rectangular" 
-                  width="100%"
-                />
-              </div>
-            </div>
+          <button type="submit" className="btn btn-primary" style={{ width: '100%', marginBottom: '1.5rem' }}>Create Account</button>
+          
+          <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+            Already have an account? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>Sign In</Link>
           </div>
         </form>
+
       </div>
     </div>
   );

@@ -55,8 +55,8 @@ const Navbar = ({ user }) => {
             Resumify
           </h1>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <div className="desktop-only" style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
                <ThemeToggle />
             </div>
             <button className="mobile-menu-toggle" onClick={toggleMenu} aria-label="Toggle menu" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -73,7 +73,6 @@ const Navbar = ({ user }) => {
             <div className="mobile-only nav-user-preview">
                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontWeight: 700, fontSize: '1.2rem' }}>Menu</span>
-                  <ThemeToggle />
                </div>
                {user && (
                  <div style={{ marginTop: '1rem' }}>

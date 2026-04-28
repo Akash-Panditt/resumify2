@@ -181,34 +181,56 @@ const Dashboard = () => {
              <h2 style={{ fontSize: '1.5rem', margin: 0 }}>Resume Drafts</h2>
           </div>
           
-          <div className="responsive-grid">
-            <div onClick={() => navigate('/templates')} className="card empty-state-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '240px', cursor: 'pointer' }}>
-              <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'rgba(99, 102, 241, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', fontSize: '1.5rem', marginBottom: '1rem' }}>+</div>
-              <h3 style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Create New Draft</h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '0.5rem' }}>Choose from premium templates</p>
-            </div>
-
-            {resumes.map(resume => (
-              <div key={resume._id} className="card resume-card" style={{ minHeight: '240px', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                  <h3 style={{ margin: 0, fontSize: '1.2rem' }}>
-                    {resume.title && resume.title !== 'Untitled Resume'
-                      ? resume.title
-                      : (resume.personalDetails?.jobTitle || masterProfile?.personalDetails?.jobTitle || 'Untitled Resume')}
-                  </h3>
-                  <span className="badge badge-primary">{resume.template}</span>
-                </div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 'auto' }}>
-                  Last updated {new Date(resume.updatedAt).toLocaleDateString()}
-                </p>
-                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
-                  <button className="btn btn-primary" style={{ flex: '2 1 0%', minWidth: '80px' }} onClick={() => navigate(`/builder/${resume._id}`)}>Edit Resume</button>
-                  <button className="btn btn-secondary" style={{ flex: '1 1 0%', minWidth: '80px' }} onClick={() => navigate(`/preview/${resume._id}`)}>Preview</button>
-                  <button className="btn btn-danger" style={{ flex: '0 0 auto', width: '44px', padding: 0 }} onClick={() => handleDeleteResume(resume._id)}>✕</button>
-                </div>
+          {resumes.length === 0 ? (
+            <div className="empty-dashboard-state">
+              <div className="empty-state-icon">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <path d="M9 15h6" />
+                  <path d="M12 12v6" />
+                </svg>
               </div>
-            ))}
-          </div>
+              <h3>No resumes yet. Create your first one!</h3>
+              <p>Choose from our professional templates and land your dream job faster.</p>
+              <button 
+                className="btn btn-primary" 
+                onClick={() => navigate('/templates')}
+                style={{ marginTop: '1.5rem', padding: '0.85rem 2.5rem' }}
+              >
+                ✨ Create My First Resume
+              </button>
+            </div>
+          ) : (
+            <div className="responsive-grid">
+              <div onClick={() => navigate('/templates')} className="card empty-state-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '240px', cursor: 'pointer' }}>
+                <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(99, 102, 241, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', fontSize: '1.75rem', marginBottom: '1rem', border: '1px solid rgba(99, 102, 241, 0.2)' }}>+</div>
+                <h3 style={{ color: 'var(--text-main)', fontSize: '1.1rem', margin: 0 }}>Create New Draft</h3>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '0.5rem' }}>Start fresh with a template</p>
+              </div>
+
+              {resumes.map(resume => (
+                <div key={resume._id} className="card resume-card" style={{ minHeight: '240px', display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.2rem' }}>
+                      {resume.title && resume.title !== 'Untitled Resume'
+                        ? resume.title
+                        : (resume.personalDetails?.jobTitle || masterProfile?.personalDetails?.jobTitle || 'Untitled Resume')}
+                    </h3>
+                    <span className="badge badge-primary">{resume.template}</span>
+                  </div>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 'auto' }}>
+                    Last updated {new Date(resume.updatedAt).toLocaleDateString()}
+                  </p>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
+                    <button className="btn btn-primary" style={{ flex: '2 1 0%', minWidth: '80px' }} onClick={() => navigate(`/builder/${resume._id}`)}>Edit Resume</button>
+                    <button className="btn btn-secondary" style={{ flex: '1 1 0%', minWidth: '80px' }} onClick={() => navigate(`/preview/${resume._id}`)}>Preview</button>
+                    <button className="btn btn-danger" style={{ flex: '0 0 auto', width: '44px', padding: 0 }} onClick={() => handleDeleteResume(resume._id)}>✕</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </main>
     </div>
