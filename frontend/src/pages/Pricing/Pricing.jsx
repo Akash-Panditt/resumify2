@@ -12,7 +12,7 @@ const Pricing = () => {
   const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' or 'yearly'
   const user = JSON.parse(localStorage.getItem('resumify_user') || '{}');
   const [modal, setModal] = useState({ isOpen: false, type: 'success', title: '', message: '' });
-  
+
   const currentPlan = user?.plan || 'free';
   const requestedPlan = user?.requested_plan || null;
 
@@ -40,8 +40,8 @@ const Pricing = () => {
       const amount = planInfo.price;
 
       // Step 1: Create Payment Session
-      const checkoutRes = await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/checkout`, { 
-        type: 'plan', 
+      const checkoutRes = await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/checkout`, {
+        type: 'plan',
         itemId: planId,
         amount,
         billingCycle
@@ -72,7 +72,7 @@ const Pricing = () => {
       // Step 4: Success
       const updatedUser = { ...user, plan: planId, requested_plan: null };
       localStorage.setItem('resumify_user', JSON.stringify(updatedUser));
-      
+
       setModal({
         isOpen: true,
         type: 'success',
@@ -94,7 +94,7 @@ const Pricing = () => {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-color)' }}>
       <Navbar user={user} />
-      
+
       <div className="pricing-container">
         <div className="pricing-header">
           <div className="badge-premium">Pricing Plans</div>
@@ -117,8 +117,8 @@ const Pricing = () => {
 
         {loadingPlans ? (
           <div className="loading-state">
-             <div className="loader-mini" />
-             <span>Loading plans...</span>
+            <div className="loader-mini" />
+            <span>Loading plans...</span>
           </div>
         ) : (
           <>
@@ -127,7 +127,7 @@ const Pricing = () => {
                 const isFree = plan.name === 'free';
                 const isPro = plan.name === 'pro';
                 const isBasic = plan.name === 'basic';
-                
+
                 const showPlan = (billingCycle === 'monthly' && !isPro) || (billingCycle === 'yearly' && !isBasic) || isFree;
                 if (!showPlan) return null;
 
@@ -137,7 +137,7 @@ const Pricing = () => {
                 return (
                   <div key={plan.id} className={`pricing-card-v2 ${isPro ? 'featured' : ''}`}>
                     {isPro && <div className="card-ribbon">Best Value</div>}
-                    
+
                     <div className="card-top">
                       <h3 className="plan-name-v2">{plan.name}</h3>
                       <div className="price-box">
@@ -176,25 +176,25 @@ const Pricing = () => {
                 );
               })}
             </div>
-            
+
             <div className="single-unlock-note">
-               <div className="note-icon">✨</div>
-               <div>
-                  <h4 style={{ margin: '0 0 0.25rem 0', color: 'var(--text-main)' }}>Just need one resume?</h4>
-                  <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-                     Use our "Try Before You Buy" model. Build your perfect resume with AI and premium templates for free, then unlock it for download for just <strong>₹9</strong>.
-                  </p>
-               </div>
+              <div className="note-icon">💡</div>
+              <div>
+                <h4 style={{ margin: '0 0 0.25rem 0', color: 'var(--text-main)' }}>Just need one resume?</h4>
+                <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+                  Use our "Try Before You Buy" model. Build your perfect resume with AI and premium templates for free, then unlock it for download for just <strong>₹9</strong>.
+                </p>
+              </div>
             </div>
           </>
         )}
 
-        <StatusModal 
-          {...modal} 
+        <StatusModal
+          {...modal}
           onClose={() => {
             setModal({ ...modal, isOpen: false });
             if (modal.type === 'success') window.location.reload();
-          }} 
+          }}
         />
 
         <style>{`

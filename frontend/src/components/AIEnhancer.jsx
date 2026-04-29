@@ -54,7 +54,7 @@ const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
         onClick={handleOpenWriter}
         disabled={loading}
       >
-        <span>{loading ? '🪄' : '✨'}</span>
+        <span>{loading ? '🪄' : '🤖'}</span>
         {loading ? 'Thinking...' : 'AI Writer'}
       </button>
 
@@ -74,7 +74,7 @@ const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
           <div className="card" style={{ maxWidth: '450px', width: '100%', padding: '1.5rem', background: 'var(--surface)', border: '1px solid var(--surface-border)', borderRadius: '12px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
               <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)' }}>
-                AI WRITER <span style={{ color: '#a855f7' }}>✨</span>
+                AI WRITER <span style={{ color: '#a855f7' }}>🤖</span>
               </h3>
               <button 
                 onClick={() => setShowAIWriter(false)} 

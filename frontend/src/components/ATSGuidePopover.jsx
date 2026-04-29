@@ -77,7 +77,7 @@ const ATSGuidePopover = ({ jobTitle }) => {
       
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>
         <h4 style={{ margin: 0, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#4f46e5' }}>
-          <span style={{ fontSize: '1.2rem' }}>✨</span> ATS Keyword Guide
+          <span style={{ fontSize: '1.2rem' }}>🔍</span> ATS Keyword Guide
         </h4>
         <button 
           onClick={() => setIsOpen(false)}

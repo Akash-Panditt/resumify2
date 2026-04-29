@@ -79,7 +79,7 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, resumeId, pri
           margin: '0 auto 1.5rem',
           fontSize: '1.5rem'
         }}>
-          {resumeId ? '🚀' : '✨'}
+          {resumeId ? '🚀' : '💎'}
         </div>
         
         <h3 style={{ fontSize: '1.5rem', marginBottom: '0.75rem', fontWeight: 800 }}>

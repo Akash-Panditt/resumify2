@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import ConfirmModal from '../../components/ConfirmModal';
 
 const Icon = ({ path, size = 18, color = 'currentColor' }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -25,6 +26,7 @@ const UserManagement = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPlan, setFilterPlan] = useState('all');
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, type: '', userId: null, title: '', message: '', confirmText: '' });
   const admin = JSON.parse(localStorage.getItem('resumify_admin') || '{}');
 
   useEffect(() => {
@@ -77,56 +79,76 @@ const UserManagement = () => {
     }
   };
 
-  const handleDeleteUser = async (userId) => {
-    if (!window.confirm('Are you sure you want to delete this user? This action is irreversible.')) return;
-    try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
-      fetchUsers();
-    } catch (err) {
-      const msg = err.response?.data?.details || err.response?.data?.message || err.message;
-      alert(`Failed to delete user: ${msg}`);
-    }
+  const handleDeleteUser = (userId) => {
+    setConfirmModal({
+      isOpen: true,
+      type: 'danger',
+      userId,
+      title: 'Delete User',
+      message: 'Are you sure you want to delete this user? This action is irreversible.',
+      confirmText: 'Yes, Delete',
+      action: 'delete'
+    });
   };
 
-  const handleApproveUpgrade = async (userId) => {
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/approve-upgrade/${userId}`, {}, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
-      alert(res.data.message || 'Upgrade approved successfully');
-      fetchUsers();
-    } catch (err) {
-      console.error('Upgrade approval failed', err);
-      const msg = err.response?.data?.message || 'Failed to approve upgrade. Check backend logs.';
-      alert(`Error: ${msg}`);
-    }
+  const handleRejectUpgrade = (userId) => {
+    setConfirmModal({
+      isOpen: true,
+      type: 'danger',
+      userId,
+      title: 'Reject Upgrade',
+      message: 'Are you sure you want to reject this upgrade request?',
+      confirmText: 'Yes, Reject',
+      action: 'reject'
+    });
   };
 
-  const handleRejectUpgrade = async (userId) => {
-    if (!window.confirm('Are you sure you want to reject this upgrade request?')) return;
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/reject-upgrade/${userId}`, {}, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
-      alert(res.data.message);
-      fetchUsers();
-    } catch (err) {
-      alert('Failed to reject upgrade');
-    }
+  const handleRevokeSubscription = (userId) => {
+    setConfirmModal({
+      isOpen: true,
+      type: 'danger',
+      userId,
+      title: 'Revoke Subscription',
+      message: 'Are you sure you want to revoke this user\'s subscription? They will be downgraded to the Free tier immediately.',
+      confirmText: 'Yes, Revoke',
+      action: 'revoke'
+    });
   };
 
-  const handleRevokeSubscription = async (userId) => {
-    if (!window.confirm('Are you sure you want to revoke this user\'s subscription? They will be downgraded to the Free tier immediately.')) return;
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/revoke-subscription/${userId}`, {}, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
-      alert(res.data.message);
-      fetchUsers();
-    } catch (err) {
-      alert('Failed to revoke subscription');
+  const handleConfirmAction = async () => {
+    const { userId, action } = confirmModal;
+    setConfirmModal({ ...confirmModal, isOpen: false });
+
+    if (action === 'delete') {
+      try {
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`, {
+          headers: { Authorization: `Bearer ${admin.token}` }
+        });
+        fetchUsers();
+      } catch (err) {
+        const msg = err.response?.data?.details || err.response?.data?.message || err.message;
+        alert(`Failed to delete user: ${msg}`);
+      }
+    } else if (action === 'reject') {
+      try {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/reject-upgrade/${userId}`, {}, {
+          headers: { Authorization: `Bearer ${admin.token}` }
+        });
+        alert(res.data.message);
+        fetchUsers();
+      } catch (err) {
+        alert('Failed to reject upgrade');
+      }
+    } else if (action === 'revoke') {
+      try {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/revoke-subscription/${userId}`, {}, {
+          headers: { Authorization: `Bearer ${admin.token}` }
+        });
+        alert(res.data.message);
+        fetchUsers();
+      } catch (err) {
+        alert('Failed to revoke subscription');
+      }
     }
   };
 
@@ -414,6 +436,15 @@ const UserManagement = () => {
           }
         }
       `}</style>
+      <ConfirmModal 
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+        onConfirm={handleConfirmAction}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        type={confirmModal.type}
+      />
     </div>
   );
 };

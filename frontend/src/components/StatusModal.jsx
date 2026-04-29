@@ -5,103 +5,233 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
 
   const isSuccess = type === 'success';
   const isLoading = type === 'loading';
+  const isError = type === 'error';
 
   return (
     <div style={{
       position: 'fixed',
       inset: 0,
-      zIndex: 3000,
+      zIndex: 5000,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '1.5rem',
-      animation: 'modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+      perspective: '1000px'
     }}>
-      {/* Backdrop */}
+      {/* Backdrop with enhanced blur */}
       <div 
         onClick={isLoading ? undefined : onClose}
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'rgba(15, 23, 42, 0.6)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
+          background: 'rgba(8, 10, 15, 0.8)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          animation: 'fadeIn 0.4s ease-out'
         }}
       />
 
       {/* Modal Card */}
-      <div className="card" style={{
+      <div style={{
         position: 'relative',
         width: '100%',
-        maxWidth: '400px',
-        padding: '2.5rem',
+        maxWidth: '420px',
+        background: 'rgba(23, 25, 35, 0.9)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        borderRadius: '32px',
+        padding: '3.5rem 2.5rem',
         textAlign: 'center',
-        border: `1px solid ${isLoading ? 'var(--primary)' : (isSuccess ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)')}`,
-        boxShadow: `0 25px 70px -12px ${isLoading ? 'rgba(99, 102, 241, 0.2)' : (isSuccess ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)')}`,
-        background: 'var(--card-bg)',
+        boxShadow: '0 30px 60px -12px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
+        animation: 'modalEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+        overflow: 'hidden'
       }}>
-        <div style={{ 
-          fontSize: '4rem', 
-          marginBottom: '1rem',
-          filter: isLoading ? 'none' : (isSuccess ? 'drop-shadow(0 0 15px rgba(34, 197, 94, 0.4))' : 'drop-shadow(0 0 15px rgba(239, 68, 68, 0.4))')
-        }}>
+        
+        {/* Icon Section (3D-like Box from screenshot) */}
+        <div style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'center' }}>
           {isLoading ? (
-             <div className="loader-spinner" style={{ width: '60px', height: '60px', border: '5px solid rgba(99, 102, 241, 0.2)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto' }} />
+            <div className="premium-loader">
+              <div className="loader-ring"></div>
+              <div className="loader-ring"></div>
+              <div className="loader-ring"></div>
+            </div>
           ) : (
-            isSuccess ? '✅' : '❌'
+            <div className={`status-icon-container ${type}`}>
+              {isSuccess ? (
+                <svg viewBox="0 0 52 52" className="checkmark-svg">
+                  <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" className="checkmark-path" />
+                </svg>
+              ) : (
+                <span style={{ fontSize: '2.5rem', color: '#fff' }}>✕</span>
+              )}
+            </div>
           )}
         </div>
-        
-        <h2 className="text-gradient" style={{ 
-          fontSize: '1.5rem', 
-          marginBottom: '1rem',
-          background: isLoading
-            ? 'var(--primary)'
-            : (isSuccess 
-              ? 'linear-gradient(to right, #22c55e, #10b981)' 
-              : 'linear-gradient(to right, #ef4444, #f87171)'),
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
+
+        {/* The "Green Bar" from screenshot - Solid and glowing */}
+        {!isLoading && (
+          <div style={{ 
+            height: '8px', 
+            width: '100%', 
+            background: isSuccess ? '#22c55e' : '#ef4444',
+            borderRadius: '4px',
+            marginBottom: '2rem',
+            boxShadow: isSuccess 
+              ? '0 0 20px rgba(34, 197, 94, 0.4)' 
+              : '0 0 20px rgba(239, 68, 68, 0.4)',
+            animation: 'barGrow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)'
+          }} />
+        )}
+
+        <h2 style={{ 
+          fontSize: '1.75rem', 
+          fontWeight: '800',
+          marginBottom: '0.75rem',
+          color: '#fff',
+          letterSpacing: '-0.02em'
         }}>
           {title || (isLoading ? 'Processing...' : (isSuccess ? 'Success!' : 'Oops!'))}
         </h2>
         
         <p style={{ 
-          color: 'var(--text-main)', 
-          marginBottom: isLoading ? '0' : '2rem', 
-          lineHeight: '1.6',
-          fontSize: '1rem'
+          color: 'rgba(255, 255, 255, 0.7)', 
+          marginBottom: isLoading ? '0' : '2.5rem', 
+          lineHeight: '1.7',
+          fontSize: '1.1rem',
+          fontWeight: '500'
         }}>
           {message}
         </p>
         
         {!isLoading && (
           <button 
-            className={`btn ${isSuccess ? 'btn-primary' : 'btn-danger'}`}
-            style={{ width: '100%', padding: '0.875rem' }}
+            className={`premium-action-btn ${isSuccess ? 'success' : 'error'}`}
             onClick={onClose}
           >
             {buttonText}
           </button>
         )}
+
+        {/* Background glow effects */}
+        <div style={{
+          position: 'absolute',
+          top: '-20%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '200px',
+          height: '200px',
+          background: isSuccess ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+          filter: 'blur(50px)',
+          borderRadius: '50%',
+          pointerEvents: 'none',
+          zIndex: -1
+        }} />
       </div>
 
       <style>{`
-        @keyframes modalSlideIn {
-          from { opacity: 0; transform: translateY(20px) scale(0.9); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+
+        @keyframes modalEntrance {
+          from { opacity: 0; transform: scale(0.9) translateY(40px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
         }
-        .btn-danger {
+
+        @keyframes barGrow {
+          from { transform: scaleX(0); opacity: 0; }
+          to { transform: scaleX(1); opacity: 1; }
+        }
+
+        /* 3D Status Icon Container */
+        .status-icon-container {
+          width: 80px;
+          height: 80px;
+          border-radius: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          background: #22c55e;
+          box-shadow: 
+            0 10px 25px rgba(34, 197, 94, 0.3),
+            inset 0 -4px 0 rgba(0,0,0,0.2),
+            inset 0 2px 0 rgba(255,255,255,0.3);
+          animation: iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .status-icon-container.error {
           background: #ef4444;
-          color: #fff;
-          border: none;
+          box-shadow: 
+            0 10px 25px rgba(239, 68, 68, 0.3),
+            inset 0 -4px 0 rgba(0,0,0,0.2),
+            inset 0 2px 0 rgba(255,255,255,0.3);
         }
-        .btn-danger:hover {
-          background: #dc2626;
+
+        @keyframes iconPop {
+          0% { transform: scale(0); }
+          100% { transform: scale(1); }
+        }
+
+        .checkmark-svg {
+          width: 40px;
+          height: 40px;
+          stroke: #fff;
+          stroke-width: 6;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          fill: none;
+        }
+
+        .checkmark-path {
+          stroke-dasharray: 100;
+          stroke-dashoffset: 100;
+          animation: checkDraw 0.6s ease-out 0.3s forwards;
+        }
+
+        @keyframes checkDraw {
+          to { stroke-dashoffset: 0; }
+        }
+
+        /* Action Button */
+        .premium-action-btn {
+          width: 100%;
+          padding: 1.1rem;
+          border-radius: 16px;
+          border: none;
+          font-weight: 800;
+          font-size: 1.1rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          color: white;
+          background: var(--primary);
+          box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .premium-action-btn:hover {
+          transform: translateY(-2px);
+          filter: brightness(1.1);
+          box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .premium-action-btn:active {
+          transform: translateY(0);
+        }
+
+        /* Loader */
+        .premium-loader {
+          width: 60px;
+          height: 60px;
+          border: 4px solid rgba(255, 255, 255, 0.1);
+          border-top-color: var(--primary);
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
       `}</style>
     </div>
@@ -109,3 +239,5 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
 };
 
 export default StatusModal;
+
+

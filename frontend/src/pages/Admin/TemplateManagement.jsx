@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import ConfirmModal from '../../components/ConfirmModal';
 
 const TemplateManagement = () => {
   const [templates, setTemplates] = useState([]);
@@ -12,6 +13,7 @@ const TemplateManagement = () => {
     image_url: '',
     is_premium: false
   });
+  const [confirmDelete, setConfirmDelete] = useState({ isOpen: false, templateId: null });
 
   const admin = JSON.parse(localStorage.getItem('resumify_admin') || '{}');
 
@@ -51,8 +53,13 @@ const TemplateManagement = () => {
       alert('Failed to add template');
     }
   };
-  const handleDeleteTemplate = async (templateId) => {
-    if (!window.confirm('Are you sure you want to delete this template from the catalog?')) return;
+  const handleDeleteTemplate = (templateId) => {
+    setConfirmDelete({ isOpen: true, templateId });
+  };
+
+  const confirmDeleteTemplate = async () => {
+    const { templateId } = confirmDelete;
+    setConfirmDelete({ isOpen: false, templateId: null });
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/templates/${templateId}`, {
         headers: { 'Authorization': `Bearer ${admin.token}` }
@@ -182,10 +189,19 @@ const TemplateManagement = () => {
         ))}
         {templates.length === 0 && !isAdding && (
           <div className="card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)', gridColumn: '1 / -1' }}>
-            Template catalog is empty. Add templates to make them accessible in the resume builder.
+            Template catalog is empty. Add templates to make them accessible in the resume editor.
           </div>
         )}
       </div>
+      <ConfirmModal 
+        isOpen={confirmDelete.isOpen}
+        onClose={() => setConfirmDelete({ isOpen: false, templateId: null })}
+        onConfirm={confirmDeleteTemplate}
+        title="Delete Template"
+        message="Are you sure you want to delete this template from the catalog? This action is irreversible."
+        confirmText="Yes, Delete"
+        type="danger"
+      />
     </div>
   );
 };

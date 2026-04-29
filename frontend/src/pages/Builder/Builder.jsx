@@ -408,9 +408,9 @@ const Builder = () => {
 
       {/* Desktop Header */}
       <div className="builder-header desktop-only">
-        <h1 className="text-gradient">Resumify Builder</h1>
+        <h1 className="text-gradient">Resumify</h1>
         <div className="builder-header-actions" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-          <ThemeToggle />
+          {/* ThemeToggle removed for users */}
           <button
             className="btn btn-secondary btn-sm"
             onClick={() => navigate('/dashboard')}
@@ -468,11 +468,11 @@ const Builder = () => {
                 Dashboard
               </button>
               <button
-                className="btn btn-secondary btn-sm"
-                onClick={() => handleNavigate(`/preview/${id}`)}
+                className="btn btn-primary btn-sm"
+                onClick={() => handleSave(true)}
                 disabled={isSaving || isPreviewing}
               >
-                Preview
+                {isSaving ? 'Saving...' : 'Save'}
               </button>
             </div>
 
@@ -497,7 +497,7 @@ const Builder = () => {
                 </div>
                 {profileApplied ? (
                   <div className="badge badge-success" style={{ fontSize: '0.75rem', animation: 'fadeIn 0.5s ease' }}>
-                    ✨ Profile Applied
+                    Profile Applied
                   </div>
                 ) : (
                   <button
@@ -533,7 +533,7 @@ const Builder = () => {
                       }
                     }}
                   >
-                    {isSyncing ? '⌛ Syncing...' : '✨ Sync Profile'}
+                    {isSyncing ? '⌛ Syncing...' : 'Sync Profile'}
                   </button>
                 )}
               </div>
@@ -757,7 +757,8 @@ const Builder = () => {
                 }}
                 disabled={activeStep === 0}
               >
-                ← Back
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Back
               </button>
 
               {activeStep < steps.length - 1 ? (
@@ -769,14 +770,16 @@ const Builder = () => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                 >
-                  Next: {steps[activeStep + 1]} →
+                  <span className="nav-btn-text">Next: {steps[activeStep + 1]}</span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </button>
               ) : (
                 <button
                   className="btn btn-success"
                   onClick={() => handleSave(true)}
                 >
-                  Complete & Save ✓
+                  Complete & Save
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </button>
               )}
             </div>
@@ -811,20 +814,30 @@ const Builder = () => {
           bottom: '1.5rem',
           right: '1.5rem',
           zIndex: 100,
-          borderRadius: '50px',
-          boxShadow: '0 8px 25px rgba(99, 102, 241, 0.4)',
-          padding: '0.75rem 1.5rem',
+          width: '46px',
+          height: '46px',
+          borderRadius: '50%',
           display: 'none', // Shown via media query
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 8px 20px rgba(99, 102, 241, 0.4)',
+          padding: 0,
+          background: 'linear-gradient(135deg, var(--primary), #818cf8)',
+          border: 'none',
         }}
         id="mobile-preview-toggle"
         onClick={() => setShowMobilePreview(true)}
+        title="Show Preview"
       >
-        👁️ Preview
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
       </button>
 
       <style>{`
         @media (max-width: 900px) {
-          #mobile-preview-toggle { display: block !important; }
+          #mobile-preview-toggle { display: flex !important; }
         }
       `}</style>
     </div>

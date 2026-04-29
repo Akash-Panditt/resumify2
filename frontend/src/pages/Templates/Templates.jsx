@@ -206,24 +206,26 @@ const Templates = () => {
 
         {/* Premium Control Center */}
         <div className="control-center">
-          {/* Theme Color Picker */}
-          <div className="color-section">
-            <span className="control-label">Visual Theme</span>
-            <div className="color-palette">
-              {ACCENT_COLORS.map((color) => {
-                const isActive = selectedAccent.id === color.id;
-                return (
-                  <button
-                    key={color.id}
-                    onClick={() => setSelectedAccent(color)}
-                    className={`color-bubble ${isActive ? 'active' : ''}`}
-                    style={{ background: color.hex }}
-                    title={color.name}
-                  />
-                );
-              })}
+          {/* Theme Color Picker - Admin Only */}
+          {user?.role === 'admin' && (
+            <div className="color-section">
+              <span className="control-label">Visual Theme</span>
+              <div className="color-palette">
+                {ACCENT_COLORS.map((color) => {
+                  const isActive = selectedAccent.id === color.id;
+                  return (
+                    <button
+                      key={color.id}
+                      onClick={() => setSelectedAccent(color)}
+                      className={`color-bubble ${isActive ? 'active' : ''}`}
+                      style={{ background: color.hex }}
+                      title={color.name}
+                    />
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Categories Grid */}
           <div className="category-section">
@@ -410,22 +412,36 @@ const Templates = () => {
 
           .category-scroll {
             display: flex;
-            gap: 0.75rem;
+            gap: 1rem;
             overflow-x: auto;
-            padding-bottom: 0.75rem;
+            overflow-y: hidden;
+            padding: 0.5rem 2rem 1rem 2rem;
             -webkit-overflow-scrolling: touch;
-            padding: 0 2rem 0.75rem 2rem;
-            scrollbar-width: none;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
           }
 
           .category-scroll::-webkit-scrollbar {
-            display: none;
+            height: 4px;
+          }
+
+          .category-scroll::-webkit-scrollbar-track {
+            background: transparent;
+          }
+
+          .category-scroll::-webkit-scrollbar-thumb {
+            background: rgba(var(--primary-rgb, 99, 102, 241), 0.2);
+            border-radius: 10px;
+          }
+
+          .category-scroll:hover::-webkit-scrollbar-thumb {
+            background: var(--primary);
           }
 
           @media (min-width: 1024px) {
             .category-scroll {
-              margin: 0 -1.5rem 0 0;
-              padding: 0 1.5rem 0.75rem 0;
+              padding: 0.5rem 0 1rem 0;
+              margin: 0;
             }
             .category-scroll-container { margin: 0; }
           }

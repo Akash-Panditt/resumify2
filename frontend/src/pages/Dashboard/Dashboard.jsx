@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../../components/Navbar';
+import ConfirmModal from '../../components/ConfirmModal';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ const Dashboard = () => {
   const [resumes, setResumes] = useState([]);
   const [masterProfile, setMasterProfile] = useState(null);
   const [recentDownloads, setRecentDownloads] = useState([]);
+  const [confirmDelete, setConfirmDelete] = useState({ isOpen: false, resumeId: null });
 
   const getAuthHeaders = () => {
     const stored = JSON.parse(localStorage.getItem('resumify_user') || '{}');
@@ -70,8 +72,15 @@ const Dashboard = () => {
     }
   };
 
-  const handleDeleteResume = async (resumeId) => {
-    if (!window.confirm('Delete this resume permanently?')) return;
+  const handleDeleteResume = (resumeId) => {
+    setConfirmDelete({ isOpen: true, resumeId });
+  };
+
+  const confirmDeleteResume = async () => {
+    const { resumeId } = confirmDelete;
+    if (!resumeId) return;
+    
+    setConfirmDelete({ isOpen: false, resumeId: null });
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/resumes/${resumeId}`, {
         headers: getAuthHeaders(),
@@ -116,7 +125,7 @@ const Dashboard = () => {
               boxShadow: '0 10px 20px rgba(99, 102, 241, 0.2)'
             }}
           >
-            ✨ Create New Resume
+            Create New Resume
           </button>
         </div>
 
@@ -198,7 +207,7 @@ const Dashboard = () => {
                 onClick={() => navigate('/templates')}
                 style={{ marginTop: '1.5rem', padding: '0.85rem 2.5rem' }}
               >
-                ✨ Create My First Resume
+                Create My First Resume
               </button>
             </div>
           ) : (
@@ -233,6 +242,17 @@ const Dashboard = () => {
           )}
         </div>
       </main>
+
+      <ConfirmModal 
+        isOpen={confirmDelete.isOpen}
+        onClose={() => setConfirmDelete({ isOpen: false, resumeId: null })}
+        onConfirm={confirmDeleteResume}
+        title="Delete Resume"
+        message="Delete this resume permanently? This action cannot be undone."
+        confirmText="Yes, Delete"
+        cancelText="No, Keep It"
+        type="danger"
+      />
     </div>
   );
 };

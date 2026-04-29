@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import ConfirmModal from '../../components/ConfirmModal';
 
 const Icon = ({ path, size = 18, color = 'currentColor' }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -21,6 +22,7 @@ const AdminAnnouncements = () => {
     content: '',
     type: 'info'
   });
+  const [confirmDelete, setConfirmDelete] = useState({ isOpen: false, id: null });
   
   const admin = JSON.parse(localStorage.getItem('resumify_admin') || '{}');
 
@@ -58,8 +60,13 @@ const AdminAnnouncements = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Delete this announcement permanently?')) return;
+  const handleDelete = (id) => {
+    setConfirmDelete({ isOpen: true, id });
+  };
+
+  const confirmDeleteAnnouncement = async () => {
+    const { id } = confirmDelete;
+    setConfirmDelete({ isOpen: false, id: null });
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/announcements/${id}`, {
         headers: { Authorization: `Bearer ${admin.token}` }
@@ -166,6 +173,15 @@ const AdminAnnouncements = () => {
           </div>
         )}
       </div>
+      <ConfirmModal 
+        isOpen={confirmDelete.isOpen}
+        onClose={() => setConfirmDelete({ isOpen: false, id: null })}
+        onConfirm={confirmDeleteAnnouncement}
+        title="Delete Announcement"
+        message="Delete this announcement permanently? This action cannot be undone."
+        confirmText="Yes, Delete"
+        type="danger"
+      />
     </div>
   );
 };

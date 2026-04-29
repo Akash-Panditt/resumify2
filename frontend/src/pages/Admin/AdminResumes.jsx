@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import ConfirmModal from '../../components/ConfirmModal';
 
 const Icon = ({ path, size = 18, color = 'currentColor' }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -19,6 +20,7 @@ const AdminResumes = () => {
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState({ isOpen: false, resumeId: null });
   const admin = JSON.parse(localStorage.getItem('resumify_admin') || '{}');
   const navigate = useNavigate();
 
@@ -39,8 +41,13 @@ const AdminResumes = () => {
     }
   };
 
-  const handleDeleteResume = async (resumeId) => {
-    if (!window.confirm('Are you sure you want to permanently delete this resume? This cannot be undone.')) return;
+  const handleDeleteResume = (resumeId) => {
+    setConfirmDelete({ isOpen: true, resumeId });
+  };
+
+  const confirmDeleteResume = async () => {
+    const { resumeId } = confirmDelete;
+    setConfirmDelete({ isOpen: false, resumeId: null });
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/resumes/${resumeId}`, {
         headers: { Authorization: `Bearer ${admin.token}` }
@@ -171,6 +178,15 @@ const AdminResumes = () => {
           </div>
         )}
       </div>
+      <ConfirmModal 
+        isOpen={confirmDelete.isOpen}
+        onClose={() => setConfirmDelete({ isOpen: false, resumeId: null })}
+        onConfirm={confirmDeleteResume}
+        title="Delete Resume"
+        message="Are you sure you want to permanently delete this resume? This cannot be undone."
+        confirmText="Yes, Delete"
+        type="danger"
+      />
     </div>
   );
 };

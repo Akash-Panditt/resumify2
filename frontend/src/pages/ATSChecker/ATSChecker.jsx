@@ -263,7 +263,7 @@ const ATSChecker = () => {
                                 {results.aiAnalysis && (
                                     <div className="card ai-analysis-card">
                                         <h3 className="ai-title">
-                                            <span>✨</span> AI Career Insights
+                                            <span>🚀</span> AI Career Insights
                                         </h3>
                                         <p className="ai-text">{results.aiAnalysis}</p>
                                         <div className="roadmap-container">

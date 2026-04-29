@@ -41,12 +41,12 @@ const Landing = () => {
         transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
         transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
       }}>
-        
+
         {/* Hero Section */}
         <div style={{ textAlign: 'center', maxWidth: '850px', marginBottom: '4rem', marginTop: '3rem' }}>
           <div style={{ display: 'inline-block', marginBottom: '1.5rem' }}>
             <span className="badge badge-purple" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }}>
-              ✨ The #1 AI Resume Builder for 2024
+              The #1 AI Resume Platform for 2024
             </span>
           </div>
           <h1 style={{ fontSize: 'clamp(2.8rem, 7vw, 4.8rem)', lineHeight: 1.05, marginBottom: '1.5rem', fontWeight: 800 }}>
@@ -64,46 +64,46 @@ const Landing = () => {
             </button>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap', opacity: 0.6 }}>
-             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span style={{ color: '#fbbf24', fontSize: '1.2rem' }}>★★★★★</span>
-                <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>10k+ Happy Users</span>
-             </div>
-             <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>✓ ATS Friendly</div>
-             <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>✓ No Credit Card Required</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ color: '#fbbf24', fontSize: '1.2rem' }}>★★★★★</span>
+              <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>10k+ Happy Users</span>
+            </div>
+            <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>✓ ATS Friendly</div>
+            <div style={{ fontSize: '0.9rem', fontWeight: 600 }}>✓ No Credit Card Required</div>
           </div>
         </div>
 
         {/* Hero Image / Mockup */}
         <div style={{ width: '100%', maxWidth: '1000px', marginBottom: '8rem', position: 'relative' }}>
-           <div className="card" style={{ padding: '0.5rem', background: 'rgba(255,255,255,0.05)', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 30px 60px -12px rgba(0,0,0,0.5)' }}>
-              <div style={{ background: 'var(--bg-color)', borderRadius: '20px', height: '450px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
-                 <div style={{ position: 'absolute', top: '40px', left: '40px', width: '200px', height: '300px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid var(--surface-border)' }}></div>
-                 <div style={{ position: 'absolute', top: '80px', right: '40px', width: '600px', height: '400px', background: 'var(--surface)', borderRadius: '12px', border: '1px solid var(--surface-border)', padding: '2rem' }}>
-                    <div style={{ width: '150px', height: '20px', background: 'var(--primary)', borderRadius: '4px', marginBottom: '1.5rem', opacity: 0.3 }}></div>
-                    <div style={{ width: '100%', height: '10px', background: 'var(--text-muted)', borderRadius: '2px', marginBottom: '0.75rem', opacity: 0.1 }}></div>
-                    <div style={{ width: '90%', height: '10px', background: 'var(--text-muted)', borderRadius: '2px', marginBottom: '0.75rem', opacity: 0.1 }}></div>
-                    <div style={{ width: '95%', height: '10px', background: 'var(--text-muted)', borderRadius: '2px', marginBottom: '2rem', opacity: 0.1 }}></div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                       <div style={{ height: '100px', background: 'rgba(99, 102, 241, 0.05)', borderRadius: '8px' }}></div>
-                       <div style={{ height: '100px', background: 'rgba(99, 102, 241, 0.05)', borderRadius: '8px' }}></div>
-                    </div>
-                 </div>
-                 <div style={{ zIndex: 2, textAlign: 'center' }}>
-                    <div className="badge-popular" style={{ marginBottom: '1rem' }}>AI Powered Preview</div>
-                    <p style={{ fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '2px' }}>INTERACTIVE BUILDER</p>
-                 </div>
+          <div className="card" style={{ padding: '0.5rem', background: 'rgba(255,255,255,0.05)', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 30px 60px -12px rgba(0,0,0,0.5)' }}>
+            <div style={{ background: 'var(--bg-color)', borderRadius: '20px', height: '450px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: '40px', left: '40px', width: '200px', height: '300px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid var(--surface-border)' }}></div>
+              <div style={{ position: 'absolute', top: '80px', right: '40px', width: '600px', height: '400px', background: 'var(--surface)', borderRadius: '12px', border: '1px solid var(--surface-border)', padding: '2rem' }}>
+                <div style={{ width: '150px', height: '20px', background: 'var(--primary)', borderRadius: '4px', marginBottom: '1.5rem', opacity: 0.3 }}></div>
+                <div style={{ width: '100%', height: '10px', background: 'var(--text-muted)', borderRadius: '2px', marginBottom: '0.75rem', opacity: 0.1 }}></div>
+                <div style={{ width: '90%', height: '10px', background: 'var(--text-muted)', borderRadius: '2px', marginBottom: '0.75rem', opacity: 0.1 }}></div>
+                <div style={{ width: '95%', height: '10px', background: 'var(--text-muted)', borderRadius: '2px', marginBottom: '2rem', opacity: 0.1 }}></div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div style={{ height: '100px', background: 'rgba(99, 102, 241, 0.05)', borderRadius: '8px' }}></div>
+                  <div style={{ height: '100px', background: 'rgba(99, 102, 241, 0.05)', borderRadius: '8px' }}></div>
+                </div>
               </div>
-           </div>
+              <div style={{ zIndex: 2, textAlign: 'center' }}>
+                <div className="badge-popular" style={{ marginBottom: '1rem' }}>AI Powered Preview</div>
+                <p style={{ fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '2px' }}>INTERACTIVE EDITOR</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Trust Section */}
         <div style={{ width: '100%', marginBottom: '8rem', textAlign: 'center' }}>
-           <p style={{ color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.2em', marginBottom: '2.5rem' }}>Our users have landed jobs at</p>
-           <div style={{ display: 'flex', justifyContent: 'center', gap: '4rem', flexWrap: 'wrap', opacity: 0.4, filter: 'grayscale(1)' }}>
-              {['Google', 'Amazon', 'Meta', 'Netflix', 'Microsoft'].map(name => (
-                <span key={name} style={{ fontSize: '1.5rem', fontWeight: 900 }}>{name}</span>
-              ))}
-           </div>
+          <p style={{ color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.2em', marginBottom: '2.5rem' }}>Our users have landed jobs at</p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '4rem', flexWrap: 'wrap', opacity: 0.4, filter: 'grayscale(1)' }}>
+            {['Google', 'Amazon', 'Meta', 'Netflix', 'Microsoft'].map(name => (
+              <span key={name} style={{ fontSize: '1.5rem', fontWeight: 900 }}>{name}</span>
+            ))}
+          </div>
         </div>
 
         {/* Features Section */}
@@ -114,7 +114,7 @@ const Landing = () => {
           </div>
           <div className="grid-3">
             {[
-              { icon: '✨', title: 'AI Enhancements', desc: 'Our AI intelligently rewrites your experiences to highlight your achievements and beat ATS filters.' },
+              { icon: '🚀', title: 'AI Enhancements', desc: 'Our AI intelligently rewrites your experiences to highlight your achievements and beat ATS filters.' },
               { icon: '🎨', title: 'Premium Templates', desc: 'Choose from a curated collection of modern templates designed by recruitment experts.' },
               { icon: '⚡', title: 'Live Preview', desc: 'See your changes in real-time as you build. Pixel-perfect accuracy from start to finish.' },
               { icon: '🔒', title: 'Privacy First', desc: 'Your data is secure and never sold. You have full control over your professional information.' },
@@ -140,7 +140,7 @@ const Landing = () => {
             {[
               { name: 'Sarah Jenkins', role: 'Software Engineer', quote: 'Resumify helped me land my dream role at a top tech firm. The AI suggestions were spot on!' },
               { name: 'Michael Chen', role: 'Marketing Manager', quote: 'The templates are incredibly modern and clean. I got 3x more interview callbacks.' },
-              { name: 'Elena Rodriguez', role: 'UX Designer', quote: 'Finally a builder that respects design. The export quality is pixel-perfect.' }
+              { name: 'Elena Rodriguez', role: 'UX Designer', quote: 'Finally a platform that respects design. The export quality is pixel-perfect.' }
             ].map((t, i) => (
               <div key={i} className="testimonial-card">
                 <div style={{ color: '#fbbf24', marginBottom: '1rem' }}>★★★★★</div>
@@ -171,8 +171,8 @@ const Landing = () => {
             ].map((faq, i) => (
               <div key={i} className="faq-item" style={i === 3 ? { border: 'none' } : {}}>
                 <div className="faq-question">
-                   {faq.q}
-                   <span style={{ fontSize: '1.2rem', opacity: 0.5 }}>+</span>
+                  {faq.q}
+                  <span style={{ fontSize: '1.2rem', opacity: 0.5 }}>+</span>
                 </div>
                 <div className="faq-answer">{faq.a}</div>
               </div>
@@ -194,9 +194,9 @@ const Landing = () => {
                 const isFeatured = plan.name?.toLowerCase() === 'basic';
                 const isPro = plan.name?.toLowerCase() === 'pro';
                 const isFree = plan.price === 0;
-                
+
                 const period = isFree ? 'forever' : (isPro ? 'year' : 'mo');
-                
+
                 return (
                   <div key={plan.id} className={`pricing-card ${isFeatured ? 'featured' : ''}`} style={isFeatured ? { transform: 'scale(1.05)', borderColor: 'var(--primary)' } : {}}>
                     {isFeatured && (
@@ -237,9 +237,9 @@ const Landing = () => {
 
       </main>
 
-      <footer style={{ 
-        borderTop: '1px solid var(--surface-border)', 
-        padding: '6rem 2rem 3rem 2rem', 
+      <footer style={{
+        borderTop: '1px solid var(--surface-border)',
+        padding: '6rem 2rem 3rem 2rem',
         background: 'rgba(var(--bg-rgb), 0.8)',
         backdropFilter: 'blur(20px)',
         position: 'relative',
@@ -250,24 +250,24 @@ const Landing = () => {
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '4rem', marginBottom: '5rem', position: 'relative' }}>
           <div style={{ gridColumn: 'span 2' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-               <div style={{ width: '40px', height: '40px', background: 'var(--primary)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 16px rgba(99, 102, 241, 0.2)' }}>
-                  <span style={{ color: 'white', fontWeight: 800, fontSize: '1.2rem' }}>R</span>
-               </div>
-               <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.75rem' }}>Resumify</h2>
+              <div style={{ width: '40px', height: '40px', background: 'var(--primary)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 16px rgba(99, 102, 241, 0.2)' }}>
+                <span style={{ color: 'white', fontWeight: 800, fontSize: '1.2rem' }}>R</span>
+              </div>
+              <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.75rem' }}>Resumify</h2>
             </div>
             <p style={{ maxWidth: '350px', lineHeight: 1.7, fontSize: '1rem', color: 'var(--text-muted)' }}>
               Empowering professionals to land their dream jobs with AI-driven resume optimization and premium templates.
             </p>
             <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-               <a href="#" className="social-icon" title="Twitter">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
-               </a>
-               <a href="#" className="social-icon" title="LinkedIn">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-               </a>
-               <a href="#" className="social-icon" title="GitHub">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-               </a>
+              <a href="#" className="social-icon" title="Twitter">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" /></svg>
+              </a>
+              <a href="#" className="social-icon" title="LinkedIn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg>
+              </a>
+              <a href="#" className="social-icon" title="GitHub">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></svg>
+              </a>
             </div>
           </div>
           <div>
@@ -298,15 +298,15 @@ const Landing = () => {
             </ul>
           </div>
         </div>
-        
+
         <div style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem', position: 'relative' }}>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
             &copy; {new Date().getFullYear()} Resumify Inc. Crafted with ❤️ for job seekers.
           </p>
           <div style={{ display: 'flex', gap: '2rem' }}>
-             <a href="#" className="footer-link" style={{ fontSize: '0.85rem' }}>Privacy Policy</a>
-             <a href="#" className="footer-link" style={{ fontSize: '0.85rem' }}>Terms of Service</a>
-             <a href="#" className="footer-link" style={{ fontSize: '0.85rem' }}>Cookie Policy</a>
+            <a href="#" className="footer-link" style={{ fontSize: '0.85rem' }}>Privacy Policy</a>
+            <a href="#" className="footer-link" style={{ fontSize: '0.85rem' }}>Terms of Service</a>
+            <a href="#" className="footer-link" style={{ fontSize: '0.85rem' }}>Cookie Policy</a>
           </div>
         </div>
       </footer>

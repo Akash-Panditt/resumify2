@@ -206,7 +206,7 @@ const Preview = () => {
         </div>
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flex: '1 1 auto' }}>
-            <ThemeToggle />
+            {/* ThemeToggle removed for users */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
