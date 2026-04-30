@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../../components/Navbar';
 import GoldStar from '../../components/GoldStar';
+import StatusModal from '../../components/StatusModal';
 
 const SvgIcon = ({ children }) => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -163,6 +164,7 @@ const Templates = () => {
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All templates");
   const [selectedAccent, setSelectedAccent] = useState(ACCENT_COLORS[0]);
+  const [modal, setModal] = useState({ isOpen: false, title: '', message: '' });
   const user = JSON.parse(localStorage.getItem('resumify_user') || '{}');
 
   const handleSelect = async (templateId) => {
@@ -182,7 +184,11 @@ const Templates = () => {
       navigate(`/builder/${res.data._id}`);
     } catch (err) {
       console.error('Failed to create resume', err);
-      alert(err.response?.data?.message || 'Failed to create resume');
+      setModal({
+        isOpen: true,
+        title: 'Creation Failed',
+        message: err.response?.data?.message || 'We couldn\'t create your resume. Please check your internet connection or try again later.'
+      });
     } finally {
       setLoading(false);
     }
@@ -666,6 +672,14 @@ const Templates = () => {
           }
         `}</style>
       </main>
+
+      <StatusModal
+        isOpen={modal.isOpen}
+        onClose={() => setModal({ ...modal, isOpen: false })}
+        type="error"
+        title={modal.title}
+        message={modal.message}
+      />
     </div>
   );
 };

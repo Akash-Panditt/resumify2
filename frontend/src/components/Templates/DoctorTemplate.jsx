@@ -6,24 +6,42 @@ const DoctorTemplate = React.forwardRef(({ data }, ref) => {
   // Clinical Medical Blue
   const primaryColor = '#1e3a8a';
   const secondaryColor = '#3b82f6';
-  
+
   return (
-    <div ref={ref} style={{ padding: '3rem', backgroundColor: '#ffffff', color: '#1f2937', minHeight: '1056px', width: '816px', margin: '0 auto', fontFamily: "'Georgia', serif", lineHeight: 1.6 }}>
+    <div ref={ref} style={{
+      padding: '4rem 3rem 3rem',
+      backgroundColor: '#ffffff',
+      color: '#1f2937',
+      minHeight: '1056px',
+      width: '816px',
+      margin: '0 auto',
+      fontFamily: "'Georgia', serif",
+      lineHeight: 1.6,
+      position: 'relative'
+    }}>
+      {/* Safety top margin */}
+      <div style={{ height: '0.5rem' }}></div>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: `2px solid ${primaryColor}`, paddingBottom: '1.5rem', marginBottom: '2rem' }}>
-        <div style={{ maxWidth: '60%' }}>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: '800', color: primaryColor, margin: '0 0 0.5rem 0', letterSpacing: '-0.5px' }}>
-            {personalDetails?.fullName || 'Dr. Firstname Lastname'}
-          </h1>
-          <div style={{ fontSize: '1.2rem', color: secondaryColor, fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>
-            {personalDetails?.jobTitle || 'Medical Professional'}
-          </div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', borderBottom: `2px solid ${primaryColor}`, paddingBottom: '1.5rem', marginBottom: '2rem' }}>
+        <h1 style={{
+          fontSize: '2.5rem',
+          fontWeight: '900',
+          color: primaryColor,
+          margin: '0 0 0.5rem 0',
+          letterSpacing: '-0.5px',
+          lineHeight: '1.2',
+          paddingTop: '10px'
+        }}>
+          {personalDetails?.fullName || 'Dr. Firstname Lastname'}
+        </h1>
+        <div style={{ fontSize: '1.2rem', color: secondaryColor, fontWeight: '600', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '1rem' }}>
+          {personalDetails?.jobTitle || 'Medical Professional'}
         </div>
-        <div style={{ textAlign: 'right', fontSize: '0.9rem', color: '#4b5563', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem', fontSize: '0.9rem', color: '#4b5563' }}>
           {personalDetails?.email && <span>{personalDetails.email}</span>}
-          {personalDetails?.phone && <span>{personalDetails.phone}</span>}
-          {personalDetails?.address && <span>{personalDetails.address}</span>}
-          {personalDetails?.linkedin && <span>{personalDetails.linkedin}</span>}
+          {personalDetails?.phone && <span>• {personalDetails.phone}</span>}
+          {personalDetails?.address && <span>• {personalDetails.address}</span>}
+          {personalDetails?.linkedin && <span>• {personalDetails.linkedin}</span>}
         </div>
       </div>
 

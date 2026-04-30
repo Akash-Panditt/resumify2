@@ -43,12 +43,13 @@ const Landing = () => {
       }}>
 
         {/* Hero Section */}
-        <div style={{ textAlign: 'center', maxWidth: '850px', marginBottom: '4rem', marginTop: '3rem' }}>
-          <div style={{ display: 'inline-block', marginBottom: '1.5rem' }}>
-            <span className="badge badge-purple" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }}>
-              The #1 AI Resume Platform for 2024
+        <div style={{ textAlign: 'center', maxWidth: '850px', marginBottom: '4rem', marginTop: '5rem' }}>
+          <div className="promo-badge-container" style={{ marginBottom: '2.5rem' }}>
+            <span className="promo-badge">
+              2 Months Free Premium Access
             </span>
           </div>
+
           <h1 style={{ fontSize: 'clamp(2.8rem, 7vw, 4.8rem)', lineHeight: 1.05, marginBottom: '1.5rem', fontWeight: 800 }}>
             Land Your <span className="text-gradient">Dream Job</span> Faster with AI.
           </h1>
@@ -247,20 +248,20 @@ const Landing = () => {
       }}>
         <div style={{ position: 'absolute', bottom: '-100px', right: '-100px', width: '300px', height: '300px', background: 'rgba(99, 102, 241, 0.05)', filter: 'blur(100px)', borderRadius: '50%' }}></div>
 
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '4rem', marginBottom: '5rem', position: 'relative' }}>
-          <div style={{ gridColumn: 'span 2' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+        <div className="footer-grid" style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '3rem', marginBottom: '5rem', position: 'relative' }}>
+          <div className="footer-brand" style={{ gridColumn: 'span 2', minWidth: '280px' }}>
+            <div className="footer-logo-container" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
               <div style={{ width: '40px', height: '40px', background: 'var(--primary)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 16px rgba(99, 102, 241, 0.2)' }}>
                 <span style={{ color: 'white', fontWeight: 800, fontSize: '1.2rem' }}>R</span>
               </div>
               <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.75rem' }}>Resumify</h2>
             </div>
-            <p style={{ maxWidth: '350px', lineHeight: 1.7, fontSize: '1rem', color: 'var(--text-muted)' }}>
-              Empowering professionals to land their dream jobs with AI-driven resume optimization and premium templates.
+            <p style={{ maxWidth: '400px', lineHeight: 1.8, fontSize: '1.05rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
+              At Resumify, we believe everyone deserves a chance to land their dream job. Our AI-powered platform simplifies the resume-building process, combining professional design with data-driven optimization to help you stand out in the modern job market.
             </p>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-              <a href="#" className="social-icon" title="Twitter">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" /></svg>
+            <div className="social-icon-container" style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+              <a href="#" className="social-icon" title="Instagram">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
               </a>
               <a href="#" className="social-icon" title="LinkedIn">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg>
@@ -289,13 +290,42 @@ const Landing = () => {
             </ul>
           </div>
           <div>
-            <h4 style={{ color: 'var(--text-main)', marginBottom: '1.75rem', fontSize: '1.1rem', fontWeight: 700 }}>Support</h4>
-            <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <li><a href="#" className="footer-link">Help Center</a></li>
-              <li><a href="#" className="footer-link">Contact Sales</a></li>
-              <li><Link to="/login" className="footer-link">Sign In</Link></li>
-              <li><a href="#" className="footer-link">API Docs</a></li>
-            </ul>
+            <h4 style={{ color: 'var(--text-main)', marginBottom: '1.75rem', fontSize: '1.1rem', fontWeight: 700 }}>Stay Updated</h4>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.25rem', lineHeight: 1.6 }}>Join our newsletter for career tips and template updates.</p>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <input 
+                type="email" 
+                placeholder="Email address" 
+                style={{ 
+                  flex: 1, 
+                  background: 'rgba(255,255,255,0.05)', 
+                  border: '1px solid var(--surface-border)', 
+                  borderRadius: '10px', 
+                  padding: '0.6rem 1rem',
+                  fontSize: '0.85rem',
+                  color: 'white',
+                  outline: 'none'
+                }} 
+              />
+              <button className="btn btn-primary" style={{ padding: '0.6rem 1rem', minHeight: 'unset', fontSize: '0.85rem' }}>Go</button>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '2.5rem', marginBottom: '3rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: 1.6 }}>
+            <div>
+              <h5 style={{ color: 'var(--text-main)', marginBottom: '0.75rem', fontSize: '0.9rem' }}>Privacy Commitment</h5>
+              <p>Your data is yours. We encrypt all personal information and never sell your data to third-party advertisers. We only use your information to improve your resume-building experience.</p>
+            </div>
+            <div>
+              <h5 style={{ color: 'var(--text-main)', marginBottom: '0.75rem', fontSize: '0.9rem' }}>Terms of Service</h5>
+              <p>By using Resumify, you agree to our fair-use policy. We provide the tools to build resumes, but the final content responsibility lies with the user. Premium features are subject to our transparent pricing model.</p>
+            </div>
+            <div>
+              <h5 style={{ color: 'var(--text-main)', marginBottom: '0.75rem', fontSize: '0.9rem' }}>Cookie Usage</h5>
+              <p>We use essential cookies to keep you logged in and functional cookies to remember your theme preferences. No invasive tracking cookies are used on our platform.</p>
+            </div>
           </div>
         </div>
 
@@ -310,6 +340,49 @@ const Landing = () => {
           </div>
         </div>
       </footer>
+
+      <style>{`
+        @keyframes promo-pulse {
+          0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+          50% { transform: scale(1.02); box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+          100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .promo-badge {
+          background: rgba(var(--primary-rgb, 99, 102, 241), 0.1);
+          backdrop-filter: blur(10px);
+          color: var(--primary);
+          padding: 0.6rem 1.75rem;
+          border-radius: var(--radius-full);
+          font-size: 0.8rem;
+          font-weight: 800;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.75rem;
+          animation: promo-pulse 4s infinite ease-in-out;
+          box-shadow: 0 4px 15px rgba(var(--primary-rgb, 99, 102, 241), 0.1);
+          border: 1px solid rgba(var(--primary-rgb, 99, 102, 241), 0.3);
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+        }
+
+        .promo-icon {
+          background: var(--primary);
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.7rem;
+          color: white;
+          box-shadow: 0 2px 5px rgba(var(--primary-rgb, 99, 102, 241), 0.4);
+        }
+
+        .promo-badge-container {
+          perspective: 1000px;
+        }
+      `}</style>
     </div>
   );
 };

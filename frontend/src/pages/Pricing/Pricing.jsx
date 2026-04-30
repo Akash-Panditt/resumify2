@@ -96,6 +96,13 @@ const Pricing = () => {
       <Navbar user={user} />
 
       <div className="pricing-container">
+        <div style={{ marginBottom: '1.5rem' }}>
+          <button onClick={() => navigate('/dashboard')} className="btn-back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Back to Dashboard
+          </button>
+        </div>
+
         <div className="pricing-header">
           <div className="badge-premium">Pricing Plans</div>
           <h1 className="text-gradient pricing-title">Ready to level up?</h1>
@@ -199,14 +206,37 @@ const Pricing = () => {
 
         <style>{`
           .pricing-container {
-            padding: 4rem 1.5rem;
-            max-width: 1100px;
+            padding: clamp(1rem, 4vw, 2rem) 1.5rem;
+            max-width: 1000px;
             margin: 0 auto;
+          }
+
+          .btn-back {
+            background: #2563eb;
+            border: none;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0.6rem 1.25rem;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+          }
+
+          .btn-back:hover {
+            background: #1d4ed8;
+            color: white;
+            transform: translateX(-4px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
           }
 
           .pricing-header {
             text-align: center;
-            margin-bottom: 5rem;
+            margin-bottom: 2.5rem;
           }
 
           .badge-premium {
@@ -223,16 +253,16 @@ const Pricing = () => {
           }
 
           .pricing-title {
-            font-size: clamp(2.5rem, 7vw, 4rem);
+            font-size: clamp(2rem, 6vw, 3rem);
             font-weight: 900;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             line-height: 1.1;
           }
 
           .pricing-subtitle {
             color: var(--text-muted);
-            font-size: 1.15rem;
-            margin-bottom: 3rem;
+            font-size: 1rem;
+            margin-bottom: 2rem;
           }
 
           /* Toggle Switch */
@@ -298,7 +328,7 @@ const Pricing = () => {
             background: var(--surface);
             border: 1px solid var(--surface-border);
             border-radius: 24px;
-            padding: 3rem 2.5rem;
+            padding: 2.5rem 2rem;
             display: flex;
             flex-direction: column;
             position: relative;

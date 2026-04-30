@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import StatusModal from './StatusModal';
 
 const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
   const [loading, setLoading] = useState(false);
   const [suggestion, setSuggestion] = useState(null);
   const [error, setError] = useState(null);
   const [showAIWriter, setShowAIWriter] = useState(false);
+  const [modal, setModal] = useState({ isOpen: false, title: '', message: '' });
   
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('resumify_user') || '{}');
@@ -17,7 +19,12 @@ const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
 
   const handleAction = async (actionType) => {
     if (actionType === 'improve' && (!text || text.trim().length < 5)) {
-      return alert('Please write some text in the field before clicking Improve, or click Generate instead.');
+      setModal({
+        isOpen: true,
+        title: 'More Text Needed',
+        message: 'Please write some text in the field before clicking Improve, or click Generate instead.'
+      });
+      return;
     }
 
     setShowAIWriter(false);
@@ -54,7 +61,6 @@ const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
         onClick={handleOpenWriter}
         disabled={loading}
       >
-        <span>{loading ? '🪄' : '🤖'}</span>
         {loading ? 'Thinking...' : 'AI Writer'}
       </button>
 
@@ -74,7 +80,7 @@ const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
           <div className="card" style={{ maxWidth: '450px', width: '100%', padding: '1.5rem', background: 'var(--surface)', border: '1px solid var(--surface-border)', borderRadius: '12px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
               <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)' }}>
-                AI WRITER <span style={{ color: '#a855f7' }}>🤖</span>
+                AI WRITER
               </h3>
               <button 
                 onClick={() => setShowAIWriter(false)} 
@@ -112,7 +118,11 @@ const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
             <div style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '1rem' }}>
               <button 
                 style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px', padding: 0 }}
-                onClick={() => alert('Pre-written phrases feature coming soon!')}
+                onClick={() => setModal({
+                  isOpen: true,
+                  title: 'Coming Soon',
+                  message: 'The pre-written phrases feature is currently under development. Stay tuned!'
+                })}
               >
                 Add pre-written phrases
               </button>
@@ -208,6 +218,14 @@ const AIEnhancer = ({ text, onApply, type = 'summary', contextData = {} }) => {
           </div>
         </div>
       )}
+
+      <StatusModal 
+        isOpen={modal.isOpen}
+        onClose={() => setModal({ ...modal, isOpen: false })}
+        type="error"
+        title={modal.title}
+        message={modal.message}
+      />
     </div>
   );
 };

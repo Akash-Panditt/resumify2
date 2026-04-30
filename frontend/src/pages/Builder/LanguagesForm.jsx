@@ -59,14 +59,17 @@ const LanguagesForm = ({ languages = [], errors = {}, onChange, onAdd, onRemove 
       </div>
 
       {/* Add Button */}
-      <button 
-        type="button"
-        className="btn-add-language" 
-        onClick={onAdd}
-      >
-        <div className="add-icon">+</div>
-        <div className="add-text">Add Language</div>
-      </button>
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+        <button 
+          type="button"
+          className="btn btn-secondary" 
+          onClick={onAdd} 
+          style={{ width: '40px', height: '40px', borderRadius: '50%', padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', borderStyle: 'dashed', background: 'rgba(var(--primary-rgb), 0.05)', fontSize: '1.5rem' }}
+          title="Add Language"
+        >
+          +
+        </button>
+      </div>
 
       <style>{`
         .languages-form {

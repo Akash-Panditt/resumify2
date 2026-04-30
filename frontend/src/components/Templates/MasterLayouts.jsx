@@ -30,7 +30,17 @@ export const ExecutiveLayout = React.forwardRef(({ data, config }, ref) => {
   const { primaryColor = '#1e3a8a', fontTitle = 'Georgia', fontBody = 'Arial' } = config;
 
   return (
-    <div ref={ref} style={{ padding: '4rem', backgroundColor: '#fff', color: '#111', minHeight: '1120px', width: '816px', margin: '0 auto', fontFamily: fontBody }}>
+    <div ref={ref} style={{ 
+      padding: '4rem', 
+      backgroundColor: '#fff', 
+      color: '#111', 
+      minHeight: '1120px', 
+      width: '816px', 
+      margin: '0 auto', 
+      fontFamily: fontBody,
+      wordBreak: 'break-word',
+      overflowWrap: 'break-word'
+    }}>
       <header style={{ textAlign: 'center', marginBottom: '3rem' }}>
         <h1 style={{ fontSize: '3rem', fontFamily: fontTitle, color: primaryColor, marginBottom: '0.5rem' }}>{personalDetails?.fullName}</h1>
         <p style={{ fontSize: '1.2rem', color: '#444', fontWeight: 'bold', textTransform: 'uppercase' }}>{personalDetails?.jobTitle}</p>
@@ -69,7 +79,14 @@ export const ExecutiveLayout = React.forwardRef(({ data, config }, ref) => {
           <SectionTitle title={config.skillsTitle || "Skills"} color={primaryColor} />
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
             {skills?.map((s, i) => (
-              <span key={i} style={{ background: '#f1f5f9', padding: '4px 10px', borderRadius: '4px', fontSize: '0.9rem' }}>{s.name}</span>
+              <span key={i} style={{ 
+                background: '#f1f5f9', 
+                padding: '4px 10px', 
+                borderRadius: '4px', 
+                fontSize: '0.9rem',
+                maxWidth: '100%',
+                display: 'inline-block'
+              }}>{s.name}</span>
             ))}
           </div>
         </section>
@@ -93,7 +110,16 @@ export const ModernSidebarLayout = React.forwardRef(({ data, config }, ref) => {
   const { primaryColor = '#0f172a', accentColor = '#3b82f6' } = config;
 
   return (
-    <div ref={ref} style={{ display: 'flex', backgroundColor: '#fff', minHeight: '1120px', width: '816px', margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
+    <div ref={ref} style={{ 
+      display: 'flex', 
+      backgroundColor: '#fff', 
+      minHeight: '1120px', 
+      width: '816px', 
+      margin: '0 auto', 
+      fontFamily: 'Inter, sans-serif',
+      wordBreak: 'break-word',
+      overflowWrap: 'break-word'
+    }}>
       <aside style={{ width: '30%', backgroundColor: primaryColor, color: '#fff', padding: '3rem 2rem' }}>
         <h1 style={{ fontSize: '1.8rem', fontWeight: '800', lineHeight: 1.1, marginBottom: '1rem' }}>{personalDetails?.fullName}</h1>
         <p style={{ fontSize: '0.9rem', color: accentColor, fontWeight: 'bold', marginBottom: '3rem' }}>{personalDetails?.jobTitle}</p>

@@ -79,6 +79,9 @@ const ATSChecker = () => {
         } catch (err) {
             console.error('ATS Error:', err);
             const status = err.response?.status;
+            const backendMessage = err.response?.data?.message;
+            const backendError = err.response?.data?.error;
+
             if (status === 401) {
                 setError('Session expired. Please re-login.');
             } else if (status === 413) {
@@ -86,7 +89,7 @@ const ATSChecker = () => {
             } else if (err.code === 'ECONNABORTED') {
                 setError('Analysis timed out. Please try a smaller file.');
             } else {
-                setError(err.response?.data?.message || 'Analysis failed. Check your connection or file type.');
+                setError(backendMessage || backendError || 'Analysis failed. Check your connection or file type.');
             }
         } finally {
             setLoading(false);
@@ -98,9 +101,16 @@ const ATSChecker = () => {
             <Navbar user={user} />
             
             <div className="ats-container">
+                <div style={{ marginBottom: '1rem' }}>
+                    <button onClick={() => navigate('/dashboard')} className="btn-back">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        Back to Dashboard
+                    </button>
+                </div>
+
                 <main className="ats-main-content">
                     <div className="card ats-card">
-                        <h2 className="text-gradient ats-title">Optimize Your Resume for Success</h2>
+                        <h2 className="text-gradient ats-title">Optimize Your Resume</h2>
                         <p className="ats-subtitle">
                             Get an instant ATS compatibility score and professional AI-driven feedback by uploading your resume.
                         </p>
@@ -283,36 +293,58 @@ const ATSChecker = () => {
 
                 <style>{`
                     .ats-container {
-                        padding: clamp(1rem, 5vw, 3rem) 1rem;
-                        max-width: 1100px;
+                        padding: clamp(0.5rem, 3vw, 1.5rem) 1rem;
+                        max-width: 900px;
                         margin: 0 auto;
                     }
 
+                    .btn-back {
+                        background: #2563eb;
+                        border: none;
+                        color: white;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 0.6rem;
+                        font-size: 0.85rem;
+                        font-weight: 700;
+                        cursor: pointer;
+                        padding: 0.6rem 1.25rem;
+                        border-radius: 50px;
+                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+                    }
+
+                    .btn-back:hover {
+                        background: #1d4ed8;
+                        transform: translateX(-4px);
+                        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+                    }
+
                     .ats-main-content {
-                        margin-top: 1rem;
+                        margin-top: 0.5rem;
                         display: flex;
                         flex-direction: column;
-                        gap: 2rem;
+                        gap: 1.5rem;
                     }
 
                     .ats-card {
                         text-align: center;
-                        padding: clamp(1.5rem, 8vw, 4rem) clamp(1rem, 5vw, 2.5rem);
+                        padding: clamp(1.5rem, 5vw, 2.5rem) clamp(1rem, 4vw, 2rem);
                         background: linear-gradient(145deg, var(--surface) 0%, rgba(var(--bg-rgb), 0.4) 100%);
                     }
 
                     .ats-title {
-                        margin-bottom: 1rem;
-                        font-size: clamp(1.8rem, 6vw, 2.8rem);
+                        margin-bottom: 0.75rem;
+                        font-size: clamp(1.5rem, 5vw, 2.2rem);
                         font-weight: 800;
                         line-height: 1.1;
                     }
 
                     .ats-subtitle {
                         color: var(--text-muted);
-                        margin: 0 auto 2.5rem;
-                        font-size: clamp(0.95rem, 3vw, 1.15rem);
-                        max-width: 700px;
+                        margin: 0 auto 1.5rem;
+                        font-size: clamp(0.85rem, 2.5vw, 1rem);
+                        max-width: 600px;
                     }
 
                     .ats-form {
@@ -323,7 +355,7 @@ const ATSChecker = () => {
 
                     .ats-upload-box {
                         border: 2px dashed var(--surface-border);
-                        padding: clamp(2rem, 10vw, 4rem) 1.5rem;
+                        padding: clamp(1.5rem, 6vw, 2.5rem) 1rem;
                         border-radius: var(--radius-xl);
                         cursor: pointer;
                         background: rgba(var(--bg-rgb), 0.2);
@@ -332,7 +364,7 @@ const ATSChecker = () => {
                         flex-direction: column;
                         align-items: center;
                         justify-content: center;
-                        min-height: 240px;
+                        min-height: 180px;
                     }
 
                     .ats-upload-box.dragging {

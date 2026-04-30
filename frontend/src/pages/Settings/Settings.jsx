@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../../components/Navbar';
+import StatusModal from '../../components/StatusModal';
 
 const PLAN_LIMITS = { free: 2, basic: 50, pro: 500, premium: 500 };
 
@@ -11,6 +12,7 @@ const Settings = () => {
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [profileSuccess, setProfileSuccess] = useState(false);
   const [activeTab, setActiveTab] = useState('account');
+  const [modal, setModal] = useState({ isOpen: false, type: 'success', title: '', message: '' });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,7 +50,12 @@ const Settings = () => {
       setProfileSuccess(true);
       setTimeout(() => setProfileSuccess(false), 3000);
     } catch (err) {
-      alert('Failed to save master profile. Please try again.');
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Save Failed',
+        message: 'We couldn\'t save your professional profile. Please check your connection and try again.'
+      });
     } finally {
       setIsSavingProfile(false);
     }
@@ -500,6 +507,14 @@ const Settings = () => {
           }
         `}</style>
       </div>
+
+      <StatusModal 
+        isOpen={modal.isOpen}
+        onClose={() => setModal({ ...modal, isOpen: false })}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+      />
     </div>
   );
 };

@@ -120,7 +120,7 @@ const AdminResumes = () => {
                         <Icon path={ICONS.resume} size={18} />
                       </div>
                       <div>
-                        <div style={{ fontWeight: '600', color: 'var(--text-main)' }}>{r.title || 'Untitled Resume'}</div>
+                        <div style={{ fontWeight: '600', color: 'var(--text-main)' }}>{r.title && r.title !== 'Untitled Resume' ? r.title : (r.user?.name || 'Untitled Resume')}</div>
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ID: {r.id.split('-')[0]}...</div>
                       </div>
                     </div>

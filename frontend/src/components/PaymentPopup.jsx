@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import StatusModal from './StatusModal';
 
 const PaymentPopup = ({ isOpen, onClose, templateName, templateId, resumeId, price, onSuccess, message }) => {
   const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState({ isOpen: false, title: '', message: '' });
   const user = JSON.parse(localStorage.getItem('resumify_user') || '{}');
 
   if (!isOpen) return null;
@@ -39,7 +41,11 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, resumeId, pri
       }
     } catch (err) {
       console.error('Payment failed', err);
-      alert(err.response?.data?.message || 'Payment failed. Please try again.');
+      setModal({
+        isOpen: true,
+        title: 'Payment Failed',
+        message: err.response?.data?.message || 'We couldn\'t process your payment. Please check your connection and try again.'
+      });
     } finally {
       setLoading(false);
     }
@@ -136,6 +142,14 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, resumeId, pri
           to { transform: scale(1); opacity: 1; }
         }
       `}</style>
+
+      <StatusModal 
+        isOpen={modal.isOpen}
+        onClose={() => setModal({ ...modal, isOpen: false })}
+        type="error"
+        title={modal.title}
+        message={modal.message}
+      />
     </div>
   );
 };

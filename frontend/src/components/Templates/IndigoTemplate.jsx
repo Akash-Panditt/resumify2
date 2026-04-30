@@ -4,7 +4,17 @@ const IndigoTemplate = React.forwardRef(({ data }, ref) => {
   const { personalDetails, education, experience, skills, projects } = data;
 
   return (
-    <div ref={ref} style={{ display: 'flex', backgroundColor: '#ffffff', color: '#1e293b', minHeight: '1056px', width: '816px', margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
+    <div ref={ref} style={{ 
+      display: 'flex', 
+      backgroundColor: '#ffffff', 
+      color: '#1e293b', 
+      minHeight: '1056px', 
+      width: '816px', 
+      margin: '0 auto', 
+      fontFamily: 'Inter, sans-serif',
+      wordBreak: 'break-word',
+      overflowWrap: 'break-word'
+    }}>
       {/* Sidebar */}
       <div style={{ width: '260px', backgroundColor: '#4f46e5', color: '#ffffff', padding: '3rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
         {/* Contact Info */}
@@ -26,9 +36,15 @@ const IndigoTemplate = React.forwardRef(({ data }, ref) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {skills.map((item, idx) => (
                 <div key={idx}>
-                  <div style={{ fontSize: '0.9rem', marginBottom: '0.25rem', display: 'flex', justifyContent: 'space-between' }}>
-                    <span>{item.name}</span>
-                    <span style={{ fontSize: '0.7rem', opacity: 0.8 }}>{item.level}</span>
+                  <div style={{ 
+                    fontSize: '0.9rem', 
+                    marginBottom: '0.25rem', 
+                    display: 'flex', 
+                    justifyContent: 'space-between',
+                    gap: '0.5rem'
+                  }}>
+                    <span style={{ minWidth: 0, flexShrink: 1 }}>{item.name}</span>
+                    <span style={{ fontSize: '0.7rem', opacity: 0.8, flexShrink: 0 }}>{item.level}</span>
                   </div>
                   <div style={{ height: '4px', background: 'rgba(255,255,255,0.2)', borderRadius: '2px' }}>
                     <div style={{ height: '100%', background: '#ffffff', borderRadius: '2px', width: item.level === 'Expert' ? '100%' : item.level === 'Advanced' ? '80%' : item.level === 'Intermediate' ? '60%' : '40%' }}></div>

@@ -9,6 +9,7 @@ import ExperienceForm from './ExperienceForm';
 import SkillsForm from './SkillsForm';
 import ProjectsForm from './ProjectsForm';
 import LanguagesForm from './LanguagesForm';
+import StatusModal from '../../components/StatusModal';
 
 import ModernTemplate from '../../components/Templates/ModernTemplate';
 import ClassicTemplate from '../../components/Templates/ClassicTemplate';
@@ -118,9 +119,12 @@ const Builder = () => {
   const [profileApplied, setProfileApplied] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [errors, setErrors] = useState({});
+  const [modal, setModal] = useState({ isOpen: false, type: 'success', title: '', message: '' });
+  const [showRenameModal, setShowRenameModal] = useState(false);
+  const [tempTitle, setTempTitle] = useState('');
 
   const [resumeData, setResumeData] = useState({
-    title: 'Untitled Resume',
+    title: JSON.parse(localStorage.getItem('resumify_user') || '{}')?.name || 'Untitled Resume',
     template: 'modern',
     hasUsedAI: false,
     hasUsedPremiumTemplate: false,
@@ -155,15 +159,21 @@ const Builder = () => {
 
       if (!containerWidth || !containerHeight) return;
 
-      // Remove bezel/margin for true full-screen fit
-      const availableWidth = Math.max(containerWidth, 100);
-      const availableHeight = Math.max(containerHeight, 100);
+      // Increase padding for mobile for better fit (e.g. 60px)
+      const padding = window.innerWidth <= 768 ? 60 : 40;
+      const availableWidth = containerWidth - padding;
+      const availableHeight = containerHeight - padding;
 
-      // A4 dimensions base: 816px x 1123px
       const scaleX = availableWidth / 816;
+      // A4 height is roughly 1123px at 96 DPI
       const scaleY = availableHeight / 1123;
 
-      // Fit to screen exactly hitting edges
+      // If on mobile, we might want to scale purely by width to allow vertical scrolling
+      if (window.innerWidth <= 768) {
+        setScaleFactor(Math.max(availableWidth / 816, 0.1));
+        return;
+      }
+
       const newScale = Math.max(Math.min(scaleX, scaleY), 0.1);
       setScaleFactor(newScale);
     };
@@ -192,7 +202,7 @@ const Builder = () => {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes/${id}`);
 
         const fetchedData = {
-          title: res.data.title || 'Untitled Resume',
+          title: (res.data.title && res.data.title !== 'Untitled Resume') ? res.data.title : (res.data.personalDetails?.fullName || user.name || 'Untitled Resume'),
           template: res.data.template || 'modern',
           personalDetails: res.data.personalDetails || { fullName: '', jobTitle: '', email: '', phone: '', address: '', linkedin: '', github: '', summary: '' },
           education: res.data.education || [],
@@ -294,9 +304,28 @@ const Builder = () => {
     return true;
   };
 
-  const handleSave = async (showNotification = true, isNavigating = false) => {
-    // Perform validation to update UI error indicators, but don't let it block the save.
+  const handleSave = async (showNotification = true, isNavigating = false, forceComplete = false) => {
+    // Perform validation
     validateStep();
+
+    // Logic: If user clicks "Save & Complete" and hasn't manually renamed, show naming popup
+    if (forceComplete && !showRenameModal) {
+      const namePart = resumeData.personalDetails.fullName?.trim();
+      const titlePart = resumeData.personalDetails.jobTitle?.trim();
+      let suggested = resumeData.title;
+      
+      // If title is default, suggest "Name - Professional Title"
+      const user = JSON.parse(localStorage.getItem('resumify_user'));
+      const defaultTitle = user?.name ? `${user.name}'s Resume` : 'Untitled Resume';
+      
+      if (resumeData.title === defaultTitle || resumeData.title === 'Untitled Resume') {
+        suggested = [namePart, titlePart].filter(Boolean).join(' - ') || defaultTitle;
+      }
+      
+      setTempTitle(suggested);
+      setShowRenameModal(true);
+      return;
+    }
 
     if (isNavigating) setIsPreviewing(true);
     else setIsSaving(true);
@@ -306,13 +335,25 @@ const Builder = () => {
       if (!user) return navigate('/login');
 
       await axios.put(`${import.meta.env.VITE_API_URL}/api/resumes/${id}`, resumeData);
-      if (showNotification) alert('Resume saved successfully!');
+      if (showNotification) {
+        setModal({
+          isOpen: true,
+          type: 'success',
+          title: 'All Set!',
+          message: 'Your resume has been saved successfully. You can now continue editing or head to preview.'
+        });
+      }
       return true;
     } catch (err) {
       console.error('Failed to save resume', err);
       // More descriptive error for the user
       const msg = err.response?.data?.message || err.message || 'Unknown error';
-      alert(`Save failed: ${msg}. Your progress might not be saved.`);
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Save Failed',
+        message: `We couldn't save your progress: ${msg}. Please check your connection and try again.`
+      });
       return false;
     } finally {
       setIsSaving(false);
@@ -342,7 +383,12 @@ const Builder = () => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 1024 * 1024) {
-        alert('Image size exceeds 1MB limit.');
+        setModal({
+          isOpen: true,
+          type: 'error',
+          title: 'Image Too Large',
+          message: 'The selected image exceeds the 1MB limit. Please choose a smaller file.'
+        });
         return;
       }
       const reader = new FileReader();
@@ -407,14 +453,15 @@ const Builder = () => {
     <div className="builder-page" style={{ '--primary': accentColor }}>
 
       {/* Desktop Header */}
-      <div className="builder-header desktop-only">
-        <h1 className="text-gradient">Resumify</h1>
+      <div className="builder-header desktop-only" style={{ padding: '0.75rem 1rem' }}>
+        <h1 className="text-gradient" style={{ fontSize: '1.25rem' }}>Resumify</h1>
         <div className="builder-header-actions" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           {/* ThemeToggle removed for users */}
           <button
             className="btn btn-secondary btn-sm"
             onClick={() => navigate('/dashboard')}
             disabled={isSaving}
+            style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
           >
             Dashboard
           </button>
@@ -422,6 +469,7 @@ const Builder = () => {
             className="btn btn-secondary btn-sm"
             onClick={() => handleNavigate(`/preview/${id}`)}
             disabled={isSaving || isPreviewing}
+            style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
           >
             {isPreviewing ? 'Loading...' : 'Preview'}
           </button>
@@ -429,6 +477,7 @@ const Builder = () => {
             className="btn btn-primary btn-sm"
             onClick={() => handleSave(true)}
             disabled={isSaving || isPreviewing}
+            style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
           >
             {isSaving ? 'Saving...' : 'Save'}
           </button>
@@ -457,52 +506,64 @@ const Builder = () => {
           </div>
 
           {/* Form Area */}
-          <div className="card builder-form">
+          <div className="card builder-form" style={{ padding: '1rem' }}>
             {/* Mobile Action Bar */}
-            <div className="mobile-action-bar mobile-only">
+            <div className="mobile-action-bar mobile-only" style={{ marginBottom: '1rem', gap: '0.5rem' }}>
               <button
-                className="btn btn-secondary btn-sm"
+                className="btn btn-secondary btn-sm builder-mobile-btn"
                 onClick={() => navigate('/dashboard')}
                 disabled={isSaving}
+                style={{ height: '32px', minHeight: '32px' }}
               >
                 Dashboard
               </button>
               <button
-                className="btn btn-primary btn-sm"
+                className="btn btn-primary btn-sm builder-mobile-btn"
                 onClick={() => handleSave(true)}
                 disabled={isSaving || isPreviewing}
+                style={{ height: '32px', minHeight: '32px' }}
               >
                 {isSaving ? 'Saving...' : 'Save'}
               </button>
             </div>
 
             {/* Progress Stepper */}
-            <div className="builder-stepper">
+            <div className="builder-stepper" style={{ marginBottom: '1rem', paddingBottom: '0.5rem' }}>
               {steps.map((step, index) => {
                 const shortLabels = ['Basic', 'Edu', 'Exp', 'Skills', 'Proj', 'Lang'];
                 return (
-                  <div key={index} className={`step-item ${activeStep === index ? 'active' : ''} ${activeStep > index ? 'completed' : ''}`}>
-                    <div className="step-dot">{activeStep > index ? '✓' : index + 1}</div>
-                    <span className="step-label">{shortLabels[index]}</span>
+                  <div
+                    key={index}
+                    className={`step-item ${activeStep === index ? 'active' : ''} ${activeStep > index ? 'completed' : ''}`}
+                    onClick={() => {
+                      if (index !== activeStep) {
+                        setActiveStep(index);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }
+                    }}
+                    style={{ cursor: 'pointer', gap: '4px' }}
+                  >
+                    <div className="step-dot" style={{ width: '22px', height: '22px', fontSize: '0.7rem' }}>{activeStep > index ? '✓' : index + 1}</div>
+                    <span className="step-label" style={{ fontSize: '0.6rem' }}>{shortLabels[index]}</span>
                   </div>
                 );
               })}
             </div>
 
-            <div style={{ marginBottom: '2rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <span className="builder-nav-number" style={{ background: 'var(--primary)', color: 'white', width: '32px', height: '32px' }}>{activeStep + 1}</span>
-                  <h2 style={{ margin: 0 }}>{steps[activeStep]}</h2>
+            <div style={{ marginBottom: '1rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '0.75rem' }}>
+              <div className="builder-step-header">
+                <div className="builder-step-title-container">
+                  <span className="builder-nav-number" style={{ background: 'var(--primary)', color: 'white', width: '28px', height: '28px', flexShrink: 0, fontSize: '0.8rem' }}>{activeStep + 1}</span>
+                  <h2 className="builder-step-title" style={{ fontSize: '1rem' }}>{steps[activeStep]}</h2>
                 </div>
                 {profileApplied ? (
-                  <div className="badge badge-success" style={{ fontSize: '0.75rem', animation: 'fadeIn 0.5s ease' }}>
+                  <div className="badge badge-success" style={{ fontSize: '0.65rem', padding: '0.2rem 0.5rem' }}>
                     Profile Applied
                   </div>
                 ) : (
                   <button
-                    className="btn btn-secondary"
-                    style={{ fontSize: '0.65rem', padding: '0.25rem 0.5rem', borderStyle: 'dashed', width: 'auto', minWidth: 'unset', flex: 'none' }}
+                    className="btn btn-secondary sync-profile-btn"
+                    style={{ fontSize: '0.6rem', padding: '0.3rem 0.6rem', borderStyle: 'dashed', width: 'auto', minWidth: 'unset', height: '28px' }}
                     disabled={isSyncing}
                     onClick={async () => {
                       setIsSyncing(true);
@@ -521,19 +582,28 @@ const Builder = () => {
                             languages: master.languages?.length ? master.languages : prev.languages
                           }));
                           setProfileApplied(true);
-                          // alert Removed to use non-blocking feedback if we had a toast system, but keeping it for now with isSyncing check
                         } else {
-                          alert('No Master Profile found. Please go to Settings to create one!');
+                          setModal({
+                            isOpen: true,
+                            type: 'error',
+                            title: 'No Profile Found',
+                            message: 'We couldn\'t find a Master Profile. Please go to the Dashboard or Settings to set one up first!'
+                          });
                         }
                       } catch (err) {
                         console.error('Manual sync failed:', err);
-                        alert('Failed to sync profile. Please check your connection.');
+                        setModal({
+                          isOpen: true,
+                          type: 'error',
+                          title: 'Sync Failed',
+                          message: 'We encountered an error while trying to sync your profile. Please check your internet connection.'
+                        });
                       } finally {
                         setIsSyncing(false);
                       }
                     }}
                   >
-                    {isSyncing ? '⌛ Syncing...' : 'Sync Profile'}
+                    {isSyncing ? '⌛' : 'Sync Profile'}
                   </button>
                 )}
               </div>
@@ -578,7 +648,7 @@ const Builder = () => {
                   </div>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                <div className="responsive-form-grid">
                   <div className="form-group">
                     <label className="form-label">Full Name <span className="required-star">*</span></label>
                     <input
@@ -748,7 +818,7 @@ const Builder = () => {
             )}
 
             {/* Navigation Controls */}
-            <div className="builder-nav-controls">
+            <div className="builder-nav-controls" style={{ padding: '0.75rem 0', marginTop: '1rem', borderTop: '1px solid var(--surface-border)', gap: '0.5rem' }}>
               <button
                 className="btn btn-secondary"
                 onClick={() => {
@@ -756,8 +826,9 @@ const Builder = () => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 disabled={activeStep === 0}
+                style={{ padding: '0.4rem 0.75rem', fontSize: '0.75rem', height: '36px' }}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                 Back
               </button>
 
@@ -769,17 +840,19 @@ const Builder = () => {
                     setActiveStep(activeStep + 1);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
+                  style={{ padding: '0.4rem 0.75rem', fontSize: '0.75rem', height: '36px' }}
                 >
                   <span className="nav-btn-text">Next: {steps[activeStep + 1]}</span>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </button>
               ) : (
                 <button
                   className="btn btn-success"
-                  onClick={() => handleSave(true)}
+                  onClick={() => handleSave(true, false, true)}
+                  style={{ padding: '0.4rem 1rem', fontSize: '0.75rem', height: '36px' }}
                 >
-                  Complete & Save
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Save & Complete
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </button>
               )}
             </div>
@@ -789,14 +862,51 @@ const Builder = () => {
 
         {/* Right Column: Live Preview */}
         <div className={`builder-preview-panel ${showMobilePreview ? 'mobile-show' : ''}`}>
-          <div className="builder-preview-header">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1 }}>
-              <span className="builder-preview-dot green"></span>
-              <span className="builder-preview-dot yellow"></span>
-              <span className="builder-preview-dot red"></span>
-              <span className="builder-preview-title">Live Preview</span>
+          <div className="builder-preview-header" style={{ padding: '8px 12px', gap: '12px' }}>
+            {/* Back button for mobile */}
+            <button
+              className="btn-close-mobile"
+              onClick={() => setShowMobilePreview(false)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '6px 14px',
+                borderRadius: 'var(--radius-md)',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                border: '1px solid var(--surface-border)',
+                background: 'rgba(var(--primary-rgb), 0.08)',
+                color: 'var(--primary)',
+                cursor: 'pointer',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = 'var(--primary)';
+                e.currentTarget.style.color = 'white';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(var(--primary-rgb), 0.3)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = 'rgba(var(--primary-rgb), 0.08)';
+                e.currentTarget.style.color = 'var(--primary)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 2px 5px rgba(0,0,0,0.05)';
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+              Back to Edit
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, justifyContent: 'center' }}>
+              <span className="builder-preview-title" style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.05em' }}>LIVE PREVIEW</span>
+              <div style={{ display: 'flex', gap: '4px', marginLeft: 'auto' }}>
+                <span className="builder-preview-dot red"></span>
+                <span className="builder-preview-dot yellow"></span>
+                <span className="builder-preview-dot green"></span>
+              </div>
             </div>
-            {/* Removed Close button per user request */}
           </div>
           <div className="builder-preview-scroll" ref={previewContainerRef}>
             <div className="builder-preview-scaler" style={{ transform: `scale(${scaleFactor})` }}>
@@ -811,11 +921,11 @@ const Builder = () => {
         className="btn btn-primary"
         style={{
           position: 'fixed',
-          bottom: '1.5rem',
-          right: '1.5rem',
+          bottom: '2.5rem',
+          right: '1.25rem',
           zIndex: 100,
-          width: '46px',
-          height: '46px',
+          width: '50px',
+          height: '50px',
           borderRadius: '50%',
           display: 'none', // Shown via media query
           alignItems: 'center',
@@ -836,10 +946,252 @@ const Builder = () => {
       </button>
 
       <style>{`
+        .builder-step-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+        .builder-step-title-container {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          min-width: 150px;
+        }
+        .builder-step-title {
+          margin: 0;
+          font-size: 1.1rem;
+        }
+        .responsive-form-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 0.75rem;
+        }
+
+        .builder-mobile-btn {
+          height: 34px !important;
+          min-height: 34px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          flex: 1 !important;
+          border-radius: 8px !important;
+          font-size: 0.7rem !important;
+          font-weight: 700 !important;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.05) !important;
+        }
+
+        .sync-profile-btn {
+          border: 1px dashed var(--primary) !important;
+          background: rgba(var(--primary-rgb), 0.05) !important;
+          padding: 0.4rem !important;
+          border-radius: 8px !important;
+          color: var(--primary) !important;
+          font-weight: 700 !important;
+          font-size: 0.65rem !important;
+          width: auto;
+          transition: all 0.2s ease;
+        }
+
         @media (max-width: 900px) {
-          #mobile-preview-toggle { display: flex !important; }
+          #mobile-preview-toggle { 
+            display: flex !important; 
+            bottom: 1.5rem !important;
+            right: 1.5rem !important;
+            width: 44px !important;
+            height: 44px !important;
+          }
+          .btn-close-mobile { 
+            display: flex !important; 
+            align-items: center;
+            gap: 6px;
+            background: rgba(var(--primary-rgb), 0.1);
+            border: 1px solid rgba(var(--primary-rgb), 0.2);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+          }
+          .btn-close-mobile:hover {
+            background: var(--primary);
+            color: white;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .responsive-form-grid {
+            grid-template-columns: 1fr !important;
+            gap: 0.75rem !important;
+          }
+          .builder-step-header {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 0.35rem !important;
+          }
+          .builder-step-title-container {
+            min-width: unset;
+          }
+          .sync-profile-btn {
+            width: auto !important;
+            margin-left: auto !important;
+            padding: 0.35rem 0.6rem !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .builder-header-actions {
+            justify-content: center !important;
+            width: 100%;
+          }
+          .form-group {
+            margin-bottom: 0.5rem !important;
+            gap: 1px !important;
+          }
+          .form-input {
+            padding: 0.5rem 0.75rem !important;
+            height: 38px !important;
+            font-size: 0.85rem !important;
+          }
+          .form-label {
+            margin-bottom: 0.15rem !important;
+            font-size: 0.7rem !important;
+            font-weight: 700 !important;
+            color: var(--text-main) !important;
+          }
+          .builder-step-title {
+             font-size: 1rem !important;
+          }
+          .builder-form {
+            padding: 0.75rem !important;
+          }
+          .builder-stepper {
+            gap: 4px !important;
+          }
+          #mobile-preview-toggle {
+            bottom: 1rem !important;
+            right: 1rem !important;
+            width: 40px !important;
+            height: 40px !important;
+          }
         }
       `}</style>
+      {/* Rename Modal */}
+      {showRenameModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.85)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '1rem'
+        }}>
+          <div style={{
+            background: 'var(--surface)',
+            border: '1px solid var(--surface-border)',
+            borderRadius: 'var(--radius-xl)',
+            width: '100%',
+            maxWidth: '450px',
+            padding: '2rem',
+            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
+            animation: 'modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+          }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>Name Your Resume</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+              Give your resume a professional title to help you identify it on your dashboard.
+            </p>
+            
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+                Resume Title
+              </label>
+              <input 
+                type="text"
+                value={tempTitle}
+                onChange={(e) => setTempTitle(e.target.value)}
+                placeholder="e.g. Senior Doctor - Yash Kumar"
+                autoFocus
+                style={{
+                  width: '100%',
+                  padding: '0.85rem 1rem',
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '2px solid var(--surface-border)',
+                  borderRadius: 'var(--radius-lg)',
+                  color: 'var(--text-main)',
+                  fontSize: '1rem',
+                  outline: 'none',
+                  transition: 'all 0.3s ease'
+                }}
+                onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--surface-border)'}
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button 
+                className="btn btn-secondary" 
+                onClick={() => setShowRenameModal(false)}
+                style={{ flex: 1 }}
+              >
+                Cancel
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={async () => {
+                  const finalTitle = tempTitle.trim() || 'Untitled Resume';
+                  setResumeData(prev => ({ ...prev, title: finalTitle }));
+                  setShowRenameModal(false);
+                  
+                  // Immediately save with the new title
+                  try {
+                    const user = JSON.parse(localStorage.getItem('resumify_user'));
+                    if (!user) return navigate('/login');
+                    
+                    setIsSaving(true);
+                    await axios.put(`${import.meta.env.VITE_API_URL}/api/resumes/${id}`, {
+                      ...resumeData,
+                      title: finalTitle
+                    });
+                    
+                    setModal({
+                      isOpen: true,
+                      type: 'success',
+                      title: 'Resume Completed!',
+                      message: 'Your resume has been named and saved successfully. You can now head to your dashboard.'
+                    });
+                  } catch (err) {
+                    console.error('Final save failed', err);
+                  } finally {
+                    setIsSaving(false);
+                  }
+                }}
+                style={{ flex: 1.5 }}
+              >
+                Save & Complete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes modalSlideUp {
+          from { opacity: 0; transform: translateY(20px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
+      <StatusModal
+        isOpen={modal.isOpen}
+        onClose={() => setModal({ ...modal, isOpen: false })}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+      />
     </div>
   );
 }
