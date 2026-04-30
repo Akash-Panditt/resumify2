@@ -48,7 +48,7 @@ class AdminRepository {
 
   async deleteUser(userId) {
     console.log(`[AdminRepo] Attempting cascading delete for user: ${userId}`);
-    
+
     // 1. Delete associated data first to satisfy foreign key constraints
     const tables = ['resumes', 'pro_requests', 'download_usage'];
     for (const table of tables) {

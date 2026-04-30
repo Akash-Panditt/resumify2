@@ -11,7 +11,7 @@ class AdminService {
   async getDashboardStats() {
     const statsData = await adminRepository.getStats();
     const users = statsData.users || [];
-    
+
     const planDistribution = { free: 0, premium: 0 };
     users.forEach(u => {
       const uPlan = u.plan?.toLowerCase() || 'free';
@@ -183,18 +183,18 @@ class AdminService {
         GROUP BY DATE(created_at)
         ORDER BY DATE(created_at) ASC
       `);
-      
+
       // If DB is mostly empty, provide some mocked baseline for UI
       if (res.rows.length < 2) {
-         return Array.from({ length: 30 }, (_, i) => {
-           const d = new Date();
-           d.setDate(d.getDate() - (29 - i));
-           return {
-             name: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-             users: Math.floor(Math.random() * 10) + (i * 2), // Growing trend mock
-             resumes: Math.floor(Math.random() * 5) + i
-           };
-         });
+        return Array.from({ length: 30 }, (_, i) => {
+          const d = new Date();
+          d.setDate(d.getDate() - (29 - i));
+          return {
+            name: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            users: Math.floor(Math.random() * 10) + (i * 2), // Growing trend mock
+            resumes: Math.floor(Math.random() * 5) + i
+          };
+        });
       }
 
       return res.rows.map(r => ({

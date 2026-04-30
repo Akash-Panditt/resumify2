@@ -98,41 +98,51 @@ router.post('/check', protect, upload.single('resume'), async (req, res) => {
     if (aiClient && text.trim().length > 30) {
       try {
         console.log('[ATS API] Requesting AI Roadmap from Gemini...');
-        const prompt = `Analyze this resume text. Provide a professional assessment and 3 actions to improve ATS score.
-        Text: ${text.substring(0, 3000)}
-        Return JSON ONLY: {"aiAnalysis": "Assessment text...", "aiActionPoints": ["Point 1", "Point 2", "Point 3"]}`;
+        const prompt = `Analyze this resume text. Provide a professional assessment and exactly 3 actionable bullet points to improve ATS compatibility.
+        Text: ${text.substring(0, 4000)}
+        Return JSON ONLY in this format: {"aiAnalysis": "Brief assessment", "aiActionPoints": ["point1", "point2", "point3"]}`;
 
         const responseData = await aiClient.models.generateContent({
           model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
-          contents: prompt,
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
         });
 
+        // Robust response parsing for both Vertex and Google AI SDKs
+        let rawText = "";
         if (responseData && responseData.text) {
-          const rawText = responseData.text.trim();
-          console.log('[ATS API] Gemini Response Received (Length:', rawText.length, ')');
-          
-          // Cleaner JSON extraction
+          rawText = responseData.text;
+        } else if (responseData?.response?.text) {
+          rawText = typeof responseData.response.text === 'function' ? responseData.response.text() : responseData.response.text;
+        } else if (responseData?.candidates?.[0]?.content?.parts?.[0]?.text) {
+          rawText = responseData.candidates[0].content.parts[0].text;
+        }
+
+        if (rawText) {
+          console.log('[ATS API] Raw AI Response Length:', rawText.length);
           const cleanJson = rawText.replace(/```json\s*|```\s*/g, '').trim();
           try {
             const aiData = JSON.parse(cleanJson);
-            result.aiAnalysis = aiData.aiAnalysis || aiData.assessment || null;
+            result.aiAnalysis = aiData.aiAnalysis || aiData.assessment || "Analysis complete.";
             result.aiActionPoints = aiData.aiActionPoints || aiData.actions || [];
-            console.log('[ATS API] AI Insights successfully parsed.');
           } catch (jsonErr) {
-            console.error('[ATS API] JSON Parse Error:', jsonErr.message, 'Raw:', rawText.substring(0, 100));
-            // Basic fallback if AI doesn't return JSON
-            result.aiAnalysis = rawText.substring(0, 500);
+            console.error('[ATS API] JSON Parse Error. Falling back to raw text.');
+            result.aiAnalysis = rawText.split('\n')[0].substring(0, 300);
+            result.aiActionPoints = ["Review formatting", "Check keywords", "Ensure clear sections"];
           }
         }
       } catch (aiErr) {
-        console.error('[ATS API] Gemini service error:', aiErr.message);
+        console.error('[ATS API] AI Service Error:', aiErr.message);
+        // We continue because we still have the local score
       }
     }
 
     res.json(result);
   } catch (error) {
-    console.error('[ATS API] Fatal catch:', error);
-    res.status(500).json({ message: 'Internal analysis error. Details logged.' });
+    console.error('[ATS API] Fatal Route Error:', error);
+    res.status(500).json({ 
+      message: 'Analysis failed due to a server error.',
+      error: error.message 
+    });
   }
 });
 

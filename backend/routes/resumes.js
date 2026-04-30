@@ -57,7 +57,7 @@ const mapPayloadToColumns = (body) => {
   delete payload.updatedAt;
   delete payload.created_at;
   delete payload.updated_at;
-  
+
   return payload;
 };
 
@@ -76,11 +76,11 @@ const extractJSON = (text) => {
   try {
     // 1. Remove markdown code blocks if present
     let cleaned = text.replace(/```json\n?|```\n?/g, '').trim();
-    
+
     // 2. Strict find: first { to last }
     const firstBrace = cleaned.indexOf('{');
     const lastBrace = cleaned.lastIndexOf('}');
-    
+
     if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
       return cleaned.substring(firstBrace, lastBrace + 1);
     }
@@ -100,7 +100,7 @@ const canUserAccessAI = (userPlan) => {
 router.post('/', protect, async (req, res) => {
   try {
     const template = req.body.template || 'modern';
-    
+
     // TEMPLATE ACCESS POLICY UPDATE: 
     // All users can now create resumes with any template to allow them to "Try before you buy".
     // Gating is now enforced ONLY at the download/export step.
@@ -129,7 +129,7 @@ router.post('/download/:id', protect, async (req, res) => {
       .maybeSingle();
 
     if (uErr || !user) throw new Error('User not found');
-    
+
     // Limits: Free (5), Basic (50), Pro (Unlimited)
     const limits = { free: 5, basic: 50, pro: 999999 };
     const maxDownloads = limits[user.plan] || 5;
@@ -156,7 +156,7 @@ router.post('/download/:id', protect, async (req, res) => {
     // Logic: Pro users have full access.
     // Try Before You Buy: If AI or Premium template was used, allow for all users now
     const needsPayment = false; // Disabled payment requirement for all users
-    
+
     /*
     if (user.plan !== 'pro' && needsPayment) {
       return res.status(403).json({
@@ -227,7 +227,7 @@ router.get('/:id', protect, async (req, res) => {
 
     if (error) throw error;
     if (!resume) return res.status(404).json({ message: 'Resume not found' });
-    
+
     res.json(mapResumeFields(resume));
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -238,7 +238,7 @@ router.put('/:id', protect, async (req, res) => {
   try {
     const updatePayload = mapPayloadToColumns(req.body);
     updatePayload.updated_at = new Date().toISOString();
-    
+
     const { data: resume, error } = await supabase
       .from('resumes')
       .update(updatePayload)
@@ -249,7 +249,7 @@ router.put('/:id', protect, async (req, res) => {
 
     if (error) throw error;
     if (!resume) return res.status(404).json({ message: 'Resume not found' });
-    
+
     res.json(mapResumeFields(resume));
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -268,7 +268,7 @@ router.delete('/:id', protect, async (req, res) => {
 
     if (error) throw error;
     if (!resume) return res.status(404).json({ message: 'Resume not found' });
-    
+
     res.json({ message: 'Resume removed' });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -279,7 +279,7 @@ router.delete('/:id', protect, async (req, res) => {
 // Parse resume from file (PDF/DOCX) using Robust AI Logic
 router.post('/parse', protect, upload.single('resume'), async (req, res) => {
   console.log(`[AI Parser] Processing file: ${req.file?.originalname} for user: ${req.user.id}`);
-  
+
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
@@ -306,7 +306,7 @@ router.post('/parse', protect, upload.single('resume'), async (req, res) => {
     }
 
     const cleanText = cleanExtractedText(rawText);
-    
+
     if (!cleanText || cleanText.length < 50) {
       throw new Error('File appears to be empty or an unreadable scan. Please provide a text-based resume.');
     }
@@ -365,14 +365,14 @@ router.post('/parse', protect, upload.single('resume'), async (req, res) => {
     }
 
     let jsonString = (result?.text || '').trim();
-    
+
     // 4. Robust Recovery Layer
     if (!jsonString) {
-       console.error('[AI Parser] Empty result from AI');
-       throw new Error('The AI failed to generate data. Please try again or fill the details manually.');
+      console.error('[AI Parser] Empty result from AI');
+      throw new Error('The AI failed to generate data. Please try again or fill the details manually.');
     }
     jsonString = extractJSON(jsonString);
-    
+
     let parsedData;
     try {
       parsedData = JSON.parse(jsonString);
@@ -402,9 +402,9 @@ router.post('/parse', protect, upload.single('resume'), async (req, res) => {
 
   } catch (error) {
     console.error('[AI Parser] Fatal Error:', error.message);
-    res.status(500).json({ 
+    res.status(500).json({
       message: error.message || 'The AI parser encountered an unexpected issue.',
-      retry: true 
+      retry: true
     });
   }
 });

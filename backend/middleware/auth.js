@@ -19,7 +19,7 @@ const protect = (req, res, next) => {
       res.status(401).json({ message: 'Not authorized, token invalid' });
     }
   } else {
-    console.warn('[Auth Middleware] No token found in cookies or headers');
+    console.warn(`[Auth Middleware] No token found for ${req.originalUrl}`);
     res.status(401).json({ message: 'Not authorized, no token' });
   }
 };
