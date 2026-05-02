@@ -95,9 +95,9 @@ const Login = () => {
         <h1 className="text-gradient" style={{ fontSize: 'clamp(2.5rem, 8vw, 3.5rem)', marginBottom: '1rem' }}>Resumify</h1>
       </div>
       
-      <div className="card" style={{ width: '100%', maxWidth: '420px', padding: 'clamp(1.25rem, 5vw, 2.5rem)' }}>
+      <div className="card" style={{ width: '100%', maxWidth: '420px', padding: 'clamp(1.25rem, 4vw, 2rem)' }}>
         <h2 style={{ marginBottom: '0.5rem' }}>Welcome Back</h2>
-        <p style={{ marginBottom: '2rem', color: 'var(--text-muted)' }}>Sign in to continue to your dashboard.</p>
+        <p style={{ marginBottom: '1.25rem', color: 'var(--text-muted)' }}>Sign in to continue to your dashboard.</p>
         
         {error && <div style={{ color: 'var(--error)', padding: '0.75rem', backgroundColor: 'rgba(239, 68, 68, 0.1)', borderRadius: 'var(--radius-md)', marginBottom: '1.5rem', border: '1px solid rgba(239, 68, 68, 0.2)' }}>{error}</div>}
         
@@ -110,7 +110,7 @@ const Login = () => {
           />
         ) : (
           <>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1rem' }}>
               <div style={{ width: '100%', display: 'flex', justifyContent: 'center', overflow: 'hidden' }}>
                 <div style={{ width: '100%', maxWidth: '320px' }}>
                   <GoogleLogin 
@@ -146,7 +146,7 @@ const Login = () => {
                 )}
               </div>
               
-              <div className="form-group" style={{ marginBottom: '2.5rem' }}>
+              <div className="form-group" style={{ marginBottom: '1.5rem' }}>
                 <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>Password</span>
                   <Link to="/forgot-password" style={{ color: 'var(--primary)', textDecoration: 'none' }}>Forgot?</Link>
@@ -195,7 +195,7 @@ const Login = () => {
                 )}
               </div>
               
-              <button type="submit" className="btn btn-primary" style={{ width: '100%', marginBottom: '1.5rem' }}>Sign In</button>
+              <button type="submit" className="btn btn-primary" style={{ width: '100%', marginBottom: '1rem' }}>Sign In</button>
               
               <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
                 Don't have an account? <Link to="/signup" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>Sign Up</Link>
