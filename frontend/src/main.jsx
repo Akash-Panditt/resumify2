@@ -8,7 +8,21 @@ axios.defaults.withCredentials = true;
 
 // Global request interceptor to add auth token
 axios.interceptors.request.use((config) => {
-  const token = localStorage.getItem('resumify_token');
+  // Try to get token from multiple sources for robustness
+  let token = localStorage.getItem('resumify_token');
+  
+  if (!token) {
+    const userStr = localStorage.getItem('resumify_user');
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        token = user.token;
+      } catch (e) {
+        console.error('Failed to parse resumify_user for token', e);
+      }
+    }
+  }
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

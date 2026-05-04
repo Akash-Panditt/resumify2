@@ -19,7 +19,10 @@ const Navbar = ({ user }) => {
     } catch (err) {
       console.error('Logout error', err);
     }
+    // Clear all auth-related storage
     localStorage.removeItem('resumify_user');
+    localStorage.removeItem('resumify_token');
+    localStorage.removeItem('resumify_admin');
     navigate('/login');
   };
 

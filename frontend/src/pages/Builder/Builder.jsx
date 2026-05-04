@@ -347,12 +347,18 @@ const Builder = () => {
     } catch (err) {
       console.error('Failed to save resume', err);
       // More descriptive error for the user
-      const msg = err.response?.data?.message || err.message || 'Unknown error';
+      const isAuthError = err.response?.status === 401;
+      const msg = isAuthError 
+        ? 'Your session has expired or you are not authorized' 
+        : (err.response?.data?.message || err.message || 'Unknown error');
+      
       setModal({
         isOpen: true,
         type: 'error',
-        title: 'Save Failed',
-        message: `We couldn't save your progress: ${msg}. Please check your connection and try again.`
+        title: isAuthError ? 'Session Expired' : 'Save Failed',
+        message: isAuthError 
+          ? 'Please log in again to save your progress. You can open the dashboard in a new tab to re-login.'
+          : `We couldn't save your progress: ${msg}. Please check your connection and try again.`
       });
       return false;
     } finally {
@@ -368,7 +374,13 @@ const Builder = () => {
   };
 
   const handlePersonalChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    // Numeric restriction for phone
+    if (name === 'phone') {
+      value = value.replace(/[^0-9+]/g, '');
+    }
+
     setResumeData({
       ...resumeData,
       personalDetails: { ...resumeData.personalDetails, [name]: value }
@@ -684,9 +696,14 @@ const Builder = () => {
                     <label className="form-label">Phone <span className="required-star">*</span></label>
                     <input
                       name="phone"
+                      type="tel"
+                      pattern="^[0-9+]*$"
                       className={`form-input ${errors.phone ? 'is-invalid' : ''}`}
                       value={resumeData.personalDetails?.phone || ''}
-                      onChange={handlePersonalChange}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/[^0-9+]/g, '');
+                        handlePersonalChange({ target: { name: 'phone', value: val } });
+                      }}
                     />
                     {errors.phone && <span className="error-text">{errors.phone}</span>}
                   </div>

@@ -25,6 +25,7 @@ const Signup = () => {
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, { name, email, password });
       localStorage.setItem('resumify_user', JSON.stringify(res.data));
+      if (res.data.token) localStorage.setItem('resumify_token', res.data.token);
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
@@ -35,6 +36,7 @@ const Signup = () => {
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/google`, { credential: credentialResponse.credential });
       localStorage.setItem('resumify_user', JSON.stringify(res.data));
+      if (res.data.token) localStorage.setItem('resumify_token', res.data.token);
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Google Registration failed');

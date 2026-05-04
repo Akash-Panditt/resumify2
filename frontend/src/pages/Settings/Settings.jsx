@@ -50,11 +50,15 @@ const Settings = () => {
       setProfileSuccess(true);
       setTimeout(() => setProfileSuccess(false), 3000);
     } catch (err) {
+      console.error('Failed to save profile', err);
+      const isAuthError = err.response?.status === 401;
       setModal({
         isOpen: true,
         type: 'error',
-        title: 'Save Failed',
-        message: 'We couldn\'t save your professional profile. Please check your connection and try again.'
+        title: isAuthError ? 'Session Expired' : 'Save Failed',
+        message: isAuthError 
+          ? 'Your session has expired. Please log in again.' 
+          : 'We couldn\'t save your professional profile. Please check your connection and try again.'
       });
     } finally {
       setIsSavingProfile(false);
@@ -232,11 +236,15 @@ const Settings = () => {
                         <label className="form-label">Phone</label>
                         <input 
                           className="form-input" 
+                          type="tel"
                           value={masterProfile.personalDetails?.phone || ''} 
-                          onChange={(e) => setMasterProfile({
-                            ...masterProfile,
-                            personalDetails: { ...masterProfile.personalDetails, phone: e.target.value }
-                          })}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/[^0-9+]/g, '');
+                            setMasterProfile({
+                              ...masterProfile,
+                              personalDetails: { ...masterProfile.personalDetails, phone: val }
+                            });
+                          }}
                         />
                       </div>
                     </div>

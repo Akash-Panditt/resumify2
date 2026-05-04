@@ -150,6 +150,7 @@ const Preview = () => {
         // Update local user download count
         const updatedUser = { ...user, download_count: res.data.download_count };
         localStorage.setItem('resumify_user', JSON.stringify(updatedUser));
+        if (res.data.token) localStorage.setItem('resumify_token', res.data.token);
 
         // Track the recent download timestamp locally
         const dlKey = `resumify_downloads_${user.id}`;

@@ -52,6 +52,7 @@ const AdminLogin = () => {
 
       localStorage.setItem('resumify_admin', JSON.stringify(res.data));
       localStorage.setItem('resumify_user', JSON.stringify(res.data));
+      if (res.data.token) localStorage.setItem('resumify_token', res.data.token);
       navigate('/admin/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
@@ -74,6 +75,7 @@ const AdminLogin = () => {
 
       localStorage.setItem('resumify_admin', JSON.stringify(res.data));
       localStorage.setItem('resumify_user', JSON.stringify(res.data));
+      if (res.data.token) localStorage.setItem('resumify_token', res.data.token);
       navigate('/admin/dashboard');
     } catch (err) {
       console.error('Admin Google Auth Error:', err);

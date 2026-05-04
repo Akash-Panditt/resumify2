@@ -72,6 +72,7 @@ const Pricing = () => {
       // Step 4: Success
       const updatedUser = { ...user, plan: planId, requested_plan: null };
       localStorage.setItem('resumify_user', JSON.stringify(updatedUser));
+      if (verifyRes.data.token) localStorage.setItem('resumify_token', verifyRes.data.token);
 
       setModal({
         isOpen: true,

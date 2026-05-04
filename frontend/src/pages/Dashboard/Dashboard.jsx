@@ -38,6 +38,7 @@ const Dashboard = () => {
       const updatedUser = { ...currentUser, ...res.data, _id: res.data.id || currentUser._id };
       setUser(updatedUser);
       localStorage.setItem('resumify_user', JSON.stringify(updatedUser));
+      if (res.data.token) localStorage.setItem('resumify_token', res.data.token);
     } catch (err) {
       console.error('Profile sync failed:', err?.response?.status, err?.message);
     }

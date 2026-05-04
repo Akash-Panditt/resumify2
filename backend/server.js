@@ -38,9 +38,17 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+    const isAllowed = allowedOrigins.some(allowed => 
+      origin === allowed.trim() || 
+      origin === allowed.trim().replace(/\/$/, '')
+    );
+    const isVercel = origin.endsWith('.vercel.app');
+    const isLocal = origin.includes('localhost') || origin.includes('127.0.0.1');
+
+    if (isAllowed || isVercel || isLocal) {
       callback(null, true);
     } else {
+      console.warn(`[CORS REJECTED] Origin: ${origin}. If this is your production URL, add it to FRONTEND_URL in Render env vars.`);
       callback(new Error('Not allowed by CORS'));
     }
   },
