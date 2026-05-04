@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const supabase = require('../supabase');
 const { OAuth2Client } = require('google-auth-library');
 const nodemailer = require('nodemailer');
+const { protect } = require('../middleware/auth');
 const { Client: PgClient } = require('pg');
 
 // Direct Postgres connection — bypasses Supabase PostgREST schema cache
@@ -82,7 +83,7 @@ const sendAuthCookie = (res, user) => {
 };
 
 
-const formatUserResponse = (user, token) => ({
+const formatUserResponse = (user) => ({
   id: user.id || user._id,
   _id: user.id || user._id,
   name: user.name,
@@ -91,8 +92,7 @@ const formatUserResponse = (user, token) => ({
   role: user.role || 'user',
   download_count: user.download_count || 0,
   requested_plan: user.requested_plan || null,
-  expires_at: user.expires_at || null,
-  token: token || generateToken(user.id || user._id) // fallback for legacy
+  expires_at: user.expires_at || null
 });
 
 
@@ -130,6 +130,7 @@ router.post('/register', async (req, res) => {
     if (error) throw error;
 
     if (user) {
+      req.session.userId = user.id;
       res.status(201).json({
         _id: user.id,
         name: user.name,
@@ -138,8 +139,7 @@ router.post('/register', async (req, res) => {
         role: user.role || 'user',
         download_count: user.download_count || 0,
         requested_plan: user.requested_plan || null,
-        expires_at: user.expires_at || null,
-        token: generateToken(user.id)
+        expires_at: user.expires_at || null
       });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
@@ -166,8 +166,13 @@ router.post('/login', async (req, res) => {
       // 1. Check if user is already verified (Single-Point OTP)
       if (user.is_verified || user.role === 'admin') {
         console.log(`[Auth] Login Success (Bypass OTP): ${cleanEmail}`);
-        const token = sendAuthCookie(res, user);
-        return res.json(formatUserResponse(user, token));
+        
+        req.session.regenerate((err) => {
+          if (err) return res.status(500).json({ message: 'Session error' });
+          req.session.userId = user.id;
+          return res.json(formatUserResponse(user));
+        });
+        return;
       }
 
       // 2. Not verified -> Proceed to Onboarding OTP (Gmail)
@@ -268,9 +273,12 @@ router.post('/verify-otp', async (req, res) => {
     
     if (updateError) throw updateError;
     
-    console.log(`[Auth Success] User ${cleanEmail} verified. Issuing 15-day session.`);
-    const token = sendAuthCookie(res, user);
-    res.json(formatUserResponse(user, token));
+    console.log(`[Auth Success] User ${cleanEmail} verified. Issuing session.`);
+    req.session.regenerate((err) => {
+      if (err) return res.status(500).json({ message: 'Session error' });
+      req.session.userId = user.id;
+      res.json(formatUserResponse(user));
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -376,8 +384,11 @@ router.post('/google', async (req, res) => {
     }
 
     console.log(`[Google Success] Logged in user: ${user.email}`);
-    const token = sendAuthCookie(res, user);
-    res.json(formatUserResponse(user, token));
+    req.session.regenerate((err) => {
+      if (err) return res.status(500).json({ message: 'Session error' });
+      req.session.userId = user.id;
+      res.json(formatUserResponse(user));
+    });
   } catch (error) {
     console.error('[Google Auth Error]:', error.message, error.stack);
     res.status(500).json({ 
@@ -389,26 +400,22 @@ router.post('/google', async (req, res) => {
 });
 
 // POST /api/auth/request-upgrade — Request a higher tier
-router.post('/request-upgrade', async (req, res) => {
+router.post('/request-upgrade', protect, async (req, res) => {
   try {
-    let token;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-      token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret');
-      const { plan } = req.body;
+    const { plan } = req.body;
 
-      console.log(`[Upgrade] User ${decoded.id} requested plan: ${plan}`);
+    console.log(`[Upgrade] User ${req.user.id} requested plan: ${plan}`);
 
-      if (!['basic', 'pro', 'premium'].includes(plan)) {
-        return res.status(400).json({ message: 'Invalid plan requested. Choose basic or pro.' });
-      }
+    if (!['basic', 'pro', 'premium'].includes(plan)) {
+      return res.status(400).json({ message: 'Invalid plan requested. Choose basic or pro.' });
+    }
 
-      const { data, error } = await supabase
-        .from('users')
-        .update({ requested_plan: plan, updated_at: new Date().toISOString() })
-        .eq('id', decoded.id)
-        .select('id, name, requested_plan')
-        .maybeSingle();
+    const { data, error } = await supabase
+      .from('users')
+      .update({ requested_plan: plan, updated_at: new Date().toISOString() })
+      .eq('id', req.user.id)
+      .select('id, name, requested_plan')
+      .maybeSingle();
         
       if (error) {
         console.error('[Upgrade Error]:', error);
@@ -421,9 +428,6 @@ router.post('/request-upgrade', async (req, res) => {
 
       console.log(`[Upgrade Success] Row updated for ${data.name}`);
       res.json({ message: 'Upgrade requested. Waiting for admin approval.', requested_plan: data.requested_plan });
-    } else {
-      res.status(401).json({ message: 'Not authorized' });
-    }
   } catch (error) {
     console.error('[Upgrade Catch Loop]:', error.message);
     res.status(500).json({ message: error.message });
@@ -475,28 +479,15 @@ const checkDownloadReset = async (user) => {
   return user;
 };
 
-router.get('/profile', async (req, res) => {
+router.get('/profile', protect, async (req, res) => {
   let pg;
   try {
-    // 1. Get token from Cookies or Authorization Header
-    let token = req.cookies.token;
-    if (!token && req.headers.authorization?.startsWith('Bearer')) {
-      token = req.headers.authorization.split(' ')[1];
-    }
-
-    if (!token) {
-      return res.status(401).json({ message: 'Not authorized, no token' });
-    }
-
-    // 2. Verify Token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret');
-
     // 3. Fetch user via direct pg (bypasses PostgREST schema cache)
     pg = getPgClient();
     await pg.connect();
     const result = await pg.query(
       'SELECT id, name, email, plan, role, download_count, requested_plan, expires_at, is_verified, created_at, updated_at FROM public.users WHERE id = $1',
-      [decoded.id]
+      [req.user.id]
     );
     await pg.end();
     pg = null;
@@ -504,24 +495,24 @@ router.get('/profile', async (req, res) => {
     let user = result.rows[0];
     if (!user) return res.status(401).json({ message: 'User not found' });
 
-    // 4. Lazy Checks (using Supabase client for writes — these columns now exist)
+    // 4. Lazy Checks
     user = await checkSubscriptionExpiry(user);
     user = await checkDownloadReset(user);
 
-    // 5. Sliding Window Refresh
-    const freshToken = sendAuthCookie(res, user);
-
-    res.json(formatUserResponse(user, freshToken));
+    res.json(formatUserResponse(user));
   } catch (error) {
     if (pg) { try { await pg.end(); } catch (_) {} }
     console.error('[Profile Error]:', error.message);
-    res.status(401).json({ message: 'Not authorized, token failed' });
+    res.status(401).json({ message: 'Not authorized, session invalid' });
   }
 });
 
 router.post('/logout', (req, res) => {
-  res.clearCookie('token');
-  res.json({ message: 'Logged out' });
+  req.session.destroy((err) => {
+    if (err) return res.status(500).json({ message: 'Logout failed' });
+    res.clearCookie('resumify.sid');
+    res.json({ message: 'Logged out' });
+  });
 });
 
 

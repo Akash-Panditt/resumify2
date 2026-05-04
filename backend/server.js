@@ -3,6 +3,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const { MongoStore } = require('connect-mongo');
+const helmet = require('helmet');
 const authRoutes = require('./routes/auth');
 const resumeRoutes = require('./routes/resumes');
 const adminRoutes = require('./routes/admin');
@@ -12,6 +15,9 @@ const atsRoutes = require('./routes/ats');
 const paymentsRoutes = require('./routes/payments');
 
 const app = express();
+
+// Security Headers
+app.use(helmet());
 
 // Production Environment Check
 const REQUIRED_VARS = ['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'FRONTEND_URL'];
@@ -56,6 +62,26 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
+
+// Session Configuration
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'resumify_secret_key_2024',
+  resave: false,
+  saveUninitialized: false,
+  // Using default MemoryStore for development to avoid crash if MongoDB is not running
+  // store: MongoStore.create({
+  //   mongoUrl: process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/resumify',
+  //   collectionName: 'sessions',
+  //   ttl: 24 * 60 * 60 // 1 day
+  // }),
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
+  },
+  name: 'resumify.sid' // Custom session ID name
+}));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/resumes', resumeRoutes);

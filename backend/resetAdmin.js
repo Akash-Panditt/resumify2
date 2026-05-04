@@ -43,7 +43,7 @@ async function resetAdmin() {
   
   console.log('\nAdmin credentials:');
   console.log('Email:', email);
-  console.log('Password: Qwerty@123456');
+  console.log('Password:', password);
   console.log('\nLogin at: http://localhost:5173/admin/login');
   process.exit(0);
 }

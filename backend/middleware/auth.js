@@ -1,26 +1,14 @@
 const jwt = require('jsonwebtoken');
 const supabase = require('../supabase');
 
-// Protect routes — verifies JWT and attaches user to request
+// Protect routes — verifies session and attaches user ID to request
 const protect = (req, res, next) => {
-  let token = req.cookies.token;
-
-  if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1];
-  }
-
-  if (token) {
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret');
-      req.user = decoded; // { id: '...' }
-      next();
-    } catch (error) {
-      console.error('[Auth Middleware] Token invalid:', error.message);
-      res.status(401).json({ message: 'Not authorized, token invalid' });
-    }
+  if (req.session && req.session.userId) {
+    req.user = { id: req.session.userId };
+    next();
   } else {
-    console.warn(`[Auth Middleware] No token found for ${req.originalUrl}`);
-    res.status(401).json({ message: 'Not authorized, no token' });
+    console.warn(`[Auth Middleware] Unauthorized access attempt to ${req.originalUrl}`);
+    res.status(401).json({ message: 'Not authorized, please log in' });
   }
 };
 
