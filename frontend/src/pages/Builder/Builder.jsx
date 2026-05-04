@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import html2pdf from 'html2pdf.js';
 import ThemeToggle from '../../components/ThemeToggle';
 import AIEnhancer from '../../components/AIEnhancer';
 
@@ -10,6 +11,8 @@ import SkillsForm from './SkillsForm';
 import ProjectsForm from './ProjectsForm';
 import LanguagesForm from './LanguagesForm';
 import StatusModal from '../../components/StatusModal';
+import UpgradeModal from '../../components/UpgradeModal';
+import PaymentPopup from '../../components/PaymentPopup';
 
 import ModernTemplate from '../../components/Templates/ModernTemplate';
 import ClassicTemplate from '../../components/Templates/ClassicTemplate';
@@ -122,6 +125,11 @@ const Builder = () => {
   const [modal, setModal] = useState({ isOpen: false, type: 'success', title: '', message: '' });
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [tempTitle, setTempTitle] = useState('');
+  const [downloading, setDownloading] = useState(false);
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+  const [upgradeModalData, setUpgradeModalData] = useState(null);
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+  const [paymentData, setPaymentData] = useState(null);
 
   const [resumeData, setResumeData] = useState({
     title: JSON.parse(localStorage.getItem('resumify_user') || '{}')?.name || 'Untitled Resume',
@@ -367,6 +375,69 @@ const Builder = () => {
     }
   };
 
+  const handleDownload = async () => {
+    const user = JSON.parse(localStorage.getItem('resumify_user') || '{}');
+    if (!user.id && !user._id) return navigate('/login');
+    
+    setDownloading(true);
+    try {
+      // First save the resume to ensure download matches current edits
+      await handleSave(false);
+
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes/download/${id}`);
+
+      if (res.data.allowed) {
+        // Update local user download count
+        const updatedUser = { ...user, download_count: res.data.download_count };
+        localStorage.setItem('resumify_user', JSON.stringify(updatedUser));
+
+        // Direct PDF Generation Logic
+        const element = resumeContentRef.current;
+        if (!element) throw new Error('Preview not ready');
+
+        const opt = {
+          margin: 0,
+          filename: `${resumeData?.title || 'Resume'}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { 
+            scale: 2, 
+            useCORS: true, 
+            letterRendering: true,
+            logging: false 
+          },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        await html2pdf().from(element).set(opt).save();
+      }
+    } catch (err) {
+      if (err.response?.status === 403) {
+        const errorData = err.response.data;
+        if (errorData.type === 'PAYMENT_REQUIRED' || errorData.type === 'TEMPLATE_PURCHASE_REQUIRED') {
+          setPaymentData({
+            resumeId: id,
+            price: errorData.price || 9,
+            message: errorData.message
+          });
+          setIsPaymentPopupOpen(true);
+        } else {
+          setUpgradeModalData(errorData);
+          setIsUpgradeModalOpen(true);
+        }
+      } else {
+        console.error('Download failed', err);
+        setModal({
+          isOpen: true,
+          type: 'error',
+          title: 'Download Failed',
+          message: 'An error occurred while generating your PDF. Please try again.'
+        });
+      }
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   const handleNavigate = async (path) => {
     // Auto-save doesn't block navigation anymore, but we show a different loader
     await handleSave(false, true);
@@ -532,10 +603,18 @@ const Builder = () => {
               <button
                 className="btn btn-primary btn-sm builder-mobile-btn"
                 onClick={() => handleSave(true)}
-                disabled={isSaving || isPreviewing}
+                disabled={isSaving || isPreviewing || downloading}
                 style={{ height: '32px', minHeight: '32px' }}
               >
                 {isSaving ? 'Saving...' : 'Save'}
+              </button>
+              <button
+                className="btn btn-success btn-sm builder-mobile-btn"
+                onClick={handleDownload}
+                disabled={downloading || isSaving}
+                style={{ height: '32px', minHeight: '32px', background: '#10b981', borderColor: '#10b981', color: 'white' }}
+              >
+                {downloading ? '...' : 'Download'}
               </button>
             </div>
 
@@ -916,6 +995,33 @@ const Builder = () => {
               Back to Edit
             </button>
 
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={handleDownload}
+              disabled={downloading}
+              style={{
+                height: '32px',
+                padding: '0 12px',
+                fontSize: '0.75rem',
+                borderRadius: 'var(--radius-md)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 4px 12px rgba(var(--primary-rgb), 0.2)',
+                flexShrink: 0,
+                fontWeight: 700
+              }}
+            >
+              {downloading ? (
+                '...'
+              ) : (
+                <>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  Download
+                </>
+              )}
+            </button>
+
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, justifyContent: 'center' }}>
               <span className="builder-preview-title" style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.05em' }}>LIVE PREVIEW</span>
               <div style={{ display: 'flex', gap: '4px', marginLeft: 'auto' }}>
@@ -1208,6 +1314,17 @@ const Builder = () => {
         type={modal.type}
         title={modal.title}
         message={modal.message}
+      />
+      <UpgradeModal
+        isOpen={isUpgradeModalOpen}
+        onClose={() => setIsUpgradeModalOpen(false)}
+        data={upgradeModalData}
+      />
+      <PaymentPopup
+        isOpen={isPaymentPopupOpen}
+        onClose={() => setIsPaymentPopupOpen(false)}
+        onSuccess={handleDownload}
+        {...paymentData}
       />
     </div>
   );

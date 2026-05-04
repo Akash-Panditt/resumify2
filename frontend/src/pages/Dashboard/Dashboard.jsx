@@ -47,8 +47,8 @@ const Dashboard = () => {
       setMasterProfile(master);
       setResumes(actualResumes);
 
-      if (currentUser?.id || currentUser?._id) {
-        const uid = currentUser.id || currentUser._id;
+      if (user?.id || user?._id) {
+        const uid = user.id || user._id;
         const dlKey = `resumify_downloads_${uid}`;
         const downloadsInfo = JSON.parse(localStorage.getItem(dlKey) || '[]');
 

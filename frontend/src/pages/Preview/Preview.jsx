@@ -206,43 +206,76 @@ const Preview = () => {
     <div style={{ padding: '1rem', width: '100%', display: 'flex', flexDirection: 'column', gap: '1.5rem', minHeight: '100vh', background: 'var(--bg-color)' }}>
 
       {/* Action Bar */}
-      <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem', flexWrap: 'wrap', gap: '1.25rem' }}>
-        <div>
-          <h1 className="text-gradient" style={{ fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', marginBottom: '0.25rem' }}>{resumeData.title}</h1>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
-            Template: <span className="badge badge-primary">{resumeData.template}</span> <span className="hide-on-mobile">•</span> <span>Updated: {new Date(resumeData.updatedAt).toLocaleDateString()}</span>
-          </span>
+      <div className="card" style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        padding: '0.85rem 1.25rem', 
+        flexWrap: 'wrap', 
+        gap: '1rem',
+        borderRadius: 'var(--radius-md)',
+        background: 'rgba(var(--bg-rgb), 0.8)',
+        backdropFilter: 'blur(16px)'
+      }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <h1 className="text-gradient" style={{ fontSize: '1.25rem', margin: 0, fontWeight: 800 }}>{resumeData.title}</h1>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="badge badge-primary" style={{ height: '20px', fontSize: '0.65rem', padding: '0 0.5rem' }}>{resumeData.template}</span>
+            <span style={{ opacity: 0.5 }}>•</span>
+            <span>Updated {new Date(resumeData.updatedAt).toLocaleDateString()}</span>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flex: '1 1 auto' }}>
-            {/* ThemeToggle removed for users */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.4rem 1rem',
-              borderRadius: 'var(--radius-full)',
-              background: downloadsRemaining <= 0 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-              border: `1px solid ${downloadsRemaining <= 0 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)'}`
-            }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '500' }}>Downloads Left:</span>
-              <span style={{
-                fontSize: '0.95rem',
-                fontWeight: '700',
-                color: downloadsRemaining <= 0 ? 'var(--error)' : 'var(--success)',
-              }}>
+
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          {/* Downloads Indicator */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.35rem 0.75rem',
+            borderRadius: 'var(--radius-full)',
+            background: downloadsRemaining <= 0 ? 'rgba(239, 68, 68, 0.08)' : 'rgba(16, 185, 129, 0.08)',
+            border: `1px solid ${downloadsRemaining <= 0 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)'}`,
+            transition: 'all 0.3s ease'
+          }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={downloadsRemaining <= 0 ? 'var(--error)' : 'var(--success)'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.8 }}>
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600' }}>
+              <span style={{ color: downloadsRemaining <= 0 ? 'var(--error)' : 'var(--success)', fontWeight: '800' }}>
                 {maxDownloads === Infinity ? '∞' : downloadsRemaining}
               </span>
-            </div>
+              <span style={{ marginLeft: '4px', opacity: 0.7 }}>left</span>
+            </span>
           </div>
-          <div style={{ display: 'flex', gap: '0.75rem', width: 'auto' }}>
-            <button className="btn btn-secondary btn-sm" onClick={() => navigate(`/builder/${id}`)}>Edit</button>
+
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button 
+              className="btn btn-secondary btn-sm" 
+              onClick={() => navigate(`/builder/${id}`)}
+              style={{ padding: '0.4rem 0.85rem', fontSize: '0.8rem' }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '4px' }}>
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+              Edit
+            </button>
             <button
               className="btn btn-primary btn-sm"
               onClick={handleDownload}
               disabled={downloading}
+              style={{ padding: '0.4rem 1rem', fontSize: '0.8rem', minWidth: '120px' }}
             >
-              {downloading ? 'Processing...' : 'Download PDF'}
+              {downloading ? (
+                <>Processing...</>
+              ) : (
+                <>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Download PDF
+                </>
+              )}
             </button>
           </div>
         </div>
