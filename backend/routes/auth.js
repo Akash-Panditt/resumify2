@@ -480,30 +480,24 @@ const checkDownloadReset = async (user) => {
 };
 
 router.get('/profile', protect, async (req, res) => {
-  let pg;
   try {
-    // 3. Fetch user via direct pg (bypasses PostgREST schema cache)
-    pg = getPgClient();
-    await pg.connect();
-    const result = await pg.query(
-      'SELECT id, name, email, plan, role, download_count, requested_plan, expires_at, is_verified, created_at, updated_at FROM public.users WHERE id = $1',
-      [req.user.id]
-    );
-    await pg.end();
-    pg = null;
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('id, name, email, plan, role, download_count, requested_plan, expires_at, is_verified, created_at, updated_at')
+      .eq('id', req.user.id)
+      .maybeSingle();
 
-    let user = result.rows[0];
-    if (!user) return res.status(401).json({ message: 'User not found' });
+    if (error) throw error;
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-    // 4. Lazy Checks
-    user = await checkSubscriptionExpiry(user);
-    user = await checkDownloadReset(user);
+    // Lazy Checks for resets/expiry
+    const checkedUser = await checkSubscriptionExpiry(user);
+    const finalUser = await checkDownloadReset(checkedUser);
 
-    res.json(formatUserResponse(user));
+    res.json(formatUserResponse(finalUser));
   } catch (error) {
-    if (pg) { try { await pg.end(); } catch (_) {} }
-    console.error('[Profile Error]:', error.message);
-    res.status(401).json({ message: 'Not authorized, session invalid' });
+    console.error('[Profile Sync Error]:', error.message);
+    res.status(500).json({ message: 'Server error during profile sync' });
   }
 });
 
