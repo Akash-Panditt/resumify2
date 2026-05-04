@@ -16,6 +16,9 @@ const paymentsRoutes = require('./routes/payments');
 
 const app = express();
 
+// Trust proxy for secure cookies (Render/Vercel)
+app.set('trust proxy', 1);
+
 // Security Headers
 app.use(helmet());
 
@@ -77,7 +80,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 24 * 60 * 60 * 1000 // 1 day
   },
   name: 'resumify.sid' // Custom session ID name
