@@ -22,11 +22,11 @@ const Settings = () => {
     } else {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
-      fetchMasterProfile(parsedUser.token);
+      fetchMasterProfile();
     }
   }, [navigate]);
 
-  const fetchMasterProfile = async (token) => {
+  const fetchMasterProfile = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes`);
       let master = res.data.find(r => r.title === '___MASTER_PROFILE___');

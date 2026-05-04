@@ -9,7 +9,7 @@ const Icon = ({ path, size = 18, color = 'currentColor' }) => (
 );
 
 const ICONS = {
-  megaphone: <><polygon points="11 19 2 12 11 5 11 19"/><path d="M22 12A10 10 0 0 0 12 2v20a10 10 0 0 0 10-10z"/></>,
+  megaphone: <><path d="M6 7h3l5-4v18l-5-4H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /></>,
   trash: <><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></>
 };
 
@@ -32,9 +32,7 @@ const AdminAnnouncements = () => {
 
   const fetchAnnouncements = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/announcements`, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/announcements`);
       setAnnouncements(res.data);
     } catch (err) {
       console.error('Failed to fetch announcements', err);
@@ -49,8 +47,6 @@ const AdminAnnouncements = () => {
       await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/announcements`, {
         ...newAnnouncement,
         is_active: true
-      }, {
-        headers: { Authorization: `Bearer ${admin.token}` }
       });
       setNewAnnouncement({ title: '', content: '', type: 'info' });
       setIsAdding(false);
@@ -68,9 +64,7 @@ const AdminAnnouncements = () => {
     const { id } = confirmDelete;
     setConfirmDelete({ isOpen: false, id: null });
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/announcements/${id}`, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/announcements/${id}`);
       fetchAnnouncements();
     } catch (err) {
       alert('Failed to delete announcement');
@@ -137,14 +131,17 @@ const AdminAnnouncements = () => {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {announcements.map((a) => (
-          <div key={a.id} className="card" style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', alignItems: 'flex-start', borderLeft: `4px solid var(--${a.type === 'danger' ? 'error' : a.type === 'warning' ? 'warning' : a.type === 'success' ? 'success' : 'primary'})` }}>
-            <div style={{ 
-              width: '40px', height: '40px', borderRadius: '50%', 
-              background: `var(--surface-hover)`, 
+          <div key={a.id} className="card announcement-card" style={{ padding: '1.5rem', display: 'flex', gap: '1.5rem', alignItems: 'flex-start', borderLeft: `4px solid var(--${a.type === 'danger' ? 'error' : a.type === 'warning' ? 'warning' : a.type === 'success' ? 'success' : 'primary'})`, background: 'var(--surface)' }}>
+            <div className="announcement-icon-container" style={{ 
+              width: '52px', height: '52px', borderRadius: '18px', 
+              background: `linear-gradient(135deg, var(--surface), var(--surface-hover))`, 
+              boxShadow: '0 8px 16px -4px rgba(0,0,0,0.1)',
               color: `var(--${a.type === 'danger' ? 'error' : a.type === 'warning' ? 'warning' : a.type === 'success' ? 'success' : 'primary'})`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              border: `1px solid var(--surface-border)`,
+              transition: 'transform 0.3s ease'
             }}>
-              <Icon path={ICONS.megaphone} size={20} />
+              <Icon path={ICONS.megaphone} size={24} />
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
@@ -182,6 +179,19 @@ const AdminAnnouncements = () => {
         confirmText="Yes, Delete"
         type="danger"
       />
+      <style>{`
+        .announcement-card {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .announcement-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 24px -8px rgba(0,0,0,0.15);
+        }
+        .announcement-card:hover .announcement-icon-container {
+          transform: rotate(-10deg) scale(1.1);
+          color: var(--primary);
+        }
+      `}</style>
     </div>
   );
 };

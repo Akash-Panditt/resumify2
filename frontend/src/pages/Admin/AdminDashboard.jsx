@@ -30,9 +30,7 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/stats`, {
-        headers: { 'Authorization': `Bearer ${admin.token}` }
-      });
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/stats`);
       setStats(res.data);
     } catch (err) {
       console.error('Stats fetch failed', err);
@@ -41,9 +39,7 @@ const AdminDashboard = () => {
 
   const fetchGrowthAnalytics = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/analytics/growth`, {
-        headers: { 'Authorization': `Bearer ${admin.token}` }
-      });
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/analytics/growth`);
       setGrowthData(res.data);
     } catch (err) {
       console.error('Analytics fetch failed', err);
@@ -353,9 +349,7 @@ const UpgradeRequestsPanel = ({ admin, onAction }) => {
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users`, {
-        headers: { 'Authorization': `Bearer ${admin.token}` }
-      });
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users`);
       setRequests(res.data.filter(u => u.requested_plan));
     } catch (err) {
       console.error('Failed to fetch upgrade requests', err);
@@ -369,9 +363,7 @@ const UpgradeRequestsPanel = ({ admin, onAction }) => {
   const handleAction = async (userId, action) => {
     try {
       const endpoint = action === 'approve' ? 'approve-upgrade' : 'reject-upgrade';
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/${endpoint}/${userId}`, {}, {
-        headers: { 'Authorization': `Bearer ${admin.token}` }
-      });
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/${endpoint}/${userId}`, {});
       fetchRequests();
       if (onAction) onAction();
     } catch (err) {

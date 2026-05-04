@@ -8,6 +8,7 @@ const Landing = () => {
   const [plans, setPlans] = useState([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
+  const [activeFaq, setActiveFaq] = useState(0);
 
   useEffect(() => {
     setIsVisible(true);
@@ -170,12 +171,20 @@ const Landing = () => {
               { q: 'Can I download as PDF?', a: 'Yes, all plans allow for high-quality PDF downloads. Pro users get unlimited downloads without any per-resume fees.' },
               { q: 'Is my data secure?', a: 'Security is our priority. We use industry-standard encryption and never share your data with third parties.' }
             ].map((faq, i) => (
-              <div key={i} className="faq-item" style={i === 3 ? { border: 'none' } : {}}>
-                <div className="faq-question">
+              <div key={i} className={`faq-item ${activeFaq === i ? 'active' : ''}`} style={i === 3 ? { border: 'none' } : {}}>
+                <div className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>
                   {faq.q}
-                  <span style={{ fontSize: '1.2rem', opacity: 0.5 }}>+</span>
+                  <span style={{ fontSize: '1.2rem', opacity: 0.5, transition: 'transform 0.3s ease', transform: activeFaq === i ? 'rotate(45deg)' : 'rotate(0deg)' }}>+</span>
                 </div>
-                <div className="faq-answer">{faq.a}</div>
+                <div className="faq-answer" style={{ 
+                  maxHeight: activeFaq === i ? '200px' : '0',
+                  opacity: activeFaq === i ? 1 : 0,
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease-in-out',
+                  marginTop: activeFaq === i ? '1rem' : '0'
+                }}>
+                  {faq.a}
+                </div>
               </div>
             ))}
           </div>

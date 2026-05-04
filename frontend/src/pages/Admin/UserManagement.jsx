@@ -35,9 +35,7 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users`, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users`);
       setUsers(res.data);
     } catch (err) {
       console.error('User fetch failed', err);
@@ -48,9 +46,7 @@ const UserManagement = () => {
 
   const handleUpdateRole = async (userId, newRole) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`, { role: newRole }, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`, { role: newRole });
       fetchUsers();
     } catch (err) {
       alert('Failed to update role');
@@ -59,9 +55,7 @@ const UserManagement = () => {
 
   const handleUpdatePlan = async (userId, newPlan) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`, { plan: newPlan }, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`, { plan: newPlan });
       fetchUsers();
     } catch (err) {
       alert('Failed to update plan');
@@ -70,9 +64,7 @@ const UserManagement = () => {
 
   const handleToggleBlock = async (userId, currentStatus) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`, { is_blocked: !currentStatus }, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`, { is_blocked: !currentStatus });
       fetchUsers();
     } catch (err) {
       alert('Failed to update block status');
@@ -121,9 +113,7 @@ const UserManagement = () => {
 
     if (action === 'delete') {
       try {
-        await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`, {
-          headers: { Authorization: `Bearer ${admin.token}` }
-        });
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`);
         fetchUsers();
       } catch (err) {
         const msg = err.response?.data?.details || err.response?.data?.message || err.message;
@@ -131,9 +121,7 @@ const UserManagement = () => {
       }
     } else if (action === 'reject') {
       try {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/reject-upgrade/${userId}`, {}, {
-          headers: { Authorization: `Bearer ${admin.token}` }
-        });
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/reject-upgrade/${userId}`, {});
         alert(res.data.message);
         fetchUsers();
       } catch (err) {
@@ -141,9 +129,7 @@ const UserManagement = () => {
       }
     } else if (action === 'revoke') {
       try {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/revoke-subscription/${userId}`, {}, {
-          headers: { Authorization: `Bearer ${admin.token}` }
-        });
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/revoke-subscription/${userId}`, {});
         alert(res.data.message);
         fetchUsers();
       } catch (err) {

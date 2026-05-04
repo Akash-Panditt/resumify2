@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useLayoutEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useReactToPrint } from 'react-to-print';
+import html2pdf from 'html2pdf.js';
 import ThemeToggle from '../../components/ThemeToggle';
 import UpgradeModal from '../../components/UpgradeModal';
 import PaymentPopup from '../../components/PaymentPopup';
@@ -117,11 +117,9 @@ const Preview = () => {
     const fetchResume = async () => {
       try {
         const storedUser = JSON.parse(localStorage.getItem('resumify_user') || '{}');
-        if (!storedUser?.token) return navigate('/login');
+        if (!storedUser) return navigate('/login');
 
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes/${id}`, {
-          headers: { Authorization: `Bearer ${storedUser.token}` }
-        });
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes/${id}`);
         setResumeData(res.data);
       } catch (err) {
         console.error('Failed to load resume', err);
@@ -132,25 +130,19 @@ const Preview = () => {
     fetchResume();
   }, [id, navigate]);
 
-  const handlePrint = useReactToPrint({
-    contentRef: componentRef,
-    documentTitle: resumeData?.title || 'Resume_Export',
-  });
+  // Removed useReactToPrint in favor of direct PDF download
 
   const handleDownload = async () => {
-    if (!user?.token) return navigate('/login');
+    if (!user) return navigate('/login');
     setDownloading(true);
     try {
       // Call download tracking endpoint first
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes/download/${id}`, {}, {
-        headers: { Authorization: `Bearer ${user.token}` }
-      });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes/download/${id}`);
 
       if (res.data.allowed) {
         // Update local user download count
         const updatedUser = { ...user, download_count: res.data.download_count };
         localStorage.setItem('resumify_user', JSON.stringify(updatedUser));
-        if (res.data.token) localStorage.setItem('resumify_token', res.data.token);
 
         // Track the recent download timestamp locally
         const dlKey = `resumify_downloads_${user.id}`;
@@ -161,7 +153,23 @@ const Preview = () => {
         // Keep last 10
         localStorage.setItem(dlKey, JSON.stringify(filtered.slice(0, 10)));
 
-        handlePrint();
+        // Direct PDF Generation Logic
+        const element = componentRef.current;
+        const opt = {
+          margin: 0,
+          filename: `${resumeData?.title || 'Resume'}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { 
+            scale: 2, 
+            useCORS: true, 
+            letterRendering: true,
+            logging: false 
+          },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Trigger direct download
+        await html2pdf().from(element).set(opt).save();
       }
     } catch (err) {
       if (err.response?.status === 403) {

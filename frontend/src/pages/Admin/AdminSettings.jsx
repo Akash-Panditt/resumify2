@@ -13,9 +13,7 @@ const AdminSettings = () => {
 
   const fetchSettings = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/settings`, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/settings`);
       // Ensure defaults if empty DB
       const defaultSettings = {
         site_name: 'Resumify',
@@ -50,9 +48,7 @@ const AdminSettings = () => {
     e.preventDefault();
     setSaving(true);
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/settings`, settings, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/settings`, settings);
       alert('Platform settings saved successfully.');
     } catch (err) {
       console.error('Failed to save settings:', err);

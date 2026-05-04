@@ -10,18 +10,18 @@ const Icon = ({ path, size = 20 }) => (
 );
 
 const ICONS = {
-  dashboard: <><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></>,
-  users: <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></>,
-  approvals: <><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></>,
-  templates: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></>,
-  pricing: <><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></>,
-  payments: <><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></>,
-  announcements: <><polygon points="11 19 2 12 11 5 11 19"/><path d="M22 12A10 10 0 0 0 12 2v20a10 10 0 0 0 10-10z"/></>,
-  settings: <><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></>,
-  bell: <><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></>,
-  logout: <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />,
-  menu: <path d="M3 12h18M3 6h18M3 18h18" />,
-  close: <path d="M18 6L6 18M6 6l12 12" />
+  dashboard: <><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></>,
+  users: <><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></>,
+  approvals: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="m9 15 2 2 4-4"/><path d="M14 2v6h6"/></>,
+  templates: <><path d="M4 7V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3"/><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M12 12h.01"/></>,
+  pricing: <><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><path d="M7 15h.01"/><path d="M11 15h.01"/></>,
+  payments: <><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></>, // This was payments, maybe a credit card is better
+  announcements: <><path d="M6 7h3l5-4v18l-5-4H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /></>,
+  settings: <><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></>,
+  bell: <><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></>,
+  logout: <><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></>,
+  menu: <><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></>,
+  close: <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
 };
 
 const AdminLayout = () => {
@@ -56,7 +56,7 @@ const AdminLayout = () => {
     }
     localStorage.removeItem('resumify_admin');
     localStorage.removeItem('resumify_user');
-    navigate('/admin/login');
+    navigate('/login');
   };
 
   const navItems = [
@@ -73,19 +73,16 @@ const AdminLayout = () => {
   const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
-    if (!user.token || user.role !== 'admin') {
+    if (user.role !== 'admin') {
       localStorage.removeItem('resumify_admin');
-      navigate('/admin/login');
+      navigate('/login');
     }
-  }, [user.token, user.role, navigate]);
+  }, [user.role, navigate]);
 
   useEffect(() => {
     const fetchPendingCount = async () => {
       try {
-        if (!user.token) return;
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/stats`, {
-          headers: { 'Authorization': `Bearer ${user.token}` }
-        });
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/stats`);
         setPendingCount(res.data.pendingUpgradesCount || 0);
       } catch (err) {
         console.error('Failed to fetch pending count', err);
@@ -94,7 +91,7 @@ const AdminLayout = () => {
     fetchPendingCount();
     const interval = setInterval(fetchPendingCount, 15000);
     return () => clearInterval(interval);
-  }, [user.token]);
+  }, []);
 
   return (
     <div className="admin-wrapper">
@@ -300,9 +297,13 @@ const AdminLayout = () => {
         }
 
         .sidebar-link.active {
-          background: var(--primary);
+          background: linear-gradient(135deg, var(--primary), #a855f7);
           color: white;
-          box-shadow: 0 10px 20px -5px rgba(var(--primary-rgb, 99, 102, 241), 0.4);
+          box-shadow: 0 10px 25px -5px rgba(var(--primary-rgb, 99, 102, 241), 0.5);
+        }
+
+        .sidebar-link:hover .link-icon {
+          transform: scale(1.1) translateX(2px);
         }
 
         .link-icon {
@@ -310,6 +311,7 @@ const AdminLayout = () => {
           display: flex;
           align-items: center;
           justify-content: center;
+          transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .link-text {

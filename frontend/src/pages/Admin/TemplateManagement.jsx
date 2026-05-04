@@ -24,12 +24,8 @@ const TemplateManagement = () => {
   const fetchData = async () => {
     try {
       const [tRes, cRes] = await Promise.all([
-        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/templates`, {
-          headers: { 'Authorization': `Bearer ${admin.token}` }
-        }),
-        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/categories`, {
-          headers: { 'Authorization': `Bearer ${admin.token}` }
-        })
+        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/templates`),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/categories`)
       ]);
       setTemplates(tRes.data);
       setCategories(cRes.data);
@@ -43,9 +39,7 @@ const TemplateManagement = () => {
   const handleAddTemplate = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/templates`, newTemplate, {
-        headers: { 'Authorization': `Bearer ${admin.token}` }
-      });
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/templates`, newTemplate);
       setNewTemplate({ name: '', category_id: '', image_url: '', is_premium: false });
       setIsAdding(false);
       fetchData();
@@ -61,9 +55,7 @@ const TemplateManagement = () => {
     const { templateId } = confirmDelete;
     setConfirmDelete({ isOpen: false, templateId: null });
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/templates/${templateId}`, {
-        headers: { 'Authorization': `Bearer ${admin.token}` }
-      });
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/templates/${templateId}`);
       fetchData();
     } catch (err) {
       alert('Failed to delete template');
@@ -72,9 +64,7 @@ const TemplateManagement = () => {
 
   const handleTogglePremium = async (template) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/templates/${template.id}`, { is_premium: !template.is_premium }, {
-        headers: { 'Authorization': `Bearer ${admin.token}` }
-      });
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/templates/${template.id}`, { is_premium: !template.is_premium });
       fetchData();
     } catch (err) {
       alert('Failed to update template status');

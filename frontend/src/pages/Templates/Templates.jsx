@@ -168,7 +168,7 @@ const Templates = () => {
   const user = JSON.parse(localStorage.getItem('resumify_user') || '{}');
 
   const handleSelect = async (templateId) => {
-    if (!user?.token) return navigate('/login');
+    if (!user) return navigate('/login');
     setLoading(true);
     try {
       localStorage.setItem('resumify_accent_color', selectedAccent.hex);
@@ -178,8 +178,6 @@ const Templates = () => {
         template: templateId,
         color: selectedAccent.hex,
         hasUsedPremiumTemplate: isPremium
-      }, {
-        headers: { Authorization: `Bearer ${user.token}` }
       });
       navigate(`/builder/${res.data._id}`);
     } catch (err) {

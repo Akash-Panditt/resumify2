@@ -17,7 +17,6 @@ import UserManagement from './pages/Admin/UserManagement';
 import TemplateManagement from './pages/Admin/TemplateManagement';
 
 import PricingManagement from './pages/Admin/PricingManagement';
-import AdminLogin from './pages/Admin/AdminLogin';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminResumes from './pages/Admin/AdminResumes';
 import AdminSettings from './pages/Admin/AdminSettings';
@@ -49,7 +48,6 @@ function App() {
         <Route path="/pricing" element={<Pricing />} />
         
         {/* Admin Routes */}
-        <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="users" element={<UserManagement />} />

@@ -42,7 +42,6 @@ const Login = () => {
       } else {
         const userData = res.data;
         localStorage.setItem('resumify_user', JSON.stringify(userData));
-        if (userData.token) localStorage.setItem('resumify_token', userData.token);
         
         if (userData.role === 'admin') {
           localStorage.setItem('resumify_admin', JSON.stringify(userData));
@@ -60,7 +59,6 @@ const Login = () => {
     const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/verify-otp`, { email, otp });
     const userData = res.data;
     localStorage.setItem('resumify_user', JSON.stringify(userData));
-    if (userData.token) localStorage.setItem('resumify_token', userData.token);
     
     if (userData.role === 'admin') {
       localStorage.setItem('resumify_admin', JSON.stringify(userData));
@@ -79,7 +77,6 @@ const Login = () => {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/google`, { credential: credentialResponse.credential });
       const userData = res.data;
       localStorage.setItem('resumify_user', JSON.stringify(userData));
-      if (userData.token) localStorage.setItem('resumify_token', userData.token);
       
       if (userData.role === 'admin') {
         localStorage.setItem('resumify_admin', JSON.stringify(userData));

@@ -13,11 +13,6 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [confirmDelete, setConfirmDelete] = useState({ isOpen: false, resumeId: null });
 
-  const getAuthHeaders = () => {
-    const stored = JSON.parse(localStorage.getItem('resumify_user') || '{}');
-    return stored?.token ? { Authorization: `Bearer ${stored.token}` } : {};
-  };
-
   useEffect(() => {
     const storedUser = localStorage.getItem('resumify_user');
     if (!storedUser) {
@@ -27,28 +22,23 @@ const Dashboard = () => {
     const parsedUser = JSON.parse(storedUser);
     setUser(parsedUser);
     fetchProfile(parsedUser);
-    fetchResumes(parsedUser);
+    fetchResumes();
   }, [navigate]);
 
   const fetchProfile = async (currentUser) => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/profile`, {
-        headers: { Authorization: `Bearer ${currentUser.token}` },
-      });
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/profile`);
       const updatedUser = { ...currentUser, ...res.data, _id: res.data.id || currentUser._id };
       setUser(updatedUser);
       localStorage.setItem('resumify_user', JSON.stringify(updatedUser));
-      if (res.data.token) localStorage.setItem('resumify_token', res.data.token);
     } catch (err) {
       console.error('Profile sync failed:', err?.response?.status, err?.message);
     }
   };
 
-  const fetchResumes = async (currentUser) => {
+  const fetchResumes = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes`, {
-        headers: { Authorization: `Bearer ${currentUser.token}` },
-      });
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes`);
       const fetchedResumes = res.data;
 
       const master = fetchedResumes.find(r => r.title === '___MASTER_PROFILE___');

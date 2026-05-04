@@ -30,9 +30,7 @@ const AdminResumes = () => {
 
   const fetchResumes = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/resumes`, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/resumes`);
       setResumes(res.data);
     } catch (err) {
       console.error('Resume fetch failed', err);
@@ -49,9 +47,7 @@ const AdminResumes = () => {
     const { resumeId } = confirmDelete;
     setConfirmDelete({ isOpen: false, resumeId: null });
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/resumes/${resumeId}`, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/resumes/${resumeId}`);
       fetchResumes();
     } catch (err) {
       alert('Failed to delete resume');

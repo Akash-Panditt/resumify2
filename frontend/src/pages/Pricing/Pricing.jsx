@@ -32,8 +32,6 @@ const Pricing = () => {
 
   const handleUpgrade = async (planId) => {
     if (planId === currentPlan || planId === requestedPlan) return;
-    if (!user?.token) return navigate('/login');
-
     setLoading(planId);
     try {
       const planInfo = plans.find(p => p.id === planId || p.name === planId);
@@ -45,8 +43,6 @@ const Pricing = () => {
         itemId: planId,
         amount,
         billingCycle
-      }, {
-        headers: { Authorization: `Bearer ${user.token}` }
       });
 
       const { transactionId } = checkoutRes.data;
@@ -65,14 +61,11 @@ const Pricing = () => {
         itemId: planId,
         type: 'plan',
         billingCycle
-      }, {
-        headers: { Authorization: `Bearer ${user.token}` }
       });
 
       // Step 4: Success
       const updatedUser = { ...user, plan: planId, requested_plan: null };
       localStorage.setItem('resumify_user', JSON.stringify(updatedUser));
-      if (verifyRes.data.token) localStorage.setItem('resumify_token', verifyRes.data.token);
 
       setModal({
         isOpen: true,

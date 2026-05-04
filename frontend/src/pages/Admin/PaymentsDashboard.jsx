@@ -27,9 +27,7 @@ const PaymentsDashboard = () => {
 
   const fetchPayments = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/payments`, {
-        headers: { Authorization: `Bearer ${admin.token}` }
-      });
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/payments`);
       setPaymentsData(res.data);
     } catch (err) {
       console.error('Failed to fetch payments data:', err);

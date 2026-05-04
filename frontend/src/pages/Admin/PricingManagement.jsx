@@ -13,9 +13,7 @@ const PricingManagement = () => {
 
   const fetchPlans = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/pricing`, {
-        headers: { 'Authorization': `Bearer ${admin.token}` }
-      });
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/pricing`);
       setPlans(res.data);
     } catch (err) {
       console.error('Pricing fetch failed', err);
@@ -27,9 +25,7 @@ const PricingManagement = () => {
   const handleUpdatePlan = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/pricing/${editingPlan.id}`, editingPlan, {
-        headers: { 'Authorization': `Bearer ${admin.token}` }
-      });
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/pricing/${editingPlan.id}`, editingPlan);
       setEditingPlan(null);
       fetchPlans();
     } catch (err) {
@@ -132,22 +128,22 @@ const PricingManagement = () => {
         </div>
       )}
       <style>{`
-        .admin-pricing-v2 { padding: 2rem; max-width: 1200px; margin: 0 auto; }
-        .page-header-v2 { margin-bottom: 4rem; text-align: center; }
-        .title-v2 { font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, var(--text-main), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
-        .subtitle-v2 { color: var(--text-muted); font-size: 1.1rem; }
+        .admin-pricing-v2 { padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
+        .page-header-v2 { margin-bottom: 2rem; text-align: left; }
+        .title-v2 { font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem; }
+        .subtitle-v2 { color: var(--text-muted); font-size: 0.9rem; }
  
         .pricing-grid-v2 {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-          gap: 2.5rem;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 1.5rem;
         }
  
         .admin-plan-card {
           background: var(--surface);
           border: 1px solid var(--surface-border);
-          border-radius: 24px;
-          padding: 3rem 2.5rem;
+          border-radius: 20px;
+          padding: 1.75rem;
           position: relative;
           display: flex;
           flex-direction: column;
@@ -167,22 +163,23 @@ const PricingManagement = () => {
         }
  
         .card-badge {
-          font-size: 0.75rem;
+          font-size: 0.7rem;
           font-weight: 800;
           color: var(--primary);
           background: rgba(99, 102, 241, 0.1);
-          padding: 0.4rem 1.2rem;
+          padding: 0.3rem 1rem;
           border-radius: 50px;
           display: inline-block;
-          margin-bottom: 2rem;
+          margin-bottom: 1.25rem;
           align-self: flex-start;
           letter-spacing: 0.05em;
+          border: 1px solid rgba(99, 102, 241, 0.2);
         }
  
         .price-tag {
-          font-size: 3.5rem;
+          font-size: 2.25rem;
           font-weight: 800;
-          margin-bottom: 2rem;
+          margin-bottom: 1.5rem;
           display: flex;
           align-items: baseline;
           color: var(--text-main);
@@ -192,13 +189,13 @@ const PricingManagement = () => {
         .price-tag .period { font-size: 1rem; color: var(--text-muted); font-weight: 600; margin-left: 4px; }
  
         .limit-row {
-          background: rgba(255, 255, 255, 0.03);
-          padding: 1.25rem 1.5rem;
-          border-radius: 16px;
+          background: var(--bg-color);
+          padding: 1rem 1.25rem;
+          border-radius: 12px;
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 2.5rem;
+          margin-bottom: 1.5rem;
           border: 1px solid var(--surface-border);
         }
  
@@ -208,12 +205,12 @@ const PricingManagement = () => {
         .admin-feature-list {
           list-style: none;
           padding: 0;
-          margin: 0 0 3rem 0;
-          font-size: 1rem;
+          margin: 0 0 2rem 0;
+          font-size: 0.9rem;
           color: var(--text-muted);
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 0.75rem;
           flex-grow: 1;
         }
  
@@ -231,22 +228,23 @@ const PricingManagement = () => {
  
         .btn-edit {
           width: 100%;
-          padding: 1.1rem;
-          background: var(--primary);
-          color: white;
-          border: none;
-          border-radius: 14px;
+          padding: 0.85rem;
+          background: var(--surface-hover);
+          color: var(--text-main);
+          border: 1px solid var(--surface-border);
+          border-radius: 12px;
           font-weight: 700;
-          font-size: 1rem;
+          font-size: 0.9rem;
           cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+          transition: all 0.2s ease;
         }
  
         .btn-edit:hover { 
-          background: #4f46e5;
-          transform: translateY(-3px);
-          box-shadow: 0 12px 25px rgba(99, 102, 241, 0.4);
+          background: var(--primary);
+          color: white;
+          border-color: var(--primary);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
         }
  
         /* Modal */

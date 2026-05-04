@@ -54,7 +54,7 @@ const ATSChecker = () => {
             return;
         }
 
-        if (!user?.token) {
+        if (!user) {
             setError('Please log in to use the ATS Core Checker.');
             return;
         }
@@ -69,8 +69,7 @@ const ATSChecker = () => {
         try {
             const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/ats/check`, formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${user.token}`
+                    'Content-Type': 'multipart/form-data'
                 },
                 timeout: 30000 
             });

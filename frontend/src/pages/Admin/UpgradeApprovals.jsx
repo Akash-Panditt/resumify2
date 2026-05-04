@@ -25,9 +25,7 @@ const UpgradeApprovals = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users`, {
-        headers: { Authorization: `Bearer ${adminValue.token}` }
-      });
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users`);
       // Filter for non-admin users who have a pending request OR are already paid users
       setUsers(res.data.filter(u => u.role !== 'admin' && (u.requested_plan || u.plan !== 'free')));
     } catch (err) {
@@ -49,9 +47,7 @@ const UpgradeApprovals = () => {
       else if (action === 'reject') endpoint = `reject-upgrade/${userId}`;
       else if (action === 'revoke') endpoint = `revoke-subscription/${userId}`;
 
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/${endpoint}`, {}, {
-        headers: { Authorization: `Bearer ${adminValue.token}` }
-      });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/${endpoint}`, {});
       alert(res.data.message);
       fetchUsers();
     } catch (err) {

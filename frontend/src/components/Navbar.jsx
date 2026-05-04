@@ -8,20 +8,14 @@ const Navbar = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const getAuthHeaders = () => {
-    const stored = JSON.parse(localStorage.getItem('resumify_user') || '{}');
-    return stored?.token ? { Authorization: `Bearer ${stored.token}` } : {};
-  };
-
   const handleLogout = async () => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/logout`, {}, { headers: getAuthHeaders() });
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/logout`);
     } catch (err) {
       console.error('Logout error', err);
     }
     // Clear all auth-related storage
     localStorage.removeItem('resumify_user');
-    localStorage.removeItem('resumify_token');
     localStorage.removeItem('resumify_admin');
     navigate('/login');
   };
