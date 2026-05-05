@@ -958,7 +958,18 @@ const Builder = () => {
 
         {/* Right Column: Live Preview */}
         <div className={`builder-preview-panel ${showMobilePreview ? 'mobile-show' : ''}`}>
-          <div className="builder-preview-header" style={{ padding: '8px 12px', gap: '12px' }}>
+          <div className="builder-preview-header" style={{ 
+            padding: '12px 20px', 
+            gap: '12px', 
+            display: 'flex', 
+            alignItems: 'center',
+            background: 'rgba(var(--bg-rgb), 0.85)',
+            backdropFilter: 'blur(20px)',
+            borderBottom: '1px solid var(--surface-border)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+            zIndex: 10,
+            flexShrink: 0
+          }}>
             {/* Back button for mobile */}
             <button
               className="btn-close-mobile"
@@ -966,50 +977,78 @@ const Builder = () => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '8px',
-                padding: '6px 14px',
-                borderRadius: 'var(--radius-md)',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                border: '1px solid var(--surface-border)',
-                background: 'rgba(var(--primary-rgb), 0.08)',
-                color: 'var(--primary)',
+                width: '120px',
+                height: '36px',
+                padding: '0',
+                borderRadius: '8px',
+                fontSize: '0.65rem',
+                fontWeight: 800,
+                letterSpacing: '0.05em',
+                textTransform: 'uppercase',
+                border: '1.5px solid var(--surface-border)',
+                background: 'rgba(255, 255, 255, 0.05)',
+                color: 'var(--text-main)',
                 cursor: 'pointer',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+                whiteSpace: 'nowrap',
+                flexShrink: 0
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.background = 'var(--primary)';
+                e.currentTarget.style.borderColor = 'var(--primary)';
                 e.currentTarget.style.color = 'white';
                 e.currentTarget.style.transform = 'translateY(-1px)';
                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(var(--primary-rgb), 0.3)';
               }}
               onMouseOut={(e) => {
-                e.currentTarget.style.background = 'rgba(var(--primary-rgb), 0.08)';
-                e.currentTarget.style.color = 'var(--primary)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                e.currentTarget.style.borderColor = 'var(--surface-border)';
+                e.currentTarget.style.color = 'var(--text-main)';
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 2px 5px rgba(0,0,0,0.05)';
+                e.currentTarget.style.boxShadow = 'none';
               }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-              Back to Edit
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+              Back
             </button>
 
             <button
-              className="btn btn-primary btn-sm"
+              className="btn btn-primary"
               onClick={handleDownload}
               disabled={downloading}
               style={{
-                height: '32px',
-                padding: '0 12px',
-                fontSize: '0.75rem',
-                borderRadius: 'var(--radius-md)',
+                width: '120px',
+                height: '36px',
+                padding: '0',
+                fontSize: '0.65rem',
+                fontWeight: 800,
+                letterSpacing: '0.05em',
+                textTransform: 'uppercase',
+                borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 4px 12px rgba(var(--primary-rgb), 0.2)',
+                justifyContent: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 15px rgba(var(--primary-rgb), 0.3)',
                 flexShrink: 0,
-                fontWeight: 700
+                background: 'linear-gradient(135deg, var(--primary), #4f46e5)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                color: 'white',
+                whiteSpace: 'nowrap',
+                cursor: 'pointer',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(var(--primary-rgb), 0.4)';
+                e.currentTarget.style.filter = 'brightness(1.1)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 15px rgba(var(--primary-rgb), 0.3)';
+                e.currentTarget.style.filter = 'none';
               }}
             >
               {downloading ? (
@@ -1022,12 +1061,12 @@ const Builder = () => {
               )}
             </button>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, justifyContent: 'center' }}>
-              <span className="builder-preview-title" style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.05em' }}>LIVE PREVIEW</span>
-              <div style={{ display: 'flex', gap: '4px', marginLeft: 'auto' }}>
-                <span className="builder-preview-dot red"></span>
-                <span className="builder-preview-dot yellow"></span>
-                <span className="builder-preview-dot green"></span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, justifyContent: 'flex-end', minWidth: '80px' }}>
+              <span className="builder-preview-title desktop-only" style={{ fontSize: '0.6rem', fontWeight: 900, letterSpacing: '0.15em', opacity: 0.5, textTransform: 'uppercase' }}>Preview</span>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                <span className="builder-preview-dot" style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#ef4444', opacity: 0.8 }}></span>
+                <span className="builder-preview-dot" style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#f59e0b', opacity: 0.8 }}></span>
+                <span className="builder-preview-dot" style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', opacity: 0.8 }}></span>
               </div>
             </div>
           </div>
@@ -1128,19 +1167,28 @@ const Builder = () => {
           .btn-close-mobile { 
             display: flex !important; 
             align-items: center;
-            gap: 6px;
-            background: rgba(var(--primary-rgb), 0.1);
-            border: 1px solid rgba(var(--primary-rgb), 0.2);
-            color: var(--primary);
-            padding: 4px 10px;
+            justify-content: center;
+            gap: 8px;
+            width: 120px !important;
+            height: 36px !important;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid var(--surface-border);
+            color: var(--text-main);
+            padding: 0;
             border-radius: 8px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            transition: all 0.2s ease;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            white-space: nowrap;
           }
           .btn-close-mobile:hover {
             background: var(--primary);
+            border-color: var(--primary);
             color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
           }
         }
 
