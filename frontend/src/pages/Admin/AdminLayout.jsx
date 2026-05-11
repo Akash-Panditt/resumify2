@@ -187,7 +187,8 @@ const AdminLayout = () => {
       <style>{`
         .admin-wrapper {
           display: flex;
-          min-height: 100vh;
+          height: 100vh;
+          overflow: hidden;
           background: var(--bg-color);
         }
 
@@ -209,9 +210,7 @@ const AdminLayout = () => {
           flex-direction: column;
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
           z-index: 1001;
-          position: sticky;
-          top: 0;
-          height: 100vh;
+          height: 100%;
         }
 
         .admin-sidebar-v2.is-collapsed {
@@ -277,6 +276,7 @@ const AdminLayout = () => {
           display: flex;
           flex-direction: column;
           gap: 0.25rem;
+          overflow-y: auto;
         }
 
         .sidebar-link {
@@ -369,8 +369,7 @@ const AdminLayout = () => {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          position: sticky;
-          top: 0;
+          flex-shrink: 0;
           z-index: 100;
         }
 

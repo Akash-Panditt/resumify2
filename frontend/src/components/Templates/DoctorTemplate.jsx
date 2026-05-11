@@ -14,7 +14,6 @@ const DoctorTemplate = React.forwardRef(({ data }, ref) => {
       color: '#1f2937',
       minHeight: '1056px',
       width: '816px',
-      margin: '0 auto',
       fontFamily: "'Georgia', serif",
       lineHeight: 1.6,
       position: 'relative'

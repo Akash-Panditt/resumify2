@@ -71,7 +71,7 @@ const ATSChecker = () => {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
-                timeout: 30000 
+                timeout: 60000 
             });
             setResults(res.data);
             setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
@@ -79,6 +79,7 @@ const ATSChecker = () => {
             console.error('ATS Error:', err);
             const status = err.response?.status;
             const backendMessage = err.response?.data?.message;
+            const backendSuggestion = err.response?.data?.suggestion;
             const backendError = err.response?.data?.error;
 
             if (status === 401) {
@@ -87,8 +88,10 @@ const ATSChecker = () => {
                 setError('File too large (Max 5MB).');
             } else if (err.code === 'ECONNABORTED') {
                 setError('Analysis timed out. Please try a smaller file.');
+            } else if (backendMessage) {
+                setError(backendSuggestion ? `${backendMessage} ${backendSuggestion}` : backendMessage);
             } else {
-                setError(backendMessage || backendError || 'Analysis failed. Check your connection or file type.');
+                setError(backendError || 'Analysis failed. Check your connection or file type.');
             }
         } finally {
             setLoading(false);

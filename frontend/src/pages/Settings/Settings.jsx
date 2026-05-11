@@ -109,7 +109,7 @@ const Settings = () => {
                     <label className="form-label">Email Address</label>
                     <input className="form-input" disabled value={user?.email || ''} />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group form-group-full">
                     <label className="form-label">Role</label>
                     <div className="badge-wrapper">
                       {user?.role === 'admin' ? 
@@ -125,53 +125,70 @@ const Settings = () => {
               <div className="card usage-card">
                 <div className="usage-header">
                   <div className="plan-info">
-                    <h2 className="plan-title">
-                      Current Plan: <span className="text-gradient capitalize">{user?.plan || 'Free'}</span>
-                    </h2>
-                    <p className="plan-desc">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                       <div style={{ padding: '0.5rem', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '12px', color: 'var(--primary)', display: 'flex', boxShadow: '0 4px 10px rgba(99, 102, 241, 0.1)' }}>
+                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                       </div>
+                       <h2 className="plan-title" style={{ margin: 0, fontSize: '1.4rem' }}>
+                         Current Plan: <span className="text-gradient capitalize" style={{ fontWeight: 800 }}>{user?.plan || 'Free'}</span>
+                       </h2>
+                    </div>
+                    <p className="plan-desc" style={{ marginTop: '0.5rem', paddingLeft: '3.2rem', fontSize: '0.95rem' }}>
                       {['basic', 'pro', 'premium'].includes(user?.plan) ? 
-                        'You have full access to all features.' : 
-                        'Upgrade to unlock more templates and AI features.'}
+                        'You have full access to all premium features and templates.' : 
+                        'Upgrade to unlock unlimited templates and AI features.'}
                     </p>
                   </div>
                   {!['basic', 'pro', 'premium'].includes(user?.plan) && (
-                    <button className="btn btn-primary upgrade-btn" onClick={() => navigate('/pricing')}>Upgrade</button>
+                    <button className="btn btn-primary upgrade-btn" onClick={() => navigate('/pricing')} style={{ boxShadow: '0 8px 20px rgba(99,102,241,0.3)', padding: '0.85rem 2.5rem', fontWeight: 800, borderRadius: '50px' }}>
+                       ✨ Upgrade Now
+                    </button>
                   )}
                 </div>
 
                 <div className="usage-stats-grid">
                   <div className="stat-item">
-                    <span className="stat-label">Status</span>
-                    <span className="stat-value text-success">ACTIVE</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                      <span className="stat-label" style={{ margin: 0 }}>Account Status</span>
+                    </div>
+                    <span className="stat-value text-success" style={{ fontSize: '1.25rem', paddingLeft: '1.5rem' }}>ACTIVE</span>
                   </div>
                   <div className="stat-item">
-                    <span className="stat-label">Renewal | Expiry</span>
-                    <span className="stat-value">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                      <span className="stat-label" style={{ margin: 0 }}>Renewal | Expiry</span>
+                    </div>
+                    <span className="stat-value" style={{ fontSize: '1.2rem', paddingLeft: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       {user?.expires_at ? (
                         <>
                           {new Date(user.expires_at).toLocaleDateString()}
-                          <span className="days-left">
-                            ({Math.ceil((new Date(user.expires_at) - new Date()) / (1000 * 60 * 60 * 24))}d left)
+                          <span className="days-left" style={{ background: 'rgba(99,102,241,0.1)', padding: '0.2rem 0.6rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid rgba(99,102,241,0.2)' }}>
+                            {Math.ceil((new Date(user.expires_at) - new Date()) / (1000 * 60 * 60 * 24))}d left
                           </span>
                         </>
-                      ) : 'Lifetime'}
+                      ) : 'Lifetime Access'}
                     </span>
                   </div>
                 </div>
 
-                <div className="usage-progress-section">
-                  <div className="usage-label-row">
-                    <span className="usage-label">PDF Downloads Used</span>
-                    <span className={`usage-count ${isNearLimit ? 'text-error' : ''}`}>
-                      {currentDownloads} / {maxDownloads === Infinity ? '∞' : maxDownloads}
+                <div className="usage-progress-section" style={{ background: 'var(--surface)', padding: '1.75rem', borderRadius: '16px', border: '1px solid var(--surface-border)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.02)' }}>
+                  <div className="usage-label-row" style={{ marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-muted)' }}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                      <span className="usage-label" style={{ fontWeight: 600, color: 'var(--text-main)', fontSize: '0.95rem' }}>PDF Downloads Used</span>
+                    </div>
+                    <span className={`usage-count ${isNearLimit ? 'text-error' : ''}`} style={{ fontWeight: 800, fontSize: '1rem' }}>
+                      {currentDownloads} <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>/ {maxDownloads === Infinity ? '∞' : maxDownloads}</span>
                     </span>
                   </div>
-                  <div className="usage-progress-container">
-                    <div className={`usage-progress-bar ${isNearLimit ? 'danger' : ''}`} style={{ width: `${usagePercent}%` }}></div>
+                  <div className="usage-progress-container" style={{ height: '10px', background: 'var(--progress-bg)', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.05)' }}>
+                    <div className={`usage-progress-bar ${isNearLimit ? 'danger' : ''}`} style={{ width: `${usagePercent}%`, borderRadius: '6px', background: isNearLimit ? 'linear-gradient(90deg, #f43f5e 0%, #e11d48 100%)' : 'linear-gradient(90deg, var(--primary) 0%, #a855f7 100%)' }}></div>
                   </div>
                   {isNearLimit && (
-                    <div className="usage-warning">
-                      ⚠️ You're running low on downloads. Consider upgrading.
+                    <div className="usage-warning" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1.25rem', background: 'rgba(244, 63, 94, 0.05)', border: '1px solid rgba(244, 63, 94, 0.2)', padding: '0.75rem 1rem', borderRadius: '8px' }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--error)' }}><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                      <span style={{ fontWeight: 500, fontSize: '0.9rem', color: 'var(--error)' }}>You're running low on downloads. Upgrade for unlimited access.</span>
                     </div>
                   )}
                 </div>
@@ -196,7 +213,7 @@ const Settings = () => {
 
                 {masterProfile && (
                   <div className="profile-form">
-                    <div className="responsive-grid">
+                    <div className="form-layout">
                       <div className="form-group">
                         <label className="form-label">Full Name</label>
                         <input 
@@ -206,7 +223,7 @@ const Settings = () => {
                             ...masterProfile,
                             personalDetails: { ...masterProfile.personalDetails, fullName: e.target.value }
                           })}
-                          placeholder="e.g. John Doe"
+                          placeholder="e.g. Aakash Pandit"
                         />
                       </div>
                       <div className="form-group">
@@ -336,32 +353,44 @@ const Settings = () => {
             box-shadow: 0 0 10px var(--primary);
           }
 
+          .settings-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+          }
+
           .settings-content {
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: 1.5rem;
           }
 
           .settings-card, .usage-card, .profile-card {
-            padding: clamp(1.5rem, 5vw, 2.5rem);
+            padding: clamp(1rem, 3vw, 1.5rem);
           }
 
           .section-title {
-            font-size: 1.5rem;
+            font-size: 1.35rem;
             font-weight: 800;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
+            text-align: left;
           }
 
           .section-subtitle {
             color: var(--text-muted);
             font-size: 0.9rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.25rem;
+            text-align: left;
           }
 
           .form-layout {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.25rem;
+          }
+
+          .form-group-full {
+            grid-column: 1 / -1;
           }
 
           .badge-wrapper {
@@ -377,8 +406,8 @@ const Settings = () => {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
             flex-wrap: wrap;
           }
 
@@ -400,8 +429,8 @@ const Settings = () => {
           .usage-stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
           }
 
           .stat-item {

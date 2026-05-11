@@ -8,7 +8,7 @@ const CompactTemplate = React.forwardRef(({ data }, ref) => {
       {/* Header - Compact */}
       <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: '800', color: '#0f172a' }}>{personalDetails?.fullName || 'Your Name'}</h1>
+          <h1 style={{ fontSize: '1.75rem', fontWeight: '800', color: '#0f172a' }}>{personalDetails?.fullName}</h1>
           <h2 style={{ fontSize: '1.1rem', fontWeight: '500', color: '#64748b' }}>{personalDetails?.jobTitle}</h2>
         </div>
         <div style={{ textAlign: 'right', fontSize: '0.85rem', color: '#475569' }}>

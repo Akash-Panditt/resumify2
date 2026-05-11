@@ -24,9 +24,9 @@ const TechTemplate = React.forwardRef(({ data }, ref) => {
         </div>
         
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem', fontSize: '0.85rem', color: textMuted }}>
-           {personalDetails?.email && <div><span style={{color: primary}}>→ Contact:</span> {personalDetails.email}</div>}
-           {personalDetails?.github && <div><span style={{color: primary}}>→ GitHub:</span> {personalDetails.github}</div>}
-           {personalDetails?.linkedin && <div><span style={{color: primary}}>→ LinkedIn:</span> {personalDetails.linkedin}</div>}
+           {personalDetails?.email && <div><span style={{color: primary}}>→ Contact:</span> <a href={`mailto:${personalDetails.email}`} style={{ color: 'inherit', textDecoration: 'none' }}>{personalDetails.email}</a></div>}
+           {personalDetails?.github && <div><span style={{color: primary}}>→ GitHub:</span> <a href={personalDetails.github.startsWith('http') ? personalDetails.github : `https://${personalDetails.github}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>{personalDetails.github}</a></div>}
+           {personalDetails?.linkedin && <div><span style={{color: primary}}>→ LinkedIn:</span> <a href={personalDetails.linkedin.startsWith('http') ? personalDetails.linkedin : `https://${personalDetails.linkedin}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>{personalDetails.linkedin}</a></div>}
            {personalDetails?.address && <div><span style={{color: primary}}>→ Location:</span> {personalDetails.address}</div>}
         </div>
       </div>

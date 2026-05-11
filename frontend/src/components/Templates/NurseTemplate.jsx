@@ -11,10 +11,10 @@ const NurseTemplate = React.forwardRef(({ data }, ref) => {
       {/* Header Banner */}
       <div style={{ backgroundColor: tealDark, color: 'white', padding: '3rem', textAlign: 'center' }}>
         <h1 style={{ fontSize: '2.5rem', fontWeight: '700', margin: '0 0 0.5rem 0', letterSpacing: '1px' }}>
-          {personalDetails?.fullName || 'Your Name'}
+          {personalDetails?.fullName}
         </h1>
         <div style={{ fontSize: '1.2rem', color: tealLight, fontWeight: '500', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '1rem' }}>
-          {personalDetails?.jobTitle || 'Registered Nurse'}
+          {personalDetails?.jobTitle}
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', fontSize: '0.9rem', color: '#f0fdfa' }}>
           {personalDetails?.phone && <span>{personalDetails.phone}</span>}

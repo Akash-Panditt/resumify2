@@ -4,6 +4,8 @@ import axios from 'axios';
 import Navbar from '../../components/Navbar';
 import GoldStar from '../../components/GoldStar';
 import StatusModal from '../../components/StatusModal';
+import ChoiceModal from '../../components/ChoiceModal';
+import { TEMPLATE_MAP } from '../../config/templateMap';
 
 const SvgIcon = ({ children }) => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -26,6 +28,12 @@ const CATEGORIES = [
 ];
 
 const TEMPLATES = [
+  { id: 'ats-6', name: 'ATS Gold Elite', category: 'ATS Friendly', description: 'Premium gold-accented layout optimized for high-end roles.', isPremium: true, popular: true },
+  { id: 'ds-7', name: 'Structured Gray', category: 'Designer', description: 'Modern structured layout with dark header and sidebar.', isPremium: true, popular: true },
+  { id: 'mk-6', name: 'Accounting Blue', category: 'Marketing', description: 'Professional dark-header layout with blue accents.', isPremium: true, popular: true },
+  { id: 'mk-7', name: 'Sage Minimalist', category: 'Marketing', description: 'Soft green sidebar design for modern professionals.', isPremium: true },
+  { id: 'mk-8', name: 'Corporate Dynamic', category: 'Marketing', description: 'Bold navy design with geometric header accents.', isPremium: true },
+  { id: 'ds-6', name: 'Timeline Artistic', category: 'Designer', description: 'Minimalist B&W layout with unique timeline dates.', isPremium: true },
   { id: 'ats-1', name: 'Standard Professional', category: 'ATS Friendly', description: 'Classic executive layout optimized for AI parsers.', isPremium: false, popular: true },
   { id: 'ats-2', name: 'Technical Grid', category: 'ATS Friendly', description: 'Structured layout focusing on technical toolsets.', isPremium: false },
   { id: 'ats-3', name: 'Clean Minimalist', category: 'ATS Friendly', description: 'Elegant and airy design with maximum clarity.', isPremium: false },
@@ -96,60 +104,8 @@ const TemplateMiniPreview = ({ templateId }) => {
     languages: [{ name: 'English', level: 5 }]
   };
 
-  const templates = {
-    'dr-1': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.DoctorD1 }))),
-    'dr-2': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.DoctorD2 }))),
-    'dr-3': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.DoctorD3 }))),
-    'dr-4': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.DoctorD4 }))),
-    'dr-5': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.DoctorD5 }))),
-    'ns-1': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.NurseN1 }))),
-    'ns-2': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.NurseN2 }))),
-    'ns-3': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.NurseN3 }))),
-    'ns-4': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.NurseN4 }))),
-    'ns-5': React.lazy(() => import('../../components/Templates/MedicalTemplates').then(m => ({ default: m.NurseN5 }))),
-    'lw-1': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.LawyerL1 }))),
-    'lw-2': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.LawyerL2 }))),
-    'lw-3': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.LawyerL3 }))),
-    'lw-4': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.LawyerL4 }))),
-    'lw-5': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.LawyerL5 }))),
-    'tc-1': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.TeacherT1 }))),
-    'tc-2': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.TeacherT2 }))),
-    'tc-3': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.TeacherT3 }))),
-    'tc-4': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.TeacherT4 }))),
-    'tc-5': React.lazy(() => import('../../components/Templates/LegalAndEduTemplates').then(m => ({ default: m.TeacherT5 }))),
-    'mk-1': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.MarketingM1 }))),
-    'mk-2': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.MarketingM2 }))),
-    'mk-3': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.MarketingM3 }))),
-    'mk-4': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.MarketingM4 }))),
-    'mk-5': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.MarketingM5 }))),
-    'ds-1': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.DesignerDS1 }))),
-    'ds-2': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.DesignerDS2 }))),
-    'ds-3': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.DesignerDS3 }))),
-    'ds-4': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.DesignerDS4 }))),
-    'ds-5': React.lazy(() => import('../../components/Templates/CreativeTemplates').then(m => ({ default: m.DesignerDS5 }))),
-    'ats-1': React.lazy(() => import('../../components/Templates/ProfessionalTemplate')),
-    'ats-2': React.lazy(() => import('../../components/Templates/TechTemplate')),
-    'ats-3': React.lazy(() => import('../../components/Templates/MinimalistTemplate')),
-    'ats-4': React.lazy(() => import('../../components/Templates/ModernTemplate')),
-    'ats-5': React.lazy(() => import('../../components/Templates/FormalTemplate')),
-    'rt-1': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR1 }))),
-    'rt-2': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR2 }))),
-    'rt-3': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR3 }))),
-    'rt-4': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR4 }))),
-    'rt-5': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.RetailR5 }))),
-    'fr-1': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF1 }))),
-    'fr-2': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF2 }))),
-    'fr-3': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF3 }))),
-    'fr-4': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF4 }))),
-    'fr-5': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.FresherF5 }))),
-    'st-1': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS1 }))),
-    'st-2': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS2 }))),
-    'st-3': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS3 }))),
-    'st-4': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS4 }))),
-    'st-5': React.lazy(() => import('../../components/Templates/ServiceAndEntryTemplates').then(m => ({ default: m.StudentS5 }))),
-  };
 
-  const TemplateComponent = templates[templateId];
+  const TemplateComponent = TEMPLATE_MAP[templateId];
   if (!TemplateComponent) return <div style={{ padding: '2rem', color: '#999' }}>Preview unavailable</div>;
 
   return (
@@ -165,19 +121,30 @@ const Templates = () => {
   const [selectedCategory, setSelectedCategory] = useState("All templates");
   const [selectedAccent, setSelectedAccent] = useState(ACCENT_COLORS[0]);
   const [modal, setModal] = useState({ isOpen: false, title: '', message: '' });
+  const [choiceModal, setChoiceModal] = useState({ isOpen: false, templateId: null });
   const user = JSON.parse(localStorage.getItem('resumify_user') || '{}');
 
-  const handleSelect = async (templateId) => {
+  const handleSelect = (templateId) => {
     if (!user) return navigate('/login');
+    setChoiceModal({ isOpen: true, templateId });
+  };
+
+  const confirmSelection = async (shouldPrefill) => {
+    const templateId = choiceModal.templateId;
+    setChoiceModal({ ...choiceModal, isOpen: false });
     setLoading(true);
     try {
       localStorage.setItem('resumify_accent_color', selectedAccent.hex);
-      const isPremium = TEMPLATES.find(t => t.id === templateId)?.isPremium || false;
+      const template = TEMPLATES.find(t => t.id === templateId);
+      const isPremium = template?.isPremium || false;
+      const category = template?.category || 'General';
 
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes`, {
         template: templateId,
         color: selectedAccent.hex,
-        hasUsedPremiumTemplate: isPremium
+        hasUsedPremiumTemplate: isPremium,
+        prefill: shouldPrefill,
+        category: category
       });
       navigate(`/builder/${res.data._id}`);
     } catch (err) {
@@ -189,6 +156,7 @@ const Templates = () => {
       });
     } finally {
       setLoading(false);
+      setChoiceModal({ isOpen: false, templateId: null });
     }
   };
 
@@ -201,6 +169,38 @@ const Templates = () => {
       <Navbar user={user} />
 
       <main className="templates-container">
+        <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-start' }}>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="btn-back-to-dashboard"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.6rem 1.2rem',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid var(--surface-border)',
+              borderRadius: '12px',
+              color: 'var(--text-main)',
+              fontSize: '0.85rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+              e.currentTarget.style.transform = 'translateX(-4px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+              e.currentTarget.style.transform = 'translateX(0)';
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Dashboard
+          </button>
+        </div>
+
         {/* Cinematic Header */}
         <div className="templates-header">
           <div className="header-badge">Design Your Future</div>
@@ -290,7 +290,7 @@ const Templates = () => {
 
         <style>{`
           .templates-container {
-            padding: clamp(1.5rem, 5vw, 4rem) 1rem;
+            padding: clamp(1rem, 3vw, 2.5rem) 1rem;
             max-width: 1400px;
             margin: 0 auto;
             width: 100%;
@@ -298,7 +298,7 @@ const Templates = () => {
           
           .templates-header {
             text-align: center;
-            margin-bottom: clamp(2rem, 8vw, 4rem);
+            margin-bottom: clamp(1.5rem, 5vw, 2.5rem);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -310,22 +310,22 @@ const Templates = () => {
             text-transform: uppercase;
             letter-spacing: 0.2em;
             color: var(--primary);
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             background: rgba(var(--primary-rgb, 99, 102, 241), 0.1);
-            padding: 0.5rem 1.25rem;
+            padding: 0.4rem 1rem;
             border-radius: 50px;
           }
 
           .cinematic-title {
-            font-size: clamp(2.2rem, 8vw, 4.5rem);
+            font-size: clamp(1.8rem, 6vw, 3.2rem);
             font-weight: 900;
             line-height: 1.1;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
           }
 
           .header-line {
-            width: 60px;
-            height: 4px;
+            width: 40px;
+            height: 3px;
             background: var(--primary);
             border-radius: 2px;
             box-shadow: 0 0 15px var(--primary);
@@ -335,11 +335,11 @@ const Templates = () => {
             background: var(--surface);
             border: 1px solid var(--surface-border);
             border-radius: var(--radius-2xl);
-            padding: 1.5rem 2rem;
-            margin-bottom: 3rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1rem;
             box-shadow: 0 20px 50px -20px rgba(0,0,0,0.3);
             backdrop-filter: blur(20px);
           }
@@ -353,7 +353,7 @@ const Templates = () => {
             
             .color-section {
               flex-shrink: 0;
-              padding-right: 2rem;
+              padding-right: 1.5rem;
               border-right: 1px solid var(--surface-border);
             }
 
@@ -454,7 +454,7 @@ const Templates = () => {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.6rem 1.25rem;
+            padding: 0.5rem 1rem;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--surface-border);
             border-radius: var(--radius-xl);
@@ -677,6 +677,12 @@ const Templates = () => {
         type="error"
         title={modal.title}
         message={modal.message}
+      />
+
+      <ChoiceModal
+        isOpen={choiceModal.isOpen}
+        onClose={() => setChoiceModal({ isOpen: false, templateId: null })}
+        onSelect={confirmSelection}
       />
     </div>
   );

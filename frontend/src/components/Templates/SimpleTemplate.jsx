@@ -8,12 +8,12 @@ const SimpleTemplate = React.forwardRef(({ data }, ref) => {
       {/* Header - Simple & ATS Friendly */}
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2.25rem', marginBottom: '0.25rem', fontWeight: '700' }}>
-          {personalDetails?.fullName || 'Your Name'}
+          {personalDetails?.fullName}
         </h1>
         <div style={{ fontSize: '0.9rem', color: '#333' }}>
-          {personalDetails?.email} | {personalDetails?.phone} | {personalDetails?.address}
+          <a href={`mailto:${personalDetails?.email}`} style={{ color: 'inherit', textDecoration: 'none' }}>{personalDetails?.email}</a> | {personalDetails?.phone} | {personalDetails?.address}
         </div>
-        {personalDetails?.linkedin && <div style={{ fontSize: '0.9rem', color: '#333' }}>{personalDetails.linkedin}</div>}
+        {personalDetails?.linkedin && <div style={{ fontSize: '0.9rem', color: '#333' }}><a href={personalDetails.linkedin.startsWith('http') ? personalDetails.linkedin : `https://${personalDetails.linkedin}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>{personalDetails.linkedin}</a></div>}
       </div>
 
       {/* Summary */}

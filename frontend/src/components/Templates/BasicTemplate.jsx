@@ -8,7 +8,7 @@ const BasicTemplate = React.forwardRef(({ data }, ref) => {
       {/* Header - Basic Grey */}
       <div style={{ backgroundColor: '#f3f4f6', padding: '2rem', borderRadius: '4px', marginBottom: '2.5rem', borderLeft: '8px solid #9ca3af' }}>
         <h1 style={{ fontSize: '2.25rem', color: '#111827', marginBottom: '0.25rem', fontWeight: '800' }}>
-          {personalDetails?.fullName || 'Your Name'}
+          {personalDetails?.fullName}
         </h1>
         <h2 style={{ fontSize: '1.1rem', color: '#4b5563', marginBottom: '1rem', fontWeight: '500' }}>
           {personalDetails?.jobTitle}

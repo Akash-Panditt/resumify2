@@ -15,17 +15,54 @@ const PhotoPremiumTemplate = forwardRef(({ data }, ref) => {
       <div style={{ width: '260px', background: '#0f172a', color: '#f8fafc', padding: '40px 25px', display: 'flex', flexDirection: 'column' }}>
         {/* Profile Action Card */}
         <div style={{ marginBottom: '35px', textAlign: 'center' }}>
-          <div style={{ width: '160px', height: '160px', margin: '0 auto 20px auto', borderRadius: '50%', overflow: 'hidden', border: '4px solid #6366f1', boxShadow: '0 10px 25px rgba(99,102,241,0.3)', padding: '4px', background: '#0f172a' }}>
-            <div style={{ width: '100%', height: '100%', borderRadius: '50%', overflow: 'hidden' }}>
+          <div 
+            onClick={data.onPhotoClick}
+            style={{ 
+              width: '160px', 
+              height: '160px', 
+              margin: '0 auto 20px auto', 
+              borderRadius: '50%', 
+              overflow: 'hidden', 
+              border: '4px solid #6366f1', 
+              boxShadow: '0 10px 25px rgba(99,102,241,0.3)', 
+              padding: '4px', 
+              background: '#0f172a',
+              cursor: 'pointer',
+              transition: 'transform 0.2s ease',
+              position: 'relative'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            <div style={{ width: '100%', height: '100%', borderRadius: '50%', overflow: 'hidden', position: 'relative' }}>
               {personalDetails?.photo ? (
-                <img src={personalDetails.photo} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <>
+                  <img src={personalDetails.photo} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.2s ease', fontSize: '0.8rem', fontWeight: 'bold' }} onMouseEnter={(e) => e.target.style.opacity = 1} onMouseLeave={(e) => e.target.style.opacity = 0}>
+                    CHANGE PHOTO
+                  </div>
+                </>
               ) : (
-                <div style={{ width: '100%', height: '100%', background: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontSize: '1.5rem' }}>👤</div>
+                <div style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  background: '#1e293b', 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  color: '#64748b'
+                }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '8px', color: '#818cf8' }}>
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+                  </svg>
+                  <span style={{ fontSize: '0.7rem', fontWeight: '800', color: '#818cf8', letterSpacing: '1px', textTransform: 'uppercase' }}>Import Photo</span>
+                </div>
               )}
             </div>
           </div>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '5px', letterSpacing: '-0.02em' }}>{personalDetails.fullName}</h2>
-          <p style={{ fontSize: '0.85rem', color: '#818cf8', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{personalDetails.jobTitle}</p>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '5px', letterSpacing: '-0.02em' }}>{personalDetails.fullName || 'Your Name'}</h2>
+          <p style={{ fontSize: '0.85rem', color: '#818cf8', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{personalDetails.jobTitle || 'Your Job Title'}</p>
         </div>
 
         {/* Contact info with Icons */}

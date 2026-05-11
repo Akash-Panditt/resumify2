@@ -8,10 +8,10 @@ const MinimalistTemplate = React.forwardRef(({ data }, ref) => {
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2.25rem', fontWeight: '300', color: '#111', marginBottom: '0.25rem', letterSpacing: '-0.02em' }}>
-          {personalDetails?.fullName || 'Your Name'}
+          {personalDetails?.fullName}
         </h1>
         <div style={{ fontSize: '1rem', color: '#888', fontWeight: '300', marginBottom: '1rem' }}>
-          {personalDetails?.jobTitle || 'Your Title'}
+          {personalDetails?.jobTitle}
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', fontSize: '0.8rem', color: '#999' }}>
           {personalDetails?.email && <span>{personalDetails.email}</span>}

@@ -75,7 +75,7 @@ const Dashboard = () => {
     setConfirmDelete({ isOpen: false, resumeId: null });
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/resumes/${resumeId}`, {
-        headers: getAuthHeaders(),
+        withCredentials: true
       });
       setResumes(resumes.filter(r => r._id !== resumeId));
       setRecentDownloads(prev => prev.filter(r => r._id !== resumeId));
@@ -124,16 +124,25 @@ const Dashboard = () => {
           </div>
 
           <button
-            className="btn btn-primary"
+            className="btn btn-primary btn-maximize"
             onClick={() => navigate('/templates')}
             style={{
-              padding: '0.5rem 1.25rem',
-              fontSize: '0.9rem',
-              borderRadius: 'var(--radius-md)',
-              boxShadow: '0 4px 12px rgba(99, 102, 241, 0.2)',
-              width: 'auto'
+              padding: '0.8rem 2rem',
+              fontSize: '1rem',
+              fontWeight: '800',
+              borderRadius: '14px',
+              background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+              border: 'none',
+              boxShadow: '0 8px 20px rgba(99, 102, 241, 0.3)',
+              cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              animation: 'pulse-attention 2s infinite',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
             }}
           >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             New Resume
           </button>
         </div>
@@ -186,15 +195,13 @@ const Dashboard = () => {
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 'auto' }}>
                     Generated on {new Date(resume.downloadedAt).toLocaleDateString()}
                   </p>
-                  <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.5rem' }}>
-                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.5rem' }}>
-                      <button className="btn btn-primary" style={{ flex: 1, padding: '0.6rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => navigate(`/preview/${resume._id}`)} title="Download">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                      </button>
-                      <button className="btn btn-secondary" style={{ flex: 1, padding: '0.6rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => navigate(`/builder/${resume._id}`)} title="Edit">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                      </button>
-                    </div>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.25rem' }}>
+                    <button className="dashboard-action-btn primary" onClick={() => navigate(`/preview/${resume._id}`)} title="Download">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    </button>
+                    <button className="dashboard-action-btn" onClick={() => navigate(`/builder/${resume._id}`)} title="Edit">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    </button>
                   </div>
                 </div>
               ))}
@@ -252,10 +259,26 @@ const Dashboard = () => {
               <h3>No resumes yet. Create your first one!</h3>
               <p>Choose from our professional templates and land your dream job faster.</p>
               <button
-                className="btn btn-primary"
+                className="btn btn-primary btn-maximize"
                 onClick={() => navigate('/templates')}
-                style={{ marginTop: '1.5rem', padding: '0.85rem 2.5rem' }}
+                style={{ 
+                  marginTop: '1.5rem', 
+                  padding: '1rem 3rem',
+                  fontSize: '1.1rem',
+                  fontWeight: '800',
+                  borderRadius: '50px',
+                  background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+                  border: 'none',
+                  boxShadow: '0 10px 25px rgba(99, 102, 241, 0.4)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  animation: 'pulse-attention 2s infinite',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.75rem'
+                }}
               >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 Create My First Resume
               </button>
             </div>
@@ -275,25 +298,22 @@ const Dashboard = () => {
                     Last updated {new Date(resume.updatedAt).toLocaleDateString()}
                   </p>
                   <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
-                    <div style={{ display: 'flex', gap: '0.4rem', marginTop: '1.25rem', width: '100%', justifyContent: 'flex-start' }}>
-                      <button className="btn btn-primary" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px' }} onClick={() => navigate(`/builder/${resume._id}`)} title="Edit Resume">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.25rem', width: '100%', justifyContent: 'flex-start' }}>
+                      <button className="dashboard-action-btn primary" onClick={() => navigate(`/builder/${resume._id}`)} title="Edit Resume">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                       </button>
-                      <button className="btn btn-secondary" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px' }} onClick={() => navigate(`/preview/${resume._id}`)} title="Preview">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      <button className="dashboard-action-btn" onClick={() => navigate(`/preview/${resume._id}`)} title="Preview">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                       </button>
-                      <button className="btn btn-success" style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px' }} onClick={() => navigate(`/preview/${resume._id}`)} title="Download">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                      <button className="dashboard-action-btn success" onClick={() => navigate(`/preview/${resume._id}`)} title="Download">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                       </button>
                       <button
-                        className="btn-remove-ghost"
-                        style={{ width: '34px', height: '34px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', border: 'none', background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', transition: 'all 0.2s' }}
+                        className="dashboard-action-btn danger"
                         onClick={() => handleDeleteResume(resume._id)}
                         title="Delete"
-                        onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; e.currentTarget.style.color = '#ef4444'; }}
-                        onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
                       >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                       </button>
                     </div>
                   </div>

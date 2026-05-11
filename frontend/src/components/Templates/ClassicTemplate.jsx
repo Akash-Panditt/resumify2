@@ -8,10 +8,10 @@ const ClassicTemplate = React.forwardRef(({ data }, ref) => {
       {/* Header */}
       <div style={{ borderBottom: '3px double #333', paddingBottom: '1rem', marginBottom: '1.5rem', textAlign: 'center' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: '700', color: '#1a1a1a', marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
-          {personalDetails?.fullName || 'Your Name'}
+          {personalDetails?.fullName}
         </h1>
         <div style={{ fontSize: '1.1rem', color: '#555', fontStyle: 'italic', marginBottom: '0.75rem' }}>
-          {personalDetails?.jobTitle || 'Your Title'}
+          {personalDetails?.jobTitle}
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.75rem', fontSize: '0.85rem', color: '#666' }}>
           {personalDetails?.email && <span>{personalDetails.email}</span>}

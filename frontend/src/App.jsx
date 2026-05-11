@@ -31,41 +31,41 @@ function App() {
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'dummy_client_id_for_dev_change_me';
 
   return (
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-    <ThemeProvider>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/templates" element={<Templates />} />
-        <Route path="/builder/:id" element={<Builder />} />
-        <Route path="/preview/:id" element={<Preview />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/pricing" element={<Pricing />} />
-        
-        {/* Admin Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="users" element={<UserManagement />} />
-          <Route path="approvals" element={<UpgradeApprovals />} />
-          <Route path="templates" element={<TemplateManagement />} />
-          <Route path="resumes" element={<AdminResumes />} />
-          <Route path="pricing" element={<PricingManagement />} />
-          <Route path="payments" element={<PaymentsDashboard />} />
-          <Route path="announcements" element={<AdminAnnouncements />} />
-          <Route path="settings" element={<AdminSettings />} />
-          <Route index element={<Navigate to="/admin/dashboard" replace />} />
-        </Route>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID} useFedCM={true}>
+      <ThemeProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/templates" element={<Templates />} />
+            <Route path="/builder/:id" element={<Builder />} />
+            <Route path="/preview/:id" element={<Preview />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/pricing" element={<Pricing />} />
 
-        <Route path="/ats-checker" element={<ATSChecker />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
-    </ThemeProvider>
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="approvals" element={<UpgradeApprovals />} />
+              <Route path="templates" element={<TemplateManagement />} />
+              <Route path="resumes" element={<AdminResumes />} />
+              <Route path="pricing" element={<PricingManagement />} />
+              <Route path="payments" element={<PaymentsDashboard />} />
+              <Route path="announcements" element={<AdminAnnouncements />} />
+              <Route path="settings" element={<AdminSettings />} />
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+            </Route>
+
+            <Route path="/ats-checker" element={<ATSChecker />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
     </GoogleOAuthProvider>
   );
 }

@@ -9,7 +9,6 @@ const TemplateManagement = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [newTemplate, setNewTemplate] = useState({
     name: '',
-    category_id: '',
     image_url: '',
     is_premium: false
   });
@@ -40,7 +39,7 @@ const TemplateManagement = () => {
     e.preventDefault();
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/templates`, newTemplate);
-      setNewTemplate({ name: '', category_id: '', image_url: '', is_premium: false });
+      setNewTemplate({ name: '', image_url: '', is_premium: false });
       setIsAdding(false);
       fetchData();
     } catch (err) {
@@ -104,18 +103,7 @@ const TemplateManagement = () => {
                 required
               />
             </div>
-            <div className="form-group">
-              <label className="form-label">Category</label>
-              <select
-                className="form-input"
-                value={newTemplate.category_id}
-                onChange={(e) => setNewTemplate({ ...newTemplate, category_id: e.target.value })}
-                required
-              >
-                <option value="">Select a Category</option>
-                {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-            </div>
+            {/* Category section removed */}
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
               <label className="form-label">Image URL (Preview)</label>
               <input
@@ -157,7 +145,6 @@ const TemplateManagement = () => {
             </div>
             <div className="template-info">
               <h3 style={{ fontSize: '1.1rem' }}>{t.name}</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Category: {t.categories?.name || 'Uncategorized'}</p>
               <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
                 <button 
                   className={`btn ${t.is_premium ? 'btn-secondary' : 'btn-primary'}`} 

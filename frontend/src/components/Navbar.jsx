@@ -22,39 +22,45 @@ const Navbar = ({ user }) => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-    if (!isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
   };
-  
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.body.style.touchAction = '';
+    }
+  }, [isMenuOpen]);
+
   useEffect(() => {
     setIsMenuOpen(false);
-    document.body.style.overflow = 'unset';
   }, [location]);
 
-  const planBadgeClass = ['premium', 'pro', 'basic'].includes(user?.plan) 
-    ? 'badge-purple' 
+  const planBadgeClass = ['premium', 'pro', 'basic'].includes(user?.plan)
+    ? 'badge-purple'
     : user?.plan === 'enterprise' ? 'badge-success' : 'badge-primary';
 
   return (
     <>
       {/* Background Overlay for Mobile Menu */}
-      <div 
-        className={`mobile-overlay ${isMenuOpen ? 'active' : ''}`} 
+      <div
+        className={`mobile-overlay ${isMenuOpen ? 'active' : ''}`}
         onClick={toggleMenu}
       />
 
       <nav className="navbar">
         <div className="nav-container">
-          <h1 className="text-gradient" style={{ cursor: 'pointer', margin: 0, fontSize: '1.5rem' }} onClick={() => navigate(user ? '/dashboard' : '/')}>
+          <h1 className="text-gradient brand-logo" onClick={() => navigate(user ? '/dashboard' : '/')}>
             Resumify
           </h1>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-               {location.pathname !== '/' && <ThemeToggle />}
+              {location.pathname !== '/' && <ThemeToggle />}
             </div>
             <button className="mobile-menu-toggle mobile-only" onClick={toggleMenu} aria-label="Toggle menu" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {isMenuOpen ? (
@@ -68,33 +74,33 @@ const Navbar = ({ user }) => {
           <div className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
             {/* Mobile Header in Menu */}
             <div className="mobile-only nav-user-preview">
-               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontWeight: 700, fontSize: '1.2rem' }}>Menu</span>
-               </div>
-               {user && (
-                 <div style={{ marginTop: '1rem' }}>
-                    <p style={{ margin: 0, fontWeight: 600 }}>{user.name}</p>
-                    <span className={`badge ${planBadgeClass}`} style={{ marginTop: '0.25rem' }}>{user.plan || 'free'}</span>
-                 </div>
-               )}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontWeight: 700, fontSize: '1.2rem' }}>Menu</span>
+              </div>
+              {user && (
+                <div style={{ marginTop: '1rem' }}>
+                  <p style={{ margin: 0, fontWeight: 600 }}>{user.name}</p>
+                  <span className={`badge ${planBadgeClass}`} style={{ marginTop: '0.25rem' }}>{user.plan || 'free'}</span>
+                </div>
+              )}
             </div>
-            
+
             {user ? (
               <>
                 {/* Desktop Plan Badge */}
                 <span className={`badge ${planBadgeClass} desktop-only`} style={{ alignSelf: 'center' }}>{user?.plan || 'free'}</span>
-                
+
                 {user?.role === 'admin' && location.pathname !== '/' && (
                   <button className="btn btn-secondary" onClick={() => navigate('/admin/dashboard')} style={{ justifyContent: 'flex-start' }}>
                     🛡️ Admin Panel
                   </button>
                 )}
-                
+
                 <Link to="/dashboard" className={`btn ${location.pathname === '/dashboard' ? 'btn-primary' : 'btn-secondary'}`} style={{ justifyContent: 'flex-start' }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                   Dashboard
                 </Link>
-                
+
                 {location.pathname !== '/' && (
                   <>
                     <Link to="/ats-checker" className={`btn ${location.pathname === '/ats-checker' ? 'btn-primary' : 'btn-secondary'}`} style={{ justifyContent: 'flex-start' }}>
@@ -111,7 +117,7 @@ const Navbar = ({ user }) => {
                     </Link>
                   </>
                 )}
-                
+
                 <button className="btn btn-danger logout-btn" onClick={handleLogout} style={{ justifyContent: 'flex-start' }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                   Logout
@@ -126,7 +132,7 @@ const Navbar = ({ user }) => {
           </div>
         </div>
       </nav>
-      
+
       {/* Small CSS for Hide/Show logic */}
       <style>{`
         @media (min-width: 769px) {

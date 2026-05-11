@@ -1,8 +1,37 @@
 import React from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { format, parse } from 'date-fns';
 
 const EducationForm = ({ education, errors, onChange, onAdd, onRemove }) => {
+  
+  const handleDateChange = (index, field, date) => {
+    if (!date) {
+      onChange(index, field, '');
+      return;
+    }
+    const formattedDate = format(date, 'MMM yyyy');
+    onChange(index, field, formattedDate);
+  };
+
+  const parseDate = (dateStr) => {
+    if (!dateStr || dateStr.toLowerCase() === 'present') return null;
+    try {
+      const parsed = parse(dateStr, 'MMM yyyy', new Date());
+      if (!isNaN(parsed)) return parsed;
+    } catch (e) {}
+    const fallback = new Date(dateStr);
+    return isNaN(fallback) ? null : fallback;
+  };
+
   return (
     <div>
+      {errors.edu_general && (
+        <div style={{ padding: '0.75rem', marginBottom: '1rem', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 500, border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }}><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          {errors.edu_general}
+        </div>
+      )}
       {education.map((item, index) => (
         <div key={index} className="card" style={{ marginBottom: '1.5rem', border: '1px solid var(--surface-border)', background: 'transparent', padding: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--surface-border)', paddingBottom: '0.75rem' }}>
@@ -45,22 +74,38 @@ const EducationForm = ({ education, errors, onChange, onAdd, onRemove }) => {
             </div>
             <div className="form-group">
               <label className="form-label">Start Date <span className="required-star">*</span></label>
-              <input 
-                className={`form-input ${errors[`edu_${index}_startDate`] ? 'is-invalid' : ''}`} 
-                value={item.startDate} 
-                onChange={(e) => onChange(index, 'startDate', e.target.value)} 
-                placeholder="Aug 2018" 
+              <DatePicker
+                selected={parseDate(item.startDate)}
+                onChange={(date) => handleDateChange(index, 'startDate', date)}
+                dateFormat="MMM yyyy"
+                fixedHeight
+                className={`form-input ${errors[`edu_${index}_startDate`] ? 'is-invalid' : ''}`}
+                placeholderText="e.g. Aug 2018"
               />
               {errors[`edu_${index}_startDate`] && <span className="error-text">{errors[`edu_${index}_startDate`]}</span>}
             </div>
             <div className="form-group">
               <label className="form-label">End Date</label>
-              <input 
-                className="form-input" 
-                value={item.endDate} 
-                onChange={(e) => onChange(index, 'endDate', e.target.value)} 
-                placeholder="May 2022" 
+              <DatePicker
+                selected={parseDate(item.endDate)}
+                onChange={(date) => handleDateChange(index, 'endDate', date)}
+                dateFormat="MMM yyyy"
+                fixedHeight
+                isClearable
+                className="form-input"
+                placeholderText="Present (Leave empty)"
               />
+              <div style={{ marginTop: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                 <input 
+                   type="checkbox" 
+                   id={`present_edu_${index}`}
+                   checked={item.endDate === 'Present'}
+                   onChange={(e) => {
+                     onChange(index, 'endDate', e.target.checked ? 'Present' : '');
+                   }}
+                 />
+                 <label htmlFor={`present_edu_${index}`} style={{ fontSize: '0.85rem', color: 'var(--text-muted)', cursor: 'pointer' }}>I currently study here</label>
+              </div>
             </div>
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
               <label className="form-label">Description (Optional)</label>

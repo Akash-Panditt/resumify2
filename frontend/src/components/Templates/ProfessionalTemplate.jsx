@@ -8,16 +8,16 @@ const ProfessionalTemplate = React.forwardRef(({ data }, ref) => {
       {/* Header - Centered & Classic */}
       <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
         <h1 style={{ fontSize: '2.25rem', color: '#0f172a', marginBottom: '0.5rem', fontWeight: '800' }}>
-          {personalDetails?.fullName || 'Your Name'}
+          {personalDetails?.fullName}
         </h1>
         <h2 style={{ fontSize: '1.2rem', color: '#475569', marginBottom: '0.75rem', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-          {personalDetails?.jobTitle || 'Your Job Title'}
+          {personalDetails?.jobTitle}
         </h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.75rem', fontSize: '0.85rem', color: '#64748b' }}>
-          {personalDetails?.email && <span>{personalDetails.email}</span>}
+          {personalDetails?.email && <span><a href={`mailto:${personalDetails.email}`} style={{ color: 'inherit', textDecoration: 'none' }}>{personalDetails.email}</a></span>}
           {personalDetails?.phone && <span>| {personalDetails.phone}</span>}
           {personalDetails?.address && <span>| {personalDetails.address}</span>}
-          {personalDetails?.linkedin && <span>| {personalDetails.linkedin}</span>}
+          {personalDetails?.linkedin && <span>| <a href={personalDetails.linkedin.startsWith('http') ? personalDetails.linkedin : `https://${personalDetails.linkedin}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>{personalDetails.linkedin}</a></span>}
         </div>
       </div>
 

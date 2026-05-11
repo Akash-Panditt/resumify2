@@ -8,10 +8,10 @@ const BlueprintTemplate = React.forwardRef(({ data }, ref) => {
       {/* Header - Technical & Structured */}
       <div style={{ paddingBottom: '2.5rem', borderBottom: '1px solid #94a3b8', marginBottom: '3rem' }}>
         <h1 style={{ fontSize: '2.5rem', color: '#0f172a', marginBottom: '0.5rem', fontWeight: '900', letterSpacing: '-0.01em', fontFamily: 'Inter, sans-serif' }}>
-          {personalDetails?.fullName || 'Your Name'}
+          {personalDetails?.fullName}
         </h1>
         <h2 style={{ fontSize: '1.1rem', color: '#0d9488', fontWeight: '700', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-          {personalDetails?.jobTitle || 'Your Job Title'}
+          {personalDetails?.jobTitle}
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', fontSize: '0.8rem', color: '#64748b' }}>
           {personalDetails?.email && <div>E: {personalDetails.email}</div>}

@@ -1,6 +1,20 @@
 import React from 'react';
 
 const StatusModal = ({ isOpen, onClose, type = 'success', title, message, buttonText = 'Got it' }) => {
+  React.useEffect(() => {
+    if (isOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
+      document.body.style.touchAction = 'none';
+      return () => {
+        document.body.style.overflow = originalStyle;
+        document.body.style.height = 'unset';
+        document.body.style.touchAction = 'unset';
+      };
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const isSuccess = type === 'success';
@@ -19,7 +33,7 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
       perspective: '1000px'
     }}>
       {/* Backdrop with enhanced blur */}
-      <div 
+      <div
         onClick={isLoading ? undefined : onClose}
         style={{
           position: 'absolute',
@@ -47,7 +61,7 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
         animation: 'modalEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
         overflow: 'hidden'
       }}>
-        
+
         {/* Icon Section (3D-like Box from screenshot) */}
         <div style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'center' }}>
           {isLoading ? (
@@ -71,21 +85,21 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
 
         {/* The "Green Bar" from screenshot - Solid and glowing */}
         {!isLoading && (
-          <div style={{ 
-            height: '8px', 
-            width: '100%', 
+          <div style={{
+            height: '8px',
+            width: '100%',
             background: isSuccess ? '#22c55e' : '#ef4444',
             borderRadius: '4px',
             marginBottom: '2rem',
-            boxShadow: isSuccess 
-              ? '0 0 20px rgba(34, 197, 94, 0.4)' 
+            boxShadow: isSuccess
+              ? '0 0 20px rgba(34, 197, 94, 0.4)'
               : '0 0 20px rgba(239, 68, 68, 0.4)',
             animation: 'barGrow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)'
           }} />
         )}
 
-        <h2 style={{ 
-          fontSize: '1.75rem', 
+        <h2 style={{
+          fontSize: '1.75rem',
           fontWeight: '800',
           marginBottom: '0.75rem',
           color: '#fff',
@@ -93,19 +107,19 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
         }}>
           {title || (isLoading ? 'Processing...' : (isSuccess ? 'Success!' : 'Oops!'))}
         </h2>
-        
-        <p style={{ 
-          color: 'rgba(255, 255, 255, 0.7)', 
-          marginBottom: isLoading ? '0' : '2.5rem', 
+
+        <p style={{
+          color: 'rgba(255, 255, 255, 0.7)',
+          marginBottom: isLoading ? '0' : '2.5rem',
           lineHeight: '1.7',
           fontSize: '1.1rem',
           fontWeight: '500'
         }}>
           {message}
         </p>
-        
+
         {!isLoading && (
-          <button 
+          <button
             className={`premium-action-btn ${isSuccess ? 'success' : 'error'}`}
             onClick={onClose}
           >

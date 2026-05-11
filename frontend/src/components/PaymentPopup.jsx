@@ -7,6 +7,20 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, resumeId, pri
   const [modal, setModal] = useState({ isOpen: false, title: '', message: '' });
   const user = JSON.parse(localStorage.getItem('resumify_user') || '{}');
 
+  React.useEffect(() => {
+    if (isOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
+      document.body.style.touchAction = 'none';
+      return () => {
+        document.body.style.overflow = originalStyle;
+        document.body.style.height = 'unset';
+        document.body.style.touchAction = 'unset';
+      };
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handlePayment = async () => {
@@ -26,7 +40,7 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, resumeId, pri
       // Step 2: Verification step
       // In a real app, this is where the Razorpay/Stripe modal would open
       // and we would get a paymentId/signature.
-      
+
       const verifyRes = await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/verify`, {
         transactionId,
         itemId: resumeId || templateId,
@@ -87,12 +101,12 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, resumeId, pri
         }}>
           {resumeId ? '🚀' : '💎'}
         </div>
-        
+
         <h3 style={{ fontSize: '1.5rem', marginBottom: '0.75rem', fontWeight: 800 }}>
           {resumeId ? 'Unlock Download' : 'Unlock Template'}
         </h3>
         <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', lineHeight: 1.6 }}>
-          {message || (resumeId 
+          {message || (resumeId
             ? "Pay a small fee to download your AI-enhanced resume."
             : `The ${templateName} is a premium template. Pay a one-time fee to download this resume.`)}
         </p>
@@ -115,7 +129,7 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, resumeId, pri
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          <button 
+          <button
             className="btn btn-primary"
             style={{ width: '100%', justifyContent: 'center', padding: '1rem', fontSize: '1rem' }}
             onClick={handlePayment}
@@ -123,7 +137,7 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, resumeId, pri
           >
             {loading ? 'Processing...' : `Pay ₹${price} & Download`}
           </button>
-          <button 
+          <button
             className="btn btn-secondary"
             style={{ width: '100%', justifyContent: 'center', padding: '1rem', fontSize: '1rem' }}
             onClick={onClose}
@@ -143,7 +157,7 @@ const PaymentPopup = ({ isOpen, onClose, templateName, templateId, resumeId, pri
         }
       `}</style>
 
-      <StatusModal 
+      <StatusModal
         isOpen={modal.isOpen}
         onClose={() => setModal({ ...modal, isOpen: false })}
         type="error"

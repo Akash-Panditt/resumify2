@@ -76,23 +76,67 @@ const Landing = () => {
         </div>
 
         {/* Hero Image / Mockup */}
-        <div style={{ width: '100%', maxWidth: '1000px', marginBottom: '8rem', position: 'relative' }}>
-          <div className="card" style={{ padding: '0.5rem', background: 'rgba(255,255,255,0.05)', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 30px 60px -12px rgba(0,0,0,0.5)' }}>
-            <div style={{ background: 'var(--bg-color)', borderRadius: '20px', height: '450px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', top: '40px', left: '40px', width: '200px', height: '300px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid var(--surface-border)' }}></div>
-              <div style={{ position: 'absolute', top: '80px', right: '40px', width: '600px', height: '400px', background: 'var(--surface)', borderRadius: '12px', border: '1px solid var(--surface-border)', padding: '2rem' }}>
-                <div style={{ width: '150px', height: '20px', background: 'var(--primary)', borderRadius: '4px', marginBottom: '1.5rem', opacity: 0.3 }}></div>
-                <div style={{ width: '100%', height: '10px', background: 'var(--text-muted)', borderRadius: '2px', marginBottom: '0.75rem', opacity: 0.1 }}></div>
-                <div style={{ width: '90%', height: '10px', background: 'var(--text-muted)', borderRadius: '2px', marginBottom: '0.75rem', opacity: 0.1 }}></div>
-                <div style={{ width: '95%', height: '10px', background: 'var(--text-muted)', borderRadius: '2px', marginBottom: '2rem', opacity: 0.1 }}></div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div style={{ height: '100px', background: 'rgba(99, 102, 241, 0.05)', borderRadius: '8px' }}></div>
-                  <div style={{ height: '100px', background: 'rgba(99, 102, 241, 0.05)', borderRadius: '8px' }}></div>
+        <div className="hero-mockup-container" style={{ width: '100%', maxWidth: '1000px', marginBottom: '8rem', position: 'relative', perspective: '1000px' }}>
+          
+          {/* Animated background glow */}
+          <div style={{ position: 'absolute', top: '10%', left: '5%', width: '350px', height: '350px', background: 'rgba(99, 102, 241, 0.4)', filter: 'blur(100px)', borderRadius: '50%', animation: 'float 6s ease-in-out infinite' }}></div>
+          <div style={{ position: 'absolute', bottom: '-10%', right: '5%', width: '400px', height: '400px', background: 'rgba(168, 85, 247, 0.3)', filter: 'blur(120px)', borderRadius: '50%', animation: 'float 8s ease-in-out infinite reverse' }}></div>
+
+          <div className="card hero-mockup-card" style={{ 
+            padding: '0.5rem', 
+            background: 'rgba(255,255,255,0.4)', 
+            backdropFilter: 'blur(10px)', 
+            borderRadius: '24px', 
+            overflow: 'hidden', 
+            boxShadow: '0 40px 80px -20px rgba(99, 102, 241, 0.3)', 
+            border: '1px solid rgba(99, 102, 241, 0.2)',
+            maxWidth: '920px',
+            margin: '0 auto',
+            transform: 'rotateX(5deg) rotateY(-2deg)',
+            transition: 'transform 0.5s ease-out'
+          }}>
+            <div style={{ background: 'var(--surface)', borderRadius: '20px', overflow: 'hidden', border: '1px solid var(--surface-border)', position: 'relative' }}>
+              {/* Mac-style Browser Header */}
+              <div style={{ height: '32px', background: 'var(--surface-border)', display: 'flex', alignItems: 'center', padding: '0 1rem', gap: '0.5rem', opacity: 0.8 }}>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ff5f56' }}></div>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ffbd2e' }}></div>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#27c93f' }}></div>
                 </div>
+                <div style={{ flex: 1, height: '18px', background: 'rgba(var(--bg-rgb), 0.5)', borderRadius: '4px', margin: '0 3rem' }}></div>
               </div>
-              <div style={{ zIndex: 2, textAlign: 'center' }}>
-                <div className="badge-popular" style={{ marginBottom: '1rem' }}>AI Powered Preview</div>
-                <p style={{ fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '2px' }}>INTERACTIVE EDITOR</p>
+              
+              {/* Actual App Screenshot */}
+              <img 
+                src="/app-mockup.png" 
+                alt="Resumify Builder Interface" 
+                style={{ 
+                  width: '100%', 
+                  height: 'auto', 
+                  display: 'block',
+                  filter: 'contrast(1.02) brightness(1.02)' 
+                }} 
+              />
+
+              {/* Subtle AI Badge Overlay */}
+              <div style={{ 
+                position: 'absolute', 
+                bottom: '1.5rem', 
+                right: '1.5rem', 
+                background: 'var(--primary)', 
+                color: 'white', 
+                padding: '0.5rem 1.25rem', 
+                borderRadius: '50px', 
+                fontWeight: 800, 
+                fontSize: '0.75rem', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '0.5rem',
+                boxShadow: '0 10px 20px rgba(99, 102, 241, 0.4)',
+                zIndex: 10
+              }}>
+                <span style={{ fontSize: '1rem' }}>✨</span>
+                AI POWERED EDITOR
               </div>
             </div>
           </div>
@@ -140,15 +184,15 @@ const Landing = () => {
           </div>
           <div className="grid-3">
             {[
-              { name: 'Sarah Jenkins', role: 'Software Engineer', quote: 'Resumify helped me land my dream role at a top tech firm. The AI suggestions were spot on!' },
-              { name: 'Michael Chen', role: 'Marketing Manager', quote: 'The templates are incredibly modern and clean. I got 3x more interview callbacks.' },
-              { name: 'Elena Rodriguez', role: 'UX Designer', quote: 'Finally a platform that respects design. The export quality is pixel-perfect.' }
+              { name: 'Sarah Jenkins', role: 'Software Engineer', avatar: 'https://randomuser.me/api/portraits/women/44.jpg', quote: 'Resumify helped me land my dream role at a top tech firm. The AI suggestions were spot on!' },
+              { name: 'Michael Chen', role: 'Marketing Manager', avatar: 'https://randomuser.me/api/portraits/men/32.jpg', quote: 'The templates are incredibly modern and clean. I got 3x more interview callbacks.' },
+              { name: 'Elena Rodriguez', role: 'UX Designer', avatar: 'https://randomuser.me/api/portraits/women/68.jpg', quote: 'Finally a platform that respects design. The export quality is pixel-perfect.' }
             ].map((t, i) => (
               <div key={i} className="testimonial-card">
                 <div style={{ color: '#fbbf24', marginBottom: '1rem' }}>★★★★★</div>
                 <p style={{ fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '2rem', fontStyle: 'italic' }}>"{t.quote}"</p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'var(--primary)', opacity: 0.2 }}></div>
+                  <img src={t.avatar} alt={t.name} style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--surface-border)' }} />
                   <div>
                     <h4 style={{ fontSize: '1rem', margin: 0 }}>{t.name}</h4>
                     <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>{t.role}</p>
@@ -161,28 +205,27 @@ const Landing = () => {
 
         {/* FAQ Section */}
         <div style={{ width: '100%', marginBottom: '8rem', maxWidth: '800px', margin: '0 auto 8rem auto' }}>
-          <div className="section-title">
+          <div className="section-title" style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <h2 style={{ fontWeight: 800 }}>Frequently Asked <span className="text-gradient">Questions</span></h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginTop: '1rem' }}>Everything you need to know about Resumify.</p>
           </div>
-          <div style={{ background: 'var(--surface)', borderRadius: 'var(--radius-xl)', padding: '2rem', border: '1px solid var(--surface-border)' }}>
+          <div className="faq-container">
             {[
               { q: 'Is it really free?', a: 'Yes! You can create and edit your resume using all AI features and premium templates for free. You only pay a small ₹9 fee to download resumes that use these premium features.' },
               { q: 'What is the "Try Before You Buy" model?', a: 'It means you get full access to the AI writer and all templates while building. We only charge you if you decide to download the final result using those features.' },
               { q: 'Can I download as PDF?', a: 'Yes, all plans allow for high-quality PDF downloads. Pro users get unlimited downloads without any per-resume fees.' },
               { q: 'Is my data secure?', a: 'Security is our priority. We use industry-standard encryption and never share your data with third parties.' }
             ].map((faq, i) => (
-              <div key={i} className={`faq-item ${activeFaq === i ? 'active' : ''}`} style={i === 3 ? { border: 'none' } : {}}>
+              <div key={i} className={`faq-item ${activeFaq === i ? 'active' : ''}`}>
                 <div className="faq-question" onClick={() => setActiveFaq(activeFaq === i ? null : i)}>
                   {faq.q}
-                  <span style={{ fontSize: '1.2rem', opacity: 0.5, transition: 'transform 0.3s ease', transform: activeFaq === i ? 'rotate(45deg)' : 'rotate(0deg)' }}>+</span>
+                  <div className="faq-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
                 </div>
-                <div className="faq-answer" style={{ 
-                  maxHeight: activeFaq === i ? '200px' : '0',
-                  opacity: activeFaq === i ? 1 : 0,
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease-in-out',
-                  marginTop: activeFaq === i ? '1rem' : '0'
-                }}>
+                <div className="faq-answer">
                   {faq.a}
                 </div>
               </div>
@@ -208,20 +251,28 @@ const Landing = () => {
                 const period = isFree ? 'forever' : (isPro ? 'year' : 'mo');
 
                 return (
-                  <div key={plan.id} className={`pricing-card ${isFeatured ? 'featured' : ''}`} style={isFeatured ? { transform: 'scale(1.05)', borderColor: 'var(--primary)' } : {}}>
+                  <div key={plan.id} className={`pricing-card ${isFeatured ? 'featured' : ''}`}>
                     {isFeatured && (
                       <div className="badge-popular" style={{ position: 'absolute', top: '-14px', left: '50%', transform: 'translateX(-50%)' }}>Most Popular</div>
                     )}
-                    <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', textTransform: 'capitalize' }}>{plan.name}</h3>
+                    <h3 style={{ fontSize: '1.2rem', marginBottom: '0.25rem', textTransform: 'capitalize', color: isFeatured ? 'var(--primary)' : 'var(--text-main)' }}>{plan.name}</h3>
                     <div className="price">₹{plan.price}<span>/{period}</span></div>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.5rem', lineHeight: 1.4 }}>
                       {isFree ? 'Perfect for getting started.' : isPro ? 'Total career management.' : 'For active job seekers.'}
                     </p>
                     <ul className="feature-list">
-                      {(plan.features || []).map((f, i) => (
-                        <li key={i} className={f.toLowerCase().includes('no') ? 'disabled' : ''}>{f}</li>
-                      ))}
-                      {plan.download_limit && <li>{plan.download_limit} Downloads /mo</li>}
+                      {(plan.features || []).map((f, i) => {
+                        const isNo = f.toLowerCase().includes('no');
+                        return (
+                          <li key={i} className={isNo ? 'disabled' : ''}>
+                            <span style={{ color: isNo ? 'var(--text-muted)' : 'var(--primary)', fontWeight: 800 }}>
+                              {isNo ? '✕' : '✓'}
+                            </span>
+                            {f}
+                          </li>
+                        );
+                      })}
+                      {plan.download_limit && <li><span style={{ color: 'var(--primary)', fontWeight: 800 }}>✓</span> {plan.download_limit} Downloads /mo</li>}
                     </ul>
                     <button onClick={() => navigate('/signup')} className={`btn ${isFeatured ? 'btn-primary' : 'btn-secondary'}`} style={{ width: '100%', marginTop: 'auto' }}>
                       {plan.price === 0 ? 'Get Started' : 'Upgrade Now'}
@@ -234,14 +285,55 @@ const Landing = () => {
         </div>
 
         {/* CTA Bottom Section */}
-        <div style={{ width: '100%', textAlign: 'center', padding: '6rem 2rem', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1))', borderRadius: 'var(--radius-2xl)', marginBottom: '8rem', border: '1px solid var(--surface-border)', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '400px', height: '400px', background: 'rgba(99, 102, 241, 0.1)', filter: 'blur(100px)', borderRadius: '50%' }}></div>
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '1.5rem', fontWeight: 800 }}>Ready to land your <span className="text-gradient">dream job?</span></h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem auto' }}>Join 10,000+ professionals who have already built their careers with Resumify.</p>
-            <button onClick={() => navigate('/signup')} className="btn btn-primary" style={{ fontSize: '1.2rem', padding: '1rem 3.5rem', borderRadius: 'var(--radius-full)' }}>
-              Build Your Resume Now
-            </button>
+        {/* CTA Bottom Section */}
+        <div className="cta-premium-section" style={{ width: '100%', maxWidth: '1100px', margin: '0 auto 8rem auto', position: 'relative' }}>
+          
+          {/* Ambient Glows */}
+          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '80%', background: 'var(--primary)', filter: 'blur(120px)', borderRadius: '50%', zIndex: 0, opacity: 0.15 }}></div>
+
+          <div style={{ background: 'var(--surface)', borderRadius: '32px', padding: '3.5rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden', boxShadow: '0 30px 60px -15px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(99, 102, 241, 0.2)', zIndex: 1 }}>
+            
+            {/* Very light elegant background pattern */}
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%236366f1\' fill-opacity=\'0.03\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E")', opacity: 0.8 }}></div>
+            
+            <div style={{ position: 'relative', zIndex: 2 }}>
+              
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 1rem', background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary)', borderRadius: '50px', fontWeight: 700, fontSize: '0.8rem', marginBottom: '1.25rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '1rem' }}>🚀</span> Start for free
+              </div>
+
+              <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 900, marginBottom: '1rem', color: 'var(--text-main)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+                Ready to land your <br />
+                <span className="text-gradient" style={{ background: 'linear-gradient(135deg, var(--primary) 0%, #a855f7 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>dream job?</span>
+              </h2>
+              
+              <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginBottom: '2rem', maxWidth: '600px', margin: '0 auto 2rem auto', lineHeight: 1.6, fontWeight: 500 }}>
+                Join 10,000+ professionals who have already built their careers with Resumify. Build a stunning resume in minutes.
+              </p>
+              
+              <button onClick={() => navigate('/signup')} className="btn" style={{ background: 'linear-gradient(135deg, var(--primary) 0%, #6d28d9 100%)', color: '#ffffff', fontSize: '1.1rem', padding: '1rem 3rem', fontWeight: 800, borderRadius: '50px', boxShadow: '0 10px 25px rgba(99, 102, 241, 0.3)', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', display: 'inline-flex', alignItems: 'center', gap: '0.75rem', transform: 'translateY(0)' }}
+               onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 15px 30px rgba(99, 102, 241, 0.4)'; }}
+               onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(99, 102, 241, 0.3)'; }}
+              >
+                Build Your Resume Now
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+
+              <div style={{ marginTop: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+                 <div style={{ display: 'flex' }}>
+                    {['https://randomuser.me/api/portraits/women/44.jpg', 'https://randomuser.me/api/portraits/men/32.jpg', 'https://randomuser.me/api/portraits/women/68.jpg', 'https://randomuser.me/api/portraits/men/46.jpg', 'https://randomuser.me/api/portraits/women/12.jpg'].map((img, idx) => (
+                      <img key={idx} src={img} alt="User avatar" style={{ width: '48px', height: '48px', borderRadius: '50%', border: '4px solid var(--surface)', marginLeft: idx === 0 ? '0' : '-16px', objectFit: 'cover', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
+                    ))}
+                 </div>
+                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                   <div style={{ color: '#fbbf24', fontSize: '1rem', letterSpacing: '2px', marginBottom: '4px' }}>★★★★★</div>
+                   <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)', fontWeight: 600 }}>Trusted by 10,000+ users</span>
+                 </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -263,7 +355,7 @@ const Landing = () => {
               <div style={{ width: '40px', height: '40px', background: 'var(--primary)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 16px rgba(99, 102, 241, 0.2)' }}>
                 <span style={{ color: 'white', fontWeight: 800, fontSize: '1.2rem' }}>R</span>
               </div>
-              <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.75rem' }}>Resumify</h2>
+              <h2 className="text-gradient brand-logo">Resumify</h2>
             </div>
             <p style={{ maxWidth: '400px', lineHeight: 1.8, fontSize: '1.05rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
               At Resumify, we believe everyone deserves a chance to land their dream job. Our AI-powered platform simplifies the resume-building process, combining professional design with data-driven optimization to help you stand out in the modern job market.
@@ -390,6 +482,93 @@ const Landing = () => {
 
         .promo-badge-container {
           perspective: 1000px;
+        }
+
+        /* FAQ Enhanced Styles */
+        .faq-item {
+          background: var(--surface);
+          border: 1px solid var(--surface-border);
+          border-radius: var(--radius-xl);
+          margin-bottom: 1rem;
+          overflow: hidden;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: var(--shadow-sm);
+        }
+        
+        .faq-item:hover {
+          border-color: rgba(var(--primary-rgb, 99, 102, 241), 0.3);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .faq-item.active {
+          border-color: var(--primary);
+          box-shadow: 0 8px 25px rgba(var(--primary-rgb, 99, 102, 241), 0.15);
+        }
+        
+        .faq-question {
+          padding: 1.5rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          cursor: pointer;
+          font-weight: 700;
+          font-size: 1.15rem;
+          color: var(--text-main);
+          user-select: none;
+        }
+        
+        .faq-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: rgba(var(--primary-rgb, 99, 102, 241), 0.1);
+          color: var(--primary);
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          flex-shrink: 0;
+        }
+        
+        .faq-item.active .faq-icon {
+          background: var(--primary);
+          color: white;
+          transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+          padding: 0 1.5rem;
+          color: var(--text-muted);
+          font-size: 1.05rem;
+          line-height: 1.6;
+          max-height: 0;
+          opacity: 0;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .faq-item.active .faq-answer {
+          padding: 0 1.5rem 1.5rem 1.5rem;
+          max-height: 300px;
+          opacity: 1;
+        }
+
+        /* Mockup Animations */
+        @keyframes float {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+          100% { transform: translateY(0px); }
+        }
+        
+        .hero-mockup-card:hover .mockup-paper {
+          transform: rotateY(0deg) rotateX(0deg) translateZ(40px) scale(1.02) !important;
+          box-shadow: 0 35px 70px rgba(0,0,0,0.5) !important;
+        }
+
+        @media (max-width: 768px) {
+          .mockup-sidebar { display: none !important; }
+          .mockup-ai-box { display: none !important; }
+          .mockup-paper { transform: scale(0.9) translateZ(0) !important; }
         }
       `}</style>
     </div>

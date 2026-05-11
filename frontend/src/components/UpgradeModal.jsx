@@ -4,6 +4,20 @@ import { useNavigate } from 'react-router-dom';
 const UpgradeModal = ({ isOpen, onClose, data }) => {
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    if (isOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
+      document.body.style.touchAction = 'none';
+      return () => {
+        document.body.style.overflow = originalStyle;
+        document.body.style.height = 'unset';
+        document.body.style.touchAction = 'unset';
+      };
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const isPremiumRequired = !!data?.requiredTier;
@@ -20,7 +34,7 @@ const UpgradeModal = ({ isOpen, onClose, data }) => {
       perspective: '1000px'
     }}>
       {/* Backdrop */}
-      <div 
+      <div
         onClick={onClose}
         style={{
           position: 'absolute',
@@ -59,10 +73,10 @@ const UpgradeModal = ({ isOpen, onClose, data }) => {
         animation: 'modalEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
         overflow: 'hidden'
       }}>
-        
+
         {/* Floating Icon */}
-        <div style={{ 
-          fontSize: '4.5rem', 
+        <div style={{
+          fontSize: '4.5rem',
           marginBottom: '1.5rem',
           animation: 'float 3s ease-in-out infinite',
           filter: 'drop-shadow(0 15px 15px rgba(99, 102, 241, 0.3))'
@@ -70,8 +84,8 @@ const UpgradeModal = ({ isOpen, onClose, data }) => {
           {isPremiumRequired ? '✨' : '🚀'}
         </div>
 
-        <h2 style={{ 
-          fontSize: '2rem', 
+        <h2 style={{
+          fontSize: '2rem',
           fontWeight: '900',
           marginBottom: '0.75rem',
           color: '#fff',
@@ -80,15 +94,15 @@ const UpgradeModal = ({ isOpen, onClose, data }) => {
           {isPremiumRequired ? 'Unlock Premium' : 'Limit Reached!'}
         </h2>
 
-        <p style={{ 
-          color: 'rgba(255, 255, 255, 0.7)', 
-          marginBottom: '2rem', 
+        <p style={{
+          color: 'rgba(255, 255, 255, 0.7)',
+          marginBottom: '2rem',
           lineHeight: '1.6',
           fontSize: '1.1rem'
         }}>
           {data?.message || 'Ready to take your resume to the next level?'}
         </p>
-        
+
         {/* Usage Stats or Tier Requirement */}
         <div style={{
           background: 'rgba(255, 255, 255, 0.03)',
@@ -107,14 +121,14 @@ const UpgradeModal = ({ isOpen, onClose, data }) => {
               <span style={{ color: '#fff', fontWeight: '700' }}>{data.used} / {data.limit}</span>
             </div>
           )}
-          
+
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.9rem' }}>Current Plan:</span>
             <span className="badge-glass" style={{ textTransform: 'capitalize' }}>{data?.plan || 'Free'}</span>
           </div>
 
           {data?.requiredTier && (
-            <div style={{ 
+            <div style={{
               marginTop: '0.5rem',
               paddingTop: '0.75rem',
               borderTop: '1px solid rgba(255, 255, 255, 0.06)',
@@ -131,8 +145,8 @@ const UpgradeModal = ({ isOpen, onClose, data }) => {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <button 
-            className="upgrade-btn" 
+          <button
+            className="upgrade-btn"
             onClick={() => {
               navigate('/pricing');
               onClose();
@@ -141,9 +155,9 @@ const UpgradeModal = ({ isOpen, onClose, data }) => {
             Upgrade Now
             <div className="btn-shine"></div>
           </button>
-          
-          <button 
-            className="ghost-btn" 
+
+          <button
+            className="ghost-btn"
             onClick={onClose}
           >
             Maybe Later
