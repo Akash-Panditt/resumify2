@@ -151,9 +151,20 @@ const smartMockEnhance = (text, type, contextData = {}) => {
   if (!text || text.trim() === '') {
     const jobStr = contextData?.jobTitle || 'Professional';
     if (type === 'summary') {
-      return `Results-oriented ${jobStr} with a proven track record of driving operational efficiency and exceeding strategic goals. Adept at leveraging industry best practices to deliver measurable success, streamline processes, and foster collaborative environments. Strong background in achieving cross-functional objectives in fast-paced settings.`;
+      const summaries = [
+        `Results-oriented ${jobStr} with a proven track record of driving operational efficiency and exceeding strategic goals. Adept at leveraging industry best practices to deliver measurable success, streamline processes, and foster collaborative environments. Strong background in achieving cross-functional objectives in fast-paced settings.`,
+        `Dynamic and innovative ${jobStr} bringing extensive experience in delivering high-impact solutions. Skilled in bridging the gap between technical requirements and business objectives. Passionate about driving continuous improvement and scaling operations.`,
+        `Highly motivated ${jobStr} with comprehensive expertise in industry standards. Recognized for strong leadership, analytical problem-solving, and the ability to execute complex projects under tight deadlines. Eager to contribute to a forward-thinking team.`,
+        `Accomplished ${jobStr} offering a unique blend of strategic vision and hands-on execution. Demonstrated ability to optimize workflows, enhance productivity, and mentor cross-functional teams to achieve organizational excellence.`
+      ];
+      return summaries[Math.floor(Math.random() * summaries.length)];
     } else {
-      return `• Spearheaded key initiatives that improved overall departmental efficiency by 15%.\n• Leveraged analytical tools to diagnose issues and implement scalable solutions.\n• Orchestrated cross-functional collaboration to deliver project milestones under budget.`;
+      const experiences = [
+        `• Spearheaded key initiatives that improved overall departmental efficiency by 15%.\n• Leveraged analytical tools to diagnose issues and implement scalable solutions.\n• Orchestrated cross-functional collaboration to deliver project milestones under budget.`,
+        `• Engineered innovative processes that reduced operational overhead and accelerated delivery.\n• Mentored junior team members and fostered a culture of continuous learning.\n• Driven project lifecycles from conceptualization through successful deployment.`,
+        `• Managed high-priority projects, ensuring strict adherence to quality and compliance standards.\n• Analyzed performance metrics to identify bottlenecks and implement strategic improvements.\n• Acted as the primary liaison between stakeholders and technical teams to ensure alignment.`
+      ];
+      return experiences[Math.floor(Math.random() * experiences.length)];
     }
   }
   let enhanced = text.trim();

@@ -8,7 +8,7 @@ const { GoogleGenAI } = require('@google/genai');
 const router = express.Router();
 
 // Multer setup - PDF and DOCX
-const upload = multer({ 
+const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }
 });
@@ -28,7 +28,7 @@ const calculateLocalScore = (text = "") => {
     contact: /contact|email|phone|address|linkedin|github|@|\.com|\d{10}|\+\d{1,3}/i
   };
 
-  let score = 20; 
+  let score = 20;
   let breakdown = [];
   let suggestions = [];
 
@@ -49,7 +49,7 @@ const calculateLocalScore = (text = "") => {
 
 router.post('/check', protect, upload.single('resume'), async (req, res) => {
   console.log('[ATS API] Final compatibility attempt for:', req.file ? req.file.originalname : 'none');
-  
+
   if (!req.file) {
     return res.status(400).json({ message: 'No file provided.' });
   }
@@ -60,32 +60,38 @@ router.post('/check', protect, upload.single('resume'), async (req, res) => {
 
     // 1. Extraction with stable parsers
     if (mimetype === 'application/pdf') {
-        try {
-            console.log('[ATS API] Parsing PDF with stable pdf-parse...');
-            const data = await pdfParse(req.file.buffer);
-            text = data.text || "";
-        } catch (pdfErr) {
-            console.error('[ATS API] pdf-parse failed:', pdfErr.message);
-            return res.status(400).json({ message: `PDF scan failed: ${pdfErr.message}. Ensure it is a standard digital PDF.` });
-        }
+      try {
+        console.log('[ATS API] Parsing PDF with stable pdf-parse...');
+        const data = await pdfParse(req.file.buffer);
+        text = data.text || "";
+      } catch (pdfErr) {
+        console.error('[ATS API] pdf-parse failed:', pdfErr.message);
+        return res.status(400).json({ message: `PDF scan failed: ${pdfErr.message}. Ensure it is a standard digital PDF.` });
+      }
     } else if (mimetype.includes('word') || mimetype.includes('officedocument')) {
-        try {
-            console.log('[ATS API] Parsing Word with stable mammoth...');
-            const result = await mammoth.extractRawText({ buffer: req.file.buffer });
-            text = result.value || "";
-        } catch (wordErr) {
-            console.error('[ATS API] mammoth failed:', wordErr.message);
-            return res.status(400).json({ message: `Word scan failed: ${wordErr.message}. Ensure the file is not corrupted.` });
-        }
+      try {
+        console.log('[ATS API] Parsing Word with stable mammoth...');
+        const result = await mammoth.extractRawText({ buffer: req.file.buffer });
+        text = result.value || "";
+      } catch (wordErr) {
+        console.error('[ATS API] mammoth failed:', wordErr.message);
+        return res.status(400).json({ message: `Word scan failed: ${wordErr.message}. Ensure the file is not corrupted.` });
+      }
     } else {
-        return res.status(400).json({ message: 'Unsupported file type. Please upload a PDF or DOCX file.' });
+      return res.status(400).json({ message: 'Unsupported file type. Please upload a PDF or DOCX file.' });
     }
 
+    // If it's a PDF and text extraction failed, we don't block. 
+    // We'll let the AI analysis part handle it visually via inlineData.
     if (!text || text.trim().length < 10) {
-        return res.status(400).json({ message: 'File is readable but no digital text was found. Scanned images/photos are not supported.' });
+      if (mimetype !== 'application/pdf') {
+        return res.status(400).json({
+          message: 'Unable to detect text in this file.',
+          suggestion: 'Please ensure your file is a valid PDF or Word document with readable text.'
+        });
+      }
+      console.log('[ATS API] No digital text found, but it is a PDF. Proceeding to direct AI visual analysis...');
     }
-
-    console.log('[ATS API] Scan successful. Length:', text.length);
 
     // 2. Score locally
     console.log('[ATS API] Scoring locally...');
@@ -95,16 +101,40 @@ router.post('/check', protect, upload.single('resume'), async (req, res) => {
     result.aiAnalysis = null;
     result.aiActionPoints = [];
 
-    if (aiClient && text.trim().length > 30) {
+    // Trigger AI analysis if we have text OR if it's a PDF (for visual analysis)
+    if (aiClient && (text.trim().length > 10 || mimetype === 'application/pdf')) {
       try {
         console.log('[ATS API] Requesting AI Roadmap from Gemini...');
-        const prompt = `Analyze this resume text. Provide a professional assessment and exactly 3 actionable bullet points to improve ATS compatibility.
-        Text: ${text.substring(0, 4000)}
-        Return JSON ONLY in this format: {"aiAnalysis": "Brief assessment", "aiActionPoints": ["point1", "point2", "point3"]}`;
+
+        const prompt = `
+        Analyze this resume and provide:
+        1. A brief professional assessment (aiAnalysis).
+        2. Exactly 3 actionable points to improve ATS compatibility (aiActionPoints).
+        
+        If digital text is missing, perform visual analysis on the attached PDF.
+        
+        Return JSON ONLY:
+        {
+          "aiAnalysis": "Brief assessment",
+          "aiActionPoints": ["point1", "point2", "point3"]
+        }
+
+        Resume Text: ${text || "[Visual analysis required]"}
+        `;
+
+        const parts = [{ text: prompt }];
+        if (mimetype === 'application/pdf') {
+          parts.push({
+            inlineData: {
+              mimeType: 'application/pdf',
+              data: req.file.buffer.toString('base64')
+            }
+          });
+        }
 
         const responseData = await aiClient.models.generateContent({
           model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          contents: [{ role: 'user', parts: parts }],
         });
 
         // Robust response parsing for both Vertex and Google AI SDKs
@@ -139,9 +169,9 @@ router.post('/check', protect, upload.single('resume'), async (req, res) => {
     res.json(result);
   } catch (error) {
     console.error('[ATS API] Fatal Route Error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Analysis failed due to a server error.',
-      error: error.message 
+      error: error.message
     });
   }
 });

@@ -5,6 +5,7 @@ const multer = require('multer');
 const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
 const { aiClient } = require('./ai');
+const { getSampleDataByPreview } = require('../utils/sampleData');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -96,18 +97,26 @@ const canUserAccessAI = (userPlan) => {
 };
 
 
-// Create resume — accepts optional template field
+// Create resume — accepts optional template and prefill flag
 router.post('/', protect, async (req, res) => {
   try {
-    const template = req.body.template || 'modern';
+    const { template = 'modern', prefill = false, category = 'General' } = req.body;
 
     // TEMPLATE ACCESS POLICY UPDATE: 
     // All users can now create resumes with any template to allow them to "Try before you buy".
     // Gating is now enforced ONLY at the download/export step.
 
+    let insertData = { user_id: req.user.id, template };
+
+    if (prefill) {
+      const sample = getSampleDataByPreview(category);
+      const mappedSample = mapPayloadToColumns(sample);
+      insertData = { ...insertData, ...mappedSample };
+    }
+
     const { data: resume, error } = await supabase
       .from('resumes')
-      .insert([{ user_id: req.user.id, template }])
+      .insert([insertData])
       .select()
       .single();
 

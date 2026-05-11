@@ -20,7 +20,11 @@ const app = express();
 app.set('trust proxy', 1);
 
 // Security Headers
-app.use(helmet());
+// Security Headers — Configured for Google Sign-In compatibility
+app.use(helmet({
+  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+  contentSecurityPolicy: false, // Disable CSP in dev to prevent blocking external Google GSI scripts
+}));
 
 // Production Environment Check
 const REQUIRED_VARS = ['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'FRONTEND_URL'];
@@ -47,8 +51,8 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
 
-    const isAllowed = allowedOrigins.some(allowed => 
-      origin === allowed.trim() || 
+    const isAllowed = allowedOrigins.some(allowed =>
+      origin === allowed.trim() ||
       origin === allowed.trim().replace(/\/$/, '')
     );
     const isVercel = origin.endsWith('.vercel.app');
@@ -97,6 +101,39 @@ app.use('/api/payments', paymentsRoutes);
 app.get('/api/health', (req, res) => {
   res.json({ message: 'API is running successfully' });
 });
+
+// --- Automated Resume Cleanup Job (1 Week Expiry) ---
+const supabase = require('./supabase');
+const runResumeCleanup = async () => {
+  try {
+    console.log('[Cleanup Job] Checking for resumes older than 1 week...');
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    const { data, error } = await supabase
+      .from('resumes')
+      .delete()
+      .neq('title', '___MASTER_PROFILE___') // CRITICAL: Protect the user's master profile
+      .lt('updated_at', oneWeekAgo.toISOString())
+      .select('id');
+
+    if (error) {
+      console.error('[Cleanup Job] DB Error:', error.message);
+    } else if (data && data.length > 0) {
+      console.log(`[Cleanup Job] Auto-deleted ${data.length} expired resume(s).`);
+    } else {
+      console.log('[Cleanup Job] No expired resumes found.');
+    }
+  } catch (err) {
+    console.error('[Cleanup Job] Execution Error:', err.message);
+  }
+};
+
+// Run cleanup job every 12 hours
+setInterval(runResumeCleanup, 12 * 60 * 60 * 1000);
+// Run once on server startup (after 5 seconds)
+setTimeout(runResumeCleanup, 5000);
+// ---------------------------------------------------
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
