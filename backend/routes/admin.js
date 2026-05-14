@@ -19,6 +19,7 @@ router.delete('/users/:id', protect, requireSuperAdmin, logAdminActivity('DELETE
 router.post('/approve-upgrade/:id', protect, requireAdmin, logAdminActivity('APPROVE_UPGRADE', 'users'), adminController.approveUpgrade);
 router.post('/reject-upgrade/:id', protect, requireAdmin, logAdminActivity('REJECT_UPGRADE', 'users'), adminController.rejectUpgrade);
 router.post('/revoke-subscription/:id', protect, requireSuperAdmin, logAdminActivity('REVOKE_SUB', 'users'), adminController.revokeSubscription);
+router.get('/users/:id/history', protect, requireAdmin, adminController.getUserHistory);
 
 // Templates
 router.get('/templates', protect, requireAdmin, adminController.getTemplates);

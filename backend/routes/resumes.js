@@ -156,31 +156,29 @@ router.post('/download/:id', protect, async (req, res) => {
     // 1. Check if template is premium
     const { data: templateData } = await supabase
       .from('templates')
-      .select('id, is_premium, name')
-      .eq('name', resume.template)
+      .select('id, is_premium, name, slug')
+      .eq('slug', resume.template)
       .maybeSingle();
 
     const isPremium = templateData?.is_premium || false;
 
     // Logic: Pro users have full access.
-    // Try Before You Buy: If AI or Premium template was used, allow for all users now
-    const needsPayment = false; // Disabled payment requirement for all users
-
-    /*
-    if (user.plan !== 'pro' && needsPayment) {
-      return res.status(403).json({
-        message: `Premium features used (AI or Premium Template). Pay ₹9 to unlock this download.`,
-        isPremium: true,
+    // 2. Logic: Pro/Basic users have full access. Free users pay ₹9 for Premium templates.
+    if (user.plan === 'free' && isPremium && !resume.paid_for_download) {
+      return res.status(402).json({
+        message: 'Pay ₹9 to download your PDF instantly.',
         price: 9,
+        resumeId: resume.id,
+        templateName: templateData.name,
         type: 'PAYMENT_REQUIRED'
       });
     }
-    */
 
-    // 3. Fallback to general download limits if NO premium features were used
-    if (user.plan === 'free' && user.download_count >= maxDownloads && !needsPayment) {
+    // 3. Fallback to general download limits (Only for Premium Templates)
+    // Free templates are always downloadable directly without payment popup.
+    if (isPremium && user.plan !== 'pro' && user.download_count >= maxDownloads && !resume.paid_for_download) {
       return res.status(403).json({
-        message: `Free download limit reached. Upgrade to get more downloads.`,
+        message: 'Pay ₹9 to download your PDF instantly.',
         limit: maxDownloads,
         used: user.download_count,
         plan: user.plan,
@@ -197,6 +195,13 @@ router.post('/download/:id', protect, async (req, res) => {
       .single();
 
     if (updateErr) throw updateErr;
+    
+    // 5. Log activity for history
+    await supabase.from('download_activity').insert([{
+      user_id: req.user.id,
+      resume_id: req.params.id,
+      template_name: resume.template
+    }]);
 
     res.json({
       allowed: true,

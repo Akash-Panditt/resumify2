@@ -1,0 +1,24 @@
+# Database Connection
+MONGO_URI=mongodb://127.0.0.1:27017/resumify
+JWT_SECRET=super_secret_jwt_key_123
+
+# --- GOOGLE LOGIN CONFIGURATION ---
+GOOGLE_CLIENT_ID=235649576409-10218v06g5et6dcvduls23btkgc5f12u.apps.googleusercontent.com
+
+# --- SUPABASE CONFIGURATION ---
+SUPABASE_URL=https://oepnqvkcckjcejrgkpin.supabase.co
+SUPABASE_ANON_KEY=sb_publishable_p-3_TQeMl33sO60498LO0Q_qHAJIhgt
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lcG5xdmtjY2tqY2VqcmdrcGluIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTEyMjI1OCwiZXhwIjoyMDkwNjk4MjU4fQ.SG2PxKijkgdX9NrUUiOoWm0embYIva49esSfGRsr8BY
+
+# PostgreSQL Database Connection String
+DATABASE_URL=postgresql://postgres:Supabase@2026@db.oepnqvkcckjcejrgkpin.supabase.co:5432/postgres
+
+# --- AI CONFIGURATION ---
+GEMINI_API_KEY=AIzaSyCcGxfrBX5_Y_jjKD-KlnqOr5xk1iI1Uc8
+GEMINI_MODEL=gemini-1.5-flash
+
+# --- EMAIL CONFIGURATION (SMTP) ---
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=akashpandit8436@gmail.com
+SMTP_PASS=afqnqfepttruwqxt

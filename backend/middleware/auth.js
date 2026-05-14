@@ -2,10 +2,32 @@ const jwt = require('jsonwebtoken');
 const supabase = require('../supabase');
 
 // Protect routes — verifies session and attaches user ID to request
-const protect = (req, res, next) => {
+const protect = async (req, res, next) => {
   if (req.session && req.session.userId) {
-    req.user = { id: req.session.userId };
-    next();
+    try {
+      const { data: user, error } = await supabase
+        .from('users')
+        .select('is_blocked')
+        .eq('id', req.session.userId)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (user?.is_blocked) {
+        console.warn(`[Auth Middleware] Blocked user ${req.session.userId} attempted access.`);
+        req.session.destroy((err) => {
+          if (err) console.error('[Auth Middleware] Session destroy error:', err);
+        });
+        res.clearCookie('resumify.sid');
+        return res.status(403).json({ message: 'Your account has been blocked by the administrator.' });
+      }
+
+      req.user = { id: req.session.userId };
+      next();
+    } catch (err) {
+      console.error('[Auth Middleware] Error checking block status:', err.message);
+      res.status(500).json({ message: 'Internal server error' });
+    }
   } else {
     console.warn(`[Auth Middleware] Unauthorized access attempt to ${req.originalUrl}`);
     res.status(401).json({ message: 'Not authorized, please log in' });

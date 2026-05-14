@@ -32,6 +32,39 @@ class AdminService {
     return await adminRepository.getUsers();
   }
 
+  async getUserHistory(userId) {
+    const supabase = require('../supabase');
+    
+    // 1. Get user details
+    const { data: user, error: uErr } = await supabase
+      .from('users')
+      .select('id, name, email, download_count, plan, created_at')
+      .eq('id', userId)
+      .single();
+    if (uErr) throw uErr;
+
+    // 2. Get resumes
+    const { data: resumes, error: rErr } = await supabase
+      .from('resumes')
+      .select('id, title, template, created_at')
+      .eq('user_id', userId);
+    if (rErr) throw rErr;
+
+    // 3. Get download activity
+    const { data: activity, error: aErr } = await supabase
+      .from('download_activity')
+      .select('*, resume:resumes(title)')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+    if (aErr) throw aErr;
+
+    return {
+      user,
+      resumes,
+      activity
+    };
+  }
+
   // Resumes
   async getAllResumes() {
     return await adminRepository.getResumes();

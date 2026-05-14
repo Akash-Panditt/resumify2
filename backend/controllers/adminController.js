@@ -19,6 +19,15 @@ class AdminController {
     }
   }
 
+  async getUserHistory(req, res) {
+    try {
+      const history = await adminService.getUserHistory(req.params.id);
+      res.json(history);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
   // Resumes
   async getResumes(req, res) {
     try {

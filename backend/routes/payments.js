@@ -31,7 +31,8 @@ router.post('/checkout', protect, async (req, res) => {
         amount,
         type: type === 'plan' ? `plan_purchase_${itemId}` : `resume_download_${itemId}`,
         status: 'pending', // Initially pending
-        gateway: 'internal_simulated'
+        gateway: 'internal_simulated',
+        item_name: req.body.itemName || itemId // Store the human-readable name
       }])
       .select()
       .single();
@@ -69,33 +70,51 @@ router.post('/verify', protect, async (req, res) => {
 
     // 2. Process side effects
     if (type === 'plan') {
-      const expiresAt = new Date();
-      if (billingCycle === 'yearly' || itemId === 'pro') {
-        expiresAt.setFullYear(expiresAt.getFullYear() + 1);
-      } else {
-        expiresAt.setMonth(expiresAt.getMonth() + 1);
-      }
-
+      // UPDATED: Instead of immediate upgrade, set requested_plan for manual admin approval
       const { error: uErr } = await supabase
         .from('users')
         .update({
-          plan: itemId,
-          subscription_expires_at: expiresAt.toISOString(),
+          requested_plan: itemId,
+          updated_at: new Date().toISOString()
         })
         .eq('id', req.user.id);
       
       if (uErr) throw uErr;
+
+      // Log to payments_history
+      await supabase.from('payments_history').insert([{
+        user_id: req.user.id,
+        transaction_id: transactionId,
+        amount: transaction.amount,
+        type: 'subscription',
+        item_name: `${itemId.charAt(0).toUpperCase() + itemId.slice(1)} Plan`,
+        status: 'success'
+      }]);
+
     } else if (type === 'resume_download') {
       const { error: rErr } = await supabase
         .from('resumes')
         .update({ paid_for_download: true })
         .eq('id', itemId);
       if (rErr) throw rErr;
+
+      // Get resume title for item_name
+      const { data: resume } = await supabase.from('resumes').select('template').eq('id', itemId).single();
+
+      // Log to payments_history
+      await supabase.from('payments_history').insert([{
+        user_id: req.user.id,
+        transaction_id: transactionId,
+        amount: transaction.amount,
+        type: 'single_download',
+        item_name: `${resume?.template || 'Premium'} Template Download`,
+        status: 'success'
+      }]);
     }
 
     res.json({
       success: true,
-      message: type === 'plan' ? `Upgrade to ${itemId} successful!` : 'Resume download unlocked!'
+      message: type === 'plan' ? `Upgrade request for ${itemId} plan submitted! Admin will approve shortly.` : 'Resume download unlocked!'
     });
   } catch (error) {
     res.status(400).json({ message: error.message });

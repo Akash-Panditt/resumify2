@@ -8,15 +8,12 @@ async function test() {
   try {
     const aiClient = new GoogleGenAI({ apiKey });
     const response = await aiClient.models.list();
-    console.log('Response type:', typeof response);
-    console.log('Response keys:', Object.keys(response));
+    console.log('Keys of response:', Object.keys(response));
     
-    // The SDK often returns a paged response
-    const models = response.models || response;
-    if (Array.isArray(models)) {
-        models.forEach(m => console.log(m.name));
-    } else {
-        console.log('Models is not an array:', models);
+    // In @google/genai, models.list() returns a paged result.
+    // We should iterate through it or check the first page.
+    for (const model of response) {
+        console.log(model.name);
     }
   } catch (err) {
     console.error('List Models Failed:', err);

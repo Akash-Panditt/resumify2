@@ -163,6 +163,11 @@ router.post('/login', async (req, res) => {
     if (error) throw error;
 
     if (user && user.password && (await bcrypt.compare(password, user.password))) {
+      // 0. Check if user is blocked
+      if (user.is_blocked) {
+        return res.status(403).json({ message: 'Your account has been blocked by the administrator.' });
+      }
+
       // 1. Check if user is already verified (Single-Point OTP)
       if (user.is_verified || user.role === 'admin') {
         console.log(`[Auth] Login Success (Bypass OTP): ${cleanEmail}`);
@@ -273,6 +278,10 @@ router.post('/verify-otp', async (req, res) => {
 
     if (updateError) throw updateError;
 
+    if (user.is_blocked) {
+      return res.status(403).json({ message: 'Your account has been blocked by the administrator.' });
+    }
+
     console.log(`[Auth Success] User ${cleanEmail} verified. Issuing session.`);
     req.session.regenerate((err) => {
       if (err) return res.status(500).json({ message: 'Session error' });
@@ -381,6 +390,10 @@ router.post('/google', async (req, res) => {
 
       if (createError) throw createError;
       user = newUser;
+    }
+
+    if (user.is_blocked) {
+      return res.status(403).json({ message: 'Your account has been blocked by the administrator.' });
     }
 
     console.log(`[Google Success] Logged in user: ${user.email}`);
