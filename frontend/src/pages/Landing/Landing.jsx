@@ -9,6 +9,7 @@ const Landing = () => {
   const [loadingPlans, setLoadingPlans] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const [activeFaq, setActiveFaq] = useState(0);
+  const [showSupport, setShowSupport] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
@@ -337,6 +338,93 @@ const Landing = () => {
           </div>
         </div>
 
+        {/* Help & Support Section */}
+        {showSupport && (
+          <div id="support" style={{ 
+            width: '100%', 
+            marginBottom: '8rem', 
+            maxWidth: '800px', 
+            margin: '0 auto 8rem auto',
+            animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
+          }}>
+            <div className="section-title" style={{ textAlign: 'center', marginBottom: '3rem' }}>
+              <h2 style={{ fontWeight: 800 }}>Help & <span className="text-gradient">Support</span></h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginTop: '1rem' }}>We're here to help you build your future. Reach out anytime.</p>
+            </div>
+            
+            <div className="card" style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              padding: '3rem 2rem',
+              background: 'rgba(var(--bg-rgb), 0.5)',
+              border: '2px solid var(--primary)',
+              boxShadow: '0 20px 50px rgba(99, 102, 241, 0.15)'
+            }}>
+              <div style={{ 
+                width: '80px', 
+                height: '80px', 
+                background: 'rgba(255, 255, 255, 0.05)', 
+                borderRadius: '24px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                marginBottom: '2rem',
+                cursor: 'pointer',
+                transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 10px 20px rgba(0,0,0,0.1)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.1) translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.2)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1) translateY(0)';
+                e.currentTarget.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+              }}
+              onClick={() => window.location.href = 'mailto:resumifysupport@gmail.com'}
+              >
+                <svg width="45" height="45" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M24 4.5v15c0 .85-.65 1.5-1.5 1.5H21V7.33l-9 6.75-9-6.75V21H1.5c-.85 0-1.5-.65-1.5-1.5v-15c0-.4.15-.75.45-1.05.3-.3.65-.45 1.05-.45H3l9 6.75 9-6.75h1.5c.4 0 .75.15 1.05.45.3.3.45.65.45 1.05z" fill="#EA4335"/>
+                </svg>
+              </div>
+              
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Contact our Team</h3>
+              <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', textAlign: 'center' }}>For technical issues, billing inquiries, or template requests.</p>
+              
+              <a 
+                href="mailto:resumifysupport@gmail.com" 
+                style={{ 
+                  fontSize: '1.4rem', 
+                  fontWeight: 700, 
+                  color: 'var(--primary)', 
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  padding: '1rem 2rem',
+                  background: 'rgba(99, 102, 241, 0.05)',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(99, 102, 241, 0.2)',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(99, 102, 241, 0.1)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(99, 102, 241, 0.05)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                resumifysupport@gmail.com
+              </a>
+            </div>
+          </div>
+        )}
       </main>
 
       <footer style={{
@@ -385,7 +473,16 @@ const Landing = () => {
             <h4 style={{ color: 'var(--text-main)', marginBottom: '1.75rem', fontSize: '1.1rem', fontWeight: 700 }}>Company</h4>
             <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <li><a href="#" className="footer-link">About Us</a></li>
-              <li><a href="#" className="footer-link">Careers</a></li>
+              <li><span 
+                className="footer-link" 
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  setShowSupport(true);
+                  setTimeout(() => {
+                    document.getElementById('support')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }}
+              >Help & Support</span></li>
               <li><a href="#" className="footer-link">Legal & Privacy</a></li>
               <li><a href="#" className="footer-link">Blog</a></li>
             </ul>
@@ -553,7 +650,11 @@ const Landing = () => {
           opacity: 1;
         }
 
-        /* Mockup Animations */
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
         @keyframes float {
           0% { transform: translateY(0px); }
           50% { transform: translateY(-15px); }
