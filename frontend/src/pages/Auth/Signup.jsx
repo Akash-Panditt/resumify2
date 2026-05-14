@@ -61,7 +61,7 @@ const Signup = () => {
                 onError={() => setError('Google Authentication Failed')} 
                 text="signup_with" 
                 shape="rectangular" 
-                width="100%"
+                width="320"
               />
             </div>
           </div>

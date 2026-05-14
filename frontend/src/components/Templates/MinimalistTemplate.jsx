@@ -17,8 +17,16 @@ const MinimalistTemplate = React.forwardRef(({ data }, ref) => {
           {personalDetails?.email && <span>{personalDetails.email}</span>}
           {personalDetails?.phone && <span>{personalDetails.phone}</span>}
           {personalDetails?.address && <span>{personalDetails.address}</span>}
-          {personalDetails?.linkedin && <span>{personalDetails.linkedin}</span>}
-          {personalDetails?.github && <span>{personalDetails.github}</span>}
+          {personalDetails?.linkedin && (
+            <a href={personalDetails.linkedin.startsWith('http') ? personalDetails.linkedin : `https://${personalDetails.linkedin}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+              LinkedIn
+            </a>
+          )}
+          {personalDetails?.github && (
+            <a href={personalDetails.github.startsWith('http') ? personalDetails.github : `https://${personalDetails.github}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+              GitHub
+            </a>
+          )}
         </div>
       </div>
 

@@ -118,7 +118,7 @@ const Login = () => {
                     onError={() => setError('Google Authentication Failed')} 
                     text="signin_with" 
                     shape="rectangular" 
-                    width="100%"
+                    width="320"
                   />
                 </div>
               </div>

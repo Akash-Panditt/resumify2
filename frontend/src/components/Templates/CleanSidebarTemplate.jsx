@@ -44,6 +44,16 @@ const CleanSidebarTemplate = React.forwardRef(({ data }, ref) => {
             {personalDetails?.phone && <div>📞 {personalDetails.phone}</div>}
             {personalDetails?.email && <div style={{ wordBreak: 'break-all' }}>✉️ {personalDetails.email}</div>}
             {personalDetails?.address && <div>📍 {personalDetails.address}</div>}
+            {personalDetails?.linkedin && (
+              <div style={{ wordBreak: 'break-all' }}>
+                🔗 <a href={personalDetails.linkedin.startsWith('http') ? personalDetails.linkedin : `https://${personalDetails.linkedin}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>LinkedIn</a>
+              </div>
+            )}
+            {personalDetails?.github && (
+              <div style={{ wordBreak: 'break-all' }}>
+                📁 <a href={personalDetails.github.startsWith('http') ? personalDetails.github : `https://${personalDetails.github}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>GitHub</a>
+              </div>
+            )}
           </div>
         </div>
 

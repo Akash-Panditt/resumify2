@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ModernDarkTemplate = React.forwardRef(({ data }, ref) => {
-  const { personalDetails, education, experience, skills, projects } = data;
+  const { personalDetails, education, experience, skills, projects, languages } = data;
   
   // Vibrant accents on deep dark background
   const bg = '#121212';
@@ -31,8 +31,20 @@ const ModernDarkTemplate = React.forwardRef(({ data }, ref) => {
             {personalDetails?.email && <div>Email: <br/><strong style={{color: textMain}}>{personalDetails.email}</strong></div>}
             {personalDetails?.phone && <div>Phone: <br/><strong style={{color: textMain}}>{personalDetails.phone}</strong></div>}
             {personalDetails?.address && <div>Location: <br/><strong style={{color: textMain}}>{personalDetails.address}</strong></div>}
-            {personalDetails?.linkedin && <div>LinkedIn: <br/><strong style={{color: textMain}}>{personalDetails.linkedin}</strong></div>}
-            {personalDetails?.github && <div>Portfolio: <br/><strong style={{color: textMain}}>{personalDetails.github}</strong></div>}
+            {personalDetails?.linkedin && (
+              <div>LinkedIn: <br/>
+                <a href={personalDetails.linkedin.startsWith('http') ? personalDetails.linkedin : `https://${personalDetails.linkedin}`} target="_blank" rel="noopener noreferrer" style={{ color: textMain, textDecoration: 'none', fontWeight: '700' }}>
+                  {personalDetails.linkedin.replace(/^https?:\/\/(www\.)?/, '')}
+                </a>
+              </div>
+            )}
+            {personalDetails?.github && (
+              <div>GitHub: <br/>
+                <a href={personalDetails.github.startsWith('http') ? personalDetails.github : `https://${personalDetails.github}`} target="_blank" rel="noopener noreferrer" style={{ color: textMain, textDecoration: 'none', fontWeight: '700' }}>
+                  {personalDetails.github.replace(/^https?:\/\/(www\.)?/, '')}
+                </a>
+              </div>
+            )}
           </div>
 
           {skills && skills.length > 0 && (
@@ -53,6 +65,20 @@ const ModernDarkTemplate = React.forwardRef(({ data }, ref) => {
                          borderRadius: '3px'
                        }}></div>
                     </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {languages && languages.length > 0 && (
+            <div style={{ marginTop: '2.5rem' }}>
+              <h3 style={{ fontSize: '0.85rem', color: accent1, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', borderBottom: '1px solid #333', paddingBottom: '0.5rem' }}>Languages</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {languages.map((lang, i) => (
+                  <div key={i}>
+                    <div style={{ fontSize: '0.9rem', color: textMain, fontWeight: '600' }}>{lang.name}</div>
+                    <div style={{ fontSize: '0.8rem', color: textMuted }}>{lang.level}</div>
                   </div>
                 ))}
               </div>

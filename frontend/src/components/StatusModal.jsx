@@ -21,6 +21,8 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
   const isLoading = type === 'loading';
   const isError = type === 'error';
 
+  const accentColor = isSuccess ? '#22c55e' : (isError ? '#f59e0b' : '#6366f1');
+
   return (
     <div style={{
       position: 'fixed',
@@ -62,7 +64,7 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
         overflow: 'hidden'
       }}>
 
-        {/* Icon Section (3D-like Box from screenshot) */}
+        {/* Icon Section */}
         <div style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'center' }}>
           {isLoading ? (
             <div className="premium-loader">
@@ -77,23 +79,21 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
                   <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" className="checkmark-path" />
                 </svg>
               ) : (
-                <span style={{ fontSize: '2.5rem', color: '#fff' }}>✕</span>
+                <span style={{ fontSize: '3rem', color: '#fff', fontWeight: '900', fontFamily: 'serif' }}>!</span>
               )}
             </div>
           )}
         </div>
 
-        {/* The "Green Bar" from screenshot - Solid and glowing */}
+        {/* Glowing Bar */}
         {!isLoading && (
           <div style={{
             height: '8px',
             width: '100%',
-            background: isSuccess ? '#22c55e' : '#ef4444',
+            background: accentColor,
             borderRadius: '4px',
             marginBottom: '2rem',
-            boxShadow: isSuccess
-              ? '0 0 20px rgba(34, 197, 94, 0.4)'
-              : '0 0 20px rgba(239, 68, 68, 0.4)',
+            boxShadow: `0 0 20px ${accentColor}66`,
             animation: 'barGrow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)'
           }} />
         )}
@@ -122,6 +122,10 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
           <button
             className={`premium-action-btn ${isSuccess ? 'success' : 'error'}`}
             onClick={onClose}
+            style={{
+               background: isSuccess ? '#22c55e' : (isError ? '#f59e0b' : 'var(--primary)'),
+               boxShadow: `0 10px 20px ${isSuccess ? '#22c55e33' : (isError ? '#f59e0b33' : 'var(--primary-glow)')}`
+            }}
           >
             {buttonText}
           </button>
@@ -135,7 +139,7 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
           transform: 'translateX(-50%)',
           width: '200px',
           height: '200px',
-          background: isSuccess ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+          background: `${accentColor}26`,
           filter: 'blur(50px)',
           borderRadius: '50%',
           pointerEvents: 'none',
@@ -159,7 +163,6 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
           to { transform: scaleX(1); opacity: 1; }
         }
 
-        /* 3D Status Icon Container */
         .status-icon-container {
           width: 80px;
           height: 80px;
@@ -177,9 +180,9 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
         }
         
         .status-icon-container.error {
-          background: #ef4444;
+          background: #f59e0b;
           box-shadow: 
-            0 10px 25px rgba(239, 68, 68, 0.3),
+            0 10px 25px rgba(245, 158, 11, 0.3),
             inset 0 -4px 0 rgba(0,0,0,0.2),
             inset 0 2px 0 rgba(255,255,255,0.3);
         }
@@ -209,7 +212,6 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
           to { stroke-dashoffset: 0; }
         }
 
-        /* Action Button */
         .premium-action-btn {
           width: 100%;
           padding: 1.1rem;
@@ -220,21 +222,17 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
           cursor: pointer;
           transition: all 0.2s ease;
           color: white;
-          background: var(--primary);
-          box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
         }
 
         .premium-action-btn:hover {
           transform: translateY(-2px);
           filter: brightness(1.1);
-          box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
         }
 
         .premium-action-btn:active {
           transform: translateY(0);
         }
 
-        /* Loader */
         .premium-loader {
           width: 60px;
           height: 60px;
@@ -248,6 +246,7 @@ const StatusModal = ({ isOpen, onClose, type = 'success', title, message, button
           to { transform: rotate(360deg); }
         }
       `}</style>
+
     </div>
   );
 };

@@ -62,6 +62,16 @@ const TimelineArtisticTemplate = React.forwardRef(({ data }, ref) => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <span>📍</span> {personalDetails?.address || '123 Anywhere St., Any City'}
             </div>
+            {personalDetails?.linkedin && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span>🔗</span> <a href={personalDetails.linkedin.startsWith('http') ? personalDetails.linkedin : `https://${personalDetails.linkedin}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>LinkedIn</a>
+              </div>
+            )}
+            {personalDetails?.github && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span>📁</span> <a href={personalDetails.github.startsWith('http') ? personalDetails.github : `https://${personalDetails.github}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>GitHub</a>
+              </div>
+            )}
           </div>
         </div>
 

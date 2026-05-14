@@ -51,6 +51,22 @@ const ATSGoldEliteTemplate = React.forwardRef(({ data }, ref) => {
           <span>{personalDetails?.email || 'hello@reallygreatsite.com'}</span>
           <span style={{ color: '#d1d5db' }}>|</span>
           <span>{personalDetails?.website || 'www.reallygreatsite.com'}</span>
+          {personalDetails?.linkedin && (
+            <>
+              <span style={{ color: '#d1d5db' }}>|</span>
+              <a href={personalDetails.linkedin.startsWith('http') ? personalDetails.linkedin : `https://${personalDetails.linkedin}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                LinkedIn
+              </a>
+            </>
+          )}
+          {personalDetails?.github && (
+            <>
+              <span style={{ color: '#d1d5db' }}>|</span>
+              <a href={personalDetails.github.startsWith('http') ? personalDetails.github : `https://${personalDetails.github}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                GitHub
+              </a>
+            </>
+          )}
         </div>
       </div>
 

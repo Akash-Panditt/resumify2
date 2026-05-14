@@ -1139,10 +1139,14 @@ h6 {
 .builder-preview-scroll {
   flex: 1;
   width: 100%;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   background: #f1f5f9;
   /* Professional neutral background */
-  padding: 0;
+  padding: 3rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: relative;
 }
 
@@ -1151,7 +1155,7 @@ h6 {
 }
 
 .builder-preview-scaler {
-  transform-origin: center;
+  transform-origin: top center;
   width: 816px;
   min-height: 1123px;
   flex-shrink: 0;
@@ -1166,6 +1170,39 @@ h6 {
   border-radius: 2px;
   overflow: hidden;
   box-sizing: border-box !important;
+}
+
+/* Export Mode Overrides */
+body.is-exporting {
+  background-color: white !important;
+  background: white !important;
+}
+
+.is-exporting .builder-preview-scaler>div {
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  background-color: white !important;
+  min-height: auto !important; /* Allow natural height to prevent tiny page-break overflows */
+  height: auto !important;
+}
+
+.is-exporting * {
+  page-break-inside: avoid !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Ensure headings don't cause page break issues */
+.is-exporting h1, .is-exporting h2, .is-exporting h3, .is-exporting h4 {
+  page-break-after: avoid !important;
+}
+
+/* Force every container to be visible during capture to prevent black bars from scrollbars */
+.is-exporting div {
+  overflow: visible !important;
 }
 
 /* Custom Scrollbar for Preview */

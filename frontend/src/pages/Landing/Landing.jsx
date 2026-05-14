@@ -77,23 +77,23 @@ const Landing = () => {
 
         {/* Hero Image / Mockup */}
         <div className="hero-mockup-container" style={{ width: '100%', maxWidth: '1000px', marginBottom: '8rem', position: 'relative', perspective: '1000px' }}>
-          
+
           {/* Animated background glow */}
           <div style={{ position: 'absolute', top: '10%', left: '5%', width: '350px', height: '350px', background: 'rgba(99, 102, 241, 0.4)', filter: 'blur(100px)', borderRadius: '50%', animation: 'float 6s ease-in-out infinite' }}></div>
           <div style={{ position: 'absolute', bottom: '-10%', right: '5%', width: '400px', height: '400px', background: 'rgba(168, 85, 247, 0.3)', filter: 'blur(120px)', borderRadius: '50%', animation: 'float 8s ease-in-out infinite reverse' }}></div>
 
-          <div className="card hero-mockup-card" style={{ 
-            padding: '0.5rem', 
-            background: 'rgba(255,255,255,0.4)', 
-            backdropFilter: 'blur(10px)', 
-            borderRadius: '24px', 
-            overflow: 'hidden', 
-            boxShadow: '0 40px 80px -20px rgba(99, 102, 241, 0.3)', 
-            border: '1px solid rgba(99, 102, 241, 0.2)',
-            maxWidth: '920px',
+          <div className="card hero-mockup-card" style={{
+            padding: '0.4rem',
+            background: 'rgba(255,255,255,0.4)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: '24px',
+            overflow: 'hidden',
+            boxShadow: '0 50px 100px -20px rgba(99, 102, 241, 0.35)',
+            border: '1px solid rgba(255,255,255,0.3)',
+            maxWidth: '880px', // Slightly more minimized for elegance
             margin: '0 auto',
-            transform: 'rotateX(5deg) rotateY(-2deg)',
-            transition: 'transform 0.5s ease-out'
+            transform: 'rotateX(4deg) rotateY(-1deg)',
+            transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
           }}>
             <div style={{ background: 'var(--surface)', borderRadius: '20px', overflow: 'hidden', border: '1px solid var(--surface-border)', position: 'relative' }}>
               {/* Mac-style Browser Header */}
@@ -105,32 +105,32 @@ const Landing = () => {
                 </div>
                 <div style={{ flex: 1, height: '18px', background: 'rgba(var(--bg-rgb), 0.5)', borderRadius: '4px', margin: '0 3rem' }}></div>
               </div>
-              
+
               {/* Actual App Screenshot */}
-              <img 
-                src="/app-mockup.png" 
-                alt="Resumify Builder Interface" 
-                style={{ 
-                  width: '100%', 
-                  height: 'auto', 
+              <img
+                src="/app-mockup.png"
+                alt="Resumify Builder Interface"
+                style={{
+                  width: '100%',
+                  height: 'auto',
                   display: 'block',
-                  filter: 'contrast(1.02) brightness(1.02)' 
-                }} 
+                  filter: 'contrast(1.02) brightness(1.02)'
+                }}
               />
 
               {/* Subtle AI Badge Overlay */}
-              <div style={{ 
-                position: 'absolute', 
-                bottom: '1.5rem', 
-                right: '1.5rem', 
-                background: 'var(--primary)', 
-                color: 'white', 
-                padding: '0.5rem 1.25rem', 
-                borderRadius: '50px', 
-                fontWeight: 800, 
-                fontSize: '0.75rem', 
-                display: 'flex', 
-                alignItems: 'center', 
+              <div style={{
+                position: 'absolute',
+                bottom: '1.5rem',
+                right: '1.5rem',
+                background: 'var(--primary)',
+                color: 'white',
+                padding: '0.5rem 1.25rem',
+                borderRadius: '50px',
+                fontWeight: 800,
+                fontSize: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
                 gap: '0.5rem',
                 boxShadow: '0 10px 20px rgba(99, 102, 241, 0.4)',
                 zIndex: 10
@@ -287,17 +287,17 @@ const Landing = () => {
         {/* CTA Bottom Section */}
         {/* CTA Bottom Section */}
         <div className="cta-premium-section" style={{ width: '100%', maxWidth: '1100px', margin: '0 auto 8rem auto', position: 'relative' }}>
-          
+
           {/* Ambient Glows */}
           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '80%', background: 'var(--primary)', filter: 'blur(120px)', borderRadius: '50%', zIndex: 0, opacity: 0.15 }}></div>
 
           <div style={{ background: 'var(--surface)', borderRadius: '32px', padding: '3.5rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden', boxShadow: '0 30px 60px -15px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(99, 102, 241, 0.2)', zIndex: 1 }}>
-            
+
             {/* Very light elegant background pattern */}
             <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%236366f1\' fill-opacity=\'0.03\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E")', opacity: 0.8 }}></div>
-            
+
             <div style={{ position: 'relative', zIndex: 2 }}>
-              
+
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 1rem', background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary)', borderRadius: '50px', fontWeight: 700, fontSize: '0.8rem', marginBottom: '1.25rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                 <span style={{ fontSize: '1rem' }}>🚀</span> Start for free
               </div>
@@ -306,14 +306,14 @@ const Landing = () => {
                 Ready to land your <br />
                 <span className="text-gradient" style={{ background: 'linear-gradient(135deg, var(--primary) 0%, #a855f7 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>dream job?</span>
               </h2>
-              
+
               <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginBottom: '2rem', maxWidth: '600px', margin: '0 auto 2rem auto', lineHeight: 1.6, fontWeight: 500 }}>
                 Join 10,000+ professionals who have already built their careers with Resumify. Build a stunning resume in minutes.
               </p>
-              
+
               <button onClick={() => navigate('/signup')} className="btn" style={{ background: 'linear-gradient(135deg, var(--primary) 0%, #6d28d9 100%)', color: '#ffffff', fontSize: '1.1rem', padding: '1rem 3rem', fontWeight: 800, borderRadius: '50px', boxShadow: '0 10px 25px rgba(99, 102, 241, 0.3)', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', display: 'inline-flex', alignItems: 'center', gap: '0.75rem', transform: 'translateY(0)' }}
-               onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 15px 30px rgba(99, 102, 241, 0.4)'; }}
-               onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(99, 102, 241, 0.3)'; }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 15px 30px rgba(99, 102, 241, 0.4)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(99, 102, 241, 0.3)'; }}
               >
                 Build Your Resume Now
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -323,15 +323,15 @@ const Landing = () => {
               </button>
 
               <div style={{ marginTop: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
-                 <div style={{ display: 'flex' }}>
-                    {['https://randomuser.me/api/portraits/women/44.jpg', 'https://randomuser.me/api/portraits/men/32.jpg', 'https://randomuser.me/api/portraits/women/68.jpg', 'https://randomuser.me/api/portraits/men/46.jpg', 'https://randomuser.me/api/portraits/women/12.jpg'].map((img, idx) => (
-                      <img key={idx} src={img} alt="User avatar" style={{ width: '48px', height: '48px', borderRadius: '50%', border: '4px solid var(--surface)', marginLeft: idx === 0 ? '0' : '-16px', objectFit: 'cover', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
-                    ))}
-                 </div>
-                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                   <div style={{ color: '#fbbf24', fontSize: '1rem', letterSpacing: '2px', marginBottom: '4px' }}>★★★★★</div>
-                   <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)', fontWeight: 600 }}>Trusted by 10,000+ users</span>
-                 </div>
+                <div style={{ display: 'flex' }}>
+                  {['https://randomuser.me/api/portraits/women/44.jpg', 'https://randomuser.me/api/portraits/men/32.jpg', 'https://randomuser.me/api/portraits/women/68.jpg', 'https://randomuser.me/api/portraits/men/46.jpg', 'https://randomuser.me/api/portraits/women/12.jpg'].map((img, idx) => (
+                    <img key={idx} src={img} alt="User avatar" style={{ width: '48px', height: '48px', borderRadius: '50%', border: '4px solid var(--surface)', marginLeft: idx === 0 ? '0' : '-16px', objectFit: 'cover', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
+                  ))}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <div style={{ color: '#fbbf24', fontSize: '1rem', letterSpacing: '2px', marginBottom: '4px' }}>★★★★★</div>
+                  <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)', fontWeight: 600 }}>Trusted by 10,000+ users</span>
+                </div>
               </div>
             </div>
           </div>
@@ -394,19 +394,19 @@ const Landing = () => {
             <h4 style={{ color: 'var(--text-main)', marginBottom: '1.75rem', fontSize: '1.1rem', fontWeight: 700 }}>Stay Updated</h4>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.25rem', lineHeight: 1.6 }}>Join our newsletter for career tips and template updates.</p>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <input 
-                type="email" 
-                placeholder="Email address" 
-                style={{ 
-                  flex: 1, 
-                  background: 'rgba(255,255,255,0.05)', 
-                  border: '1px solid var(--surface-border)', 
-                  borderRadius: '10px', 
+              <input
+                type="email"
+                placeholder="Email address"
+                style={{
+                  flex: 1,
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid var(--surface-border)',
+                  borderRadius: '10px',
                   padding: '0.6rem 1rem',
                   fontSize: '0.85rem',
                   color: 'white',
                   outline: 'none'
-                }} 
+                }}
               />
               <button className="btn btn-primary" style={{ padding: '0.6rem 1rem', minHeight: 'unset', fontSize: '0.85rem' }}>Go</button>
             </div>

@@ -153,6 +153,7 @@ const PaymentsDashboard = () => {
               <tr>
                 <th>Transaction ID</th>
                 <th>Customer</th>
+                <th>Item / Template</th>
                 <th>Amount</th>
                 <th>Gateway</th>
                 <th>Status</th>
@@ -168,6 +169,19 @@ const PaymentsDashboard = () => {
                   <td>
                     <div style={{ fontWeight: 600 }}>{r.user?.name || 'Unknown'}</div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{r.user?.email || 'N/A'}</div>
+                  </td>
+                  <td>
+                    <div style={{ 
+                      fontSize: '0.85rem', 
+                      padding: '0.35rem 0.75rem', 
+                      background: 'rgba(255,255,255,0.03)', 
+                      borderRadius: '8px',
+                      display: 'inline-block',
+                      border: '1px solid var(--surface-border)',
+                      color: 'var(--text-main)'
+                    }}>
+                      {r.item_name || 'Legacy Payment'}
+                    </div>
                   </td>
                   <td>
                     <div style={{ fontWeight: 600 }}>₹{r.amount}</div>

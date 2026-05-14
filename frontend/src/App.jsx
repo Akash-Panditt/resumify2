@@ -31,7 +31,7 @@ function App() {
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'dummy_client_id_for_dev_change_me';
 
   return (
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID} useFedCM={true}>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID} useFedCM={false}>
       <ThemeProvider>
         <BrowserRouter>
           <Routes>

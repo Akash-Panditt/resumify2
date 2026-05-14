@@ -156,6 +156,19 @@ const UpgradeModal = ({ isOpen, onClose, data }) => {
             <div className="btn-shine"></div>
           </button>
 
+          {!isPremiumRequired && (
+            <button
+              className="pay-single-btn"
+              onClick={() => {
+                if (data?.onPaySingle) data.onPaySingle();
+                onClose();
+              }}
+            >
+              <span style={{ fontSize: '1.1rem' }}>🔓</span>
+              <span>Unlock just this PDF for ₹9</span>
+            </button>
+          )}
+
           <button
             className="ghost-btn"
             onClick={onClose}
@@ -244,6 +257,28 @@ const UpgradeModal = ({ isOpen, onClose, data }) => {
 
         .upgrade-btn:hover .btn-shine {
           left: 100%;
+        }
+
+        .pay-single-btn {
+          background: rgba(255, 255, 255, 0.05);
+          color: #fff;
+          padding: 1rem;
+          border-radius: 18px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          font-weight: 700;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+        }
+        
+        .pay-single-btn:hover {
+          background: rgba(255, 255, 255, 0.1);
+          border-color: var(--primary);
+          transform: translateY(-2px);
         }
 
         .ghost-btn {

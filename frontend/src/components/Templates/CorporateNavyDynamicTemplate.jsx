@@ -1,7 +1,7 @@
 import React from 'react';
 
 const CorporateNavyDynamicTemplate = React.forwardRef(({ data }, ref) => {
-  const { personalDetails, education, experience, skills, languages } = data;
+  const { personalDetails, education, experience, skills, languages, projects } = data;
 
   const navy = '#1a365d';
   const lightBlue = '#7fb3d5';
@@ -83,6 +83,16 @@ const CorporateNavyDynamicTemplate = React.forwardRef(({ data }, ref) => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span>📍</span> {personalDetails?.address || '123 Anywhere St., Any City'}
             </div>
+            {personalDetails?.linkedin && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>🔗</span> <a href={personalDetails.linkedin.startsWith('http') ? personalDetails.linkedin : `https://${personalDetails.linkedin}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>LinkedIn</a>
+              </div>
+            )}
+            {personalDetails?.github && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>📁</span> <a href={personalDetails.github.startsWith('http') ? personalDetails.github : `https://${personalDetails.github}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>GitHub</a>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -127,20 +137,29 @@ const CorporateNavyDynamicTemplate = React.forwardRef(({ data }, ref) => {
             ))}
           </div>
 
-          <div>
-            <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '20px', color: navy, borderBottom: '2px solid #eee', paddingBottom: '5px' }}>LANGUAGES</h3>
-            {(languages?.length > 0 ? languages : [
-              { name: 'ENGLISH', level: 95 },
-              { name: 'FRENCH', level: 70 }
-            ]).map((lang, idx) => (
-              <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <div style={{ fontSize: '12px', fontWeight: '500' }}>• {lang.name}</div>
-                <div style={{ width: '80px', height: '6px', backgroundColor: '#eee', borderRadius: '3px', overflow: 'hidden' }}>
-                  <div style={{ width: `${lang.level || 80}%`, height: '100%', backgroundColor: navy }}></div>
-                </div>
-              </div>
-            ))}
-          </div>
+          {languages?.length > 0 && (
+            <div>
+              <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '20px', color: navy, borderBottom: '2px solid #eee', paddingBottom: '5px' }}>LANGUAGES</h3>
+              {languages.map((lang, idx) => {
+                const getLevel = (level) => {
+                  if (typeof level === 'number') return level;
+                  if (level === 'Expert') return 100;
+                  if (level === 'Advanced') return 85;
+                  if (level === 'Intermediate') return 70;
+                  if (level === 'Beginner') return 50;
+                  return 80; // Default
+                };
+                return (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: '500' }}>• {lang.name}</div>
+                    <div style={{ width: '80px', height: '6px', backgroundColor: '#eee', borderRadius: '3px', overflow: 'hidden' }}>
+                      <div style={{ width: `${getLevel(lang.level)}%`, height: '100%', backgroundColor: navy }}></div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Right Column */}
@@ -187,6 +206,26 @@ const CorporateNavyDynamicTemplate = React.forwardRef(({ data }, ref) => {
               </div>
             ))}
           </div>
+
+          {projects?.length > 0 && (
+            <div style={{ marginBottom: '40px' }}>
+              <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '20px', color: navy }}>KEY PROJECTS</h3>
+              {projects.map((proj, idx) => (
+                <div key={idx} style={{ marginBottom: '25px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '5px' }}>
+                    <div style={{ fontWeight: '700', fontSize: '15px' }}>{proj.name}</div>
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" style={{ color: navy, textDecoration: 'none', fontWeight: '700', fontSize: '12px' }}>
+                        PROJECT LINK ↗
+                      </a>
+                    )}
+                  </div>
+                  {proj.technologies && <div style={{ fontWeight: '800', fontSize: '12px', marginBottom: '8px', textTransform: 'uppercase', color: '#666' }}>{proj.technologies}</div>}
+                  <p style={{ fontSize: '13px', lineHeight: '1.5', margin: 0, color: '#444' }}>{proj.description}</p>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div>
             <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '20px', color: navy }}>REFERENCES</h3>

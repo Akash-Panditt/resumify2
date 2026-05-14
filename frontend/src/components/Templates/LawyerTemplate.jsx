@@ -15,6 +15,8 @@ const LawyerTemplate = React.forwardRef(({ data }, ref) => {
           {personalDetails?.address && <span>{personalDetails.address}</span>}
           {personalDetails?.phone && <span>• {personalDetails.phone} •</span>}
           {personalDetails?.email && <span>{personalDetails.email}</span>}
+          {personalDetails?.linkedin && <span>• <a href={personalDetails.linkedin.startsWith('http') ? personalDetails.linkedin : `https://${personalDetails.linkedin}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>LinkedIn</a></span>}
+          {personalDetails?.github && <span>• <a href={personalDetails.github.startsWith('http') ? personalDetails.github : `https://${personalDetails.github}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>GitHub</a></span>}
         </div>
       </div>
 

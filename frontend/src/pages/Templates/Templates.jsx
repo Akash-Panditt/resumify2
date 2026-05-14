@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { LucideZap } from 'lucide-react';
 import Navbar from '../../components/Navbar';
 import GoldStar from '../../components/GoldStar';
 import StatusModal from '../../components/StatusModal';
@@ -269,12 +270,16 @@ const Templates = () => {
                     <button className="btn btn-primary select-btn">Use This Template</button>
                   </div>
                   {isPremium && (
-                    <div className="premium-tag">
-                      <GoldStar size={14} />
-                      <span>Premium</span>
+                    <div className="premium-star-badge" title="Premium Template">
+                      <GoldStar size={16} />
                     </div>
                   )}
-                  {isPopular && <div className="popular-tag">Trending</div>}
+                  {isPopular && (
+                    <div className="trending-badge">
+                      <LucideZap size={10} fill="currentColor" />
+                      <span>Trending</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="card-content">
@@ -553,75 +558,78 @@ const Templates = () => {
             transform: translateY(0);
           }
 
-          .premium-tag {
+          .premium-star-badge {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(8px);
-            padding: 0.4rem 0.8rem;
-            border-radius: 10px;
+            top: 1.25rem;
+            right: 1.25rem;
+            z-index: 10;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: flex;
             align-items: center;
-            gap: 6px;
-            color: #fbbf24;
-            font-size: 0.65rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            z-index: 10;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            justify-content: center;
           }
 
-          .popular-tag {
+          .template-card-pro:hover .premium-star-badge {
+            transform: scale(1.3) rotate(12deg);
+            filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.6));
+          }
+
+          .trending-badge {
             position: absolute;
             top: 1rem;
             left: 1rem;
             background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
             color: white;
             padding: 0.4rem 0.8rem;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 0.65rem;
-            font-weight: 800;
+            font-weight: 900;
             text-transform: uppercase;
-            box-shadow: 0 5px 15px rgba(var(--primary-rgb, 99, 102, 241), 0.4);
+            letter-spacing: 0.05em;
+            box-shadow: 0 8px 20px rgba(var(--primary-rgb, 99, 102, 241), 0.3);
             z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            animation: pulse-subtle 2s infinite;
+          }
+
+          @keyframes pulse-subtle {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
           }
 
           .card-content {
-            padding: 1.25rem;
+            padding: 1.5rem;
             background: var(--surface);
           }
 
           .template-name {
-            font-size: 1.15rem;
-            font-weight: 700;
-            margin-bottom: 0.4rem;
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
             color: var(--text-main);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            letter-spacing: -0.01em;
           }
 
           .template-desc {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            line-height: 1.5;
+            font-weight: 500;
           }
 
           /* Mobile Responsive Overrides */
           @media (max-width: 768px) {
             .templates-grid {
               grid-template-columns: repeat(2, 1fr);
-              gap: 1rem;
+              gap: 1.25rem;
             }
 
             .card-media {
-              height: 220px;
+              height: 240px;
               margin: 0.5rem;
               border-radius: var(--radius-md);
             }
@@ -635,7 +643,7 @@ const Templates = () => {
               transform: scale(0.26);
             }
 
-            .template-name { font-size: 0.95rem; }
+            .template-name { font-size: 1rem; }
             .template-desc { font-size: 0.75rem; }
             .card-content { padding: 1rem 0.75rem; }
             
@@ -648,14 +656,15 @@ const Templates = () => {
             .category-scroll { padding: 0 1rem 0.5rem 1rem; }
             .category-scroll-container { margin: 0 -1rem; }
 
-            .popular-tag, .premium-tag {
-              padding: 0.3rem 0.6rem;
-              font-size: 0.6rem;
-              border-radius: 8px;
+            .trending-badge, .premium-star-badge {
               top: 0.75rem;
             }
-            .popular-tag { left: 0.75rem; }
-            .premium-tag { right: 0.75rem; }
+            .trending-badge { left: 0.75rem; }
+            .premium-star-badge { 
+              right: 1.1rem; 
+              top: auto; 
+              bottom: 1.1rem; 
+            }
           }
 
           @media (max-width: 480px) {

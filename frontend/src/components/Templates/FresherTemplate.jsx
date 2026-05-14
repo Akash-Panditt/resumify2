@@ -1,7 +1,7 @@
 import React from 'react';
 
 const FresherTemplate = React.forwardRef(({ data }, ref) => {
-  const { personalDetails, education, experience, skills, projects } = data;
+  const { personalDetails, education, experience, skills, projects, languages } = data;
 
   const accent = '#0ea5e9'; // Sky blue
   const textMain = '#334155';
@@ -102,6 +102,22 @@ const FresherTemplate = React.forwardRef(({ data }, ref) => {
         </div>
       )}
 
+      {/* Languages */}
+      {languages && languages.length > 0 && (
+        <div style={{ marginTop: '3rem' }}>
+          <h2 style={{ fontSize: '1.5rem', color: '#0f172a', fontWeight: '800', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ color: accent }}>05.</span> Languages
+          </h2>
+          <div style={{ paddingLeft: '2rem', display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
+            {languages.map((lang, i) => (
+              <div key={i}>
+                <div style={{ fontSize: '1.05rem', fontWeight: '700', color: '#0f172a' }}>{lang.name}</div>
+                <div style={{ fontSize: '0.9rem', color: accent, fontWeight: '500' }}>{lang.level}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 });

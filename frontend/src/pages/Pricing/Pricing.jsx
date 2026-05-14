@@ -41,6 +41,7 @@ const Pricing = () => {
       const checkoutRes = await axios.post(`${import.meta.env.VITE_API_URL}/api/payments/checkout`, {
         type: 'plan',
         itemId: planId,
+        itemName: `${planId.charAt(0).toUpperCase() + planId.slice(1)} Plan`,
         amount,
         billingCycle
       });
@@ -63,14 +64,14 @@ const Pricing = () => {
         billingCycle
       });
 
-      // Step 4: Success
-      const updatedUser = { ...user, plan: planId, requested_plan: null };
+      // Step 4: Success (Pending Approval)
+      const updatedUser = { ...user, requested_plan: planId };
       localStorage.setItem('resumify_user', JSON.stringify(updatedUser));
 
       setModal({
         isOpen: true,
         type: 'success',
-        title: 'Upgrade Successful!',
+        title: 'Request Submitted!',
         message: verifyRes.data.message
       });
     } catch (err) {
@@ -163,11 +164,13 @@ const Pricing = () => {
                     <div className="card-footer">
                       {currentPlan === plan.name ? (
                         <button className="btn btn-secondary w-full" disabled>Active</button>
+                      ) : user?.requested_plan === plan.name ? (
+                        <button className="btn btn-warning w-full" disabled style={{ background: '#f59e0b', color: 'white', borderColor: '#f59e0b' }}>Pending Approval</button>
                       ) : (
                         <button
                           className={`btn ${isPro ? 'btn-primary' : 'btn-secondary'} w-full`}
                           onClick={() => handleUpgrade(plan.name)}
-                          disabled={loading === plan.name}
+                          disabled={loading === plan.name || user?.requested_plan}
                         >
                           {loading === plan.name ? 'Processing...' : `Get Started`}
                         </button>

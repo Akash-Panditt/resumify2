@@ -12,7 +12,12 @@ axios.defaults.withCredentials = true;
 axios.interceptors.response.use((response) => {
   return response;
 }, (error) => {
-  if (error.response?.status === 401) {
+  const isAuthError = error.response?.status === 401;
+  const isSecurityForbidden = error.response?.status === 403 && !error.response?.data?.type;
+
+  if (isAuthError || isSecurityForbidden) {
+    console.warn(`[Axios Interceptor] Session invalid or forbidden (${error.response?.status}). Clearing session.`);
+    
     localStorage.removeItem('resumify_user');
     localStorage.removeItem('resumify_token');
     localStorage.removeItem('resumify_admin');

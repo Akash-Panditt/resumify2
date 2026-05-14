@@ -48,7 +48,7 @@ const DesignerTemplate = React.forwardRef(({ data }, ref) => {
             <div>
               <h3 style={{ fontSize: '0.85rem', color: '#a1a1aa', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '1rem' }}>Education</h3>
               {education.map((item, idx) => (
-                <div key={idx} style={{ marginBottom: '1.25rem' }}>
+                <div key={idx} style={{ marginBottom: '1.25rem', breakInside: 'avoid' }}>
                   <strong style={{ display: 'block', fontSize: '0.95rem', color: '#fff' }}>{item.degree}</strong>
                   <span style={{ display: 'block', fontSize: '0.85rem', color: '#a1a1aa', margin: '0.25rem 0' }}>{item.school}</span>
                   <span style={{ fontSize: '0.75rem', color: highlight, letterSpacing: '1px' }}>{item.startDate} - {item.endDate}</span>
@@ -96,7 +96,7 @@ const DesignerTemplate = React.forwardRef(({ data }, ref) => {
             <div style={{ marginBottom: '3rem' }}>
               <h2 style={{ fontSize: '2rem', fontWeight: '800', color: primary, marginBottom: '2rem' }}>Experience</h2>
               {experience.map((item, idx) => (
-                <div key={idx} style={{ marginBottom: '2rem', position: 'relative' }}>
+                <div key={idx} style={{ marginBottom: '2rem', position: 'relative', breakInside: 'avoid' }}>
                   <div style={{ position: 'absolute', left: '-15px', top: '8px', width: '6px', height: '6px', backgroundColor: highlight, borderRadius: '50%' }}></div>
                   <strong style={{ display: 'block', fontSize: '1.25rem', color: primary, letterSpacing: '-0.5px' }}>{item.jobTitle}</strong>
                   <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', margin: '0.25rem 0 0.75rem 0' }}>
@@ -114,7 +114,7 @@ const DesignerTemplate = React.forwardRef(({ data }, ref) => {
               <h2 style={{ fontSize: '2rem', fontWeight: '800', color: primary, marginBottom: '2rem' }}>Selected Works</h2>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}>
                 {projects.map((item, idx) => (
-                  <div key={idx} style={{ padding: '1.5rem', border: '1px solid #e4e4e7', borderRadius: '8px', backgroundColor: '#fafafa' }}>
+                  <div key={idx} style={{ padding: '1.5rem', border: '1px solid #e4e4e7', borderRadius: '8px', backgroundColor: '#fafafa', breakInside: 'avoid' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '0.5rem' }}>
                       <strong style={{ fontSize: '1.1rem', color: primary }}>{item.name}</strong>
                       {item.link && <a href={item.link} style={{ fontSize: '0.85rem', color: highlight, textDecoration: 'none' }}>View Project ↗</a>}

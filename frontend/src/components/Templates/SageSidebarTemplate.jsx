@@ -1,7 +1,7 @@
 import React from 'react';
 
 const SageSidebarTemplate = React.forwardRef(({ data }, ref) => {
-  const { personalDetails, education, experience, skills } = data;
+  const { personalDetails, education, experience, skills, languages } = data;
 
   const sidebarBg = '#d9e0d8';
   const accentColor = '#7a9e9f';
@@ -86,6 +86,18 @@ const SageSidebarTemplate = React.forwardRef(({ data }, ref) => {
               <span style={{ fontSize: '16px' }}>✉️</span>
               <span style={{ wordBreak: 'break-all' }}>{personalDetails?.email || 'hello@reallygreatsite.com'}</span>
             </div>
+            {personalDetails?.linkedin && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '16px' }}>🔗</span>
+                <a href={personalDetails.linkedin.startsWith('http') ? personalDetails.linkedin : `https://${personalDetails.linkedin}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>LinkedIn</a>
+              </div>
+            )}
+            {personalDetails?.github && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '16px' }}>📁</span>
+                <a href={personalDetails.github.startsWith('http') ? personalDetails.github : `https://${personalDetails.github}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>GitHub</a>
+              </div>
+            )}
           </div>
         </div>
 
@@ -124,6 +136,19 @@ const SageSidebarTemplate = React.forwardRef(({ data }, ref) => {
             </div>
           ))}
         </div>
+
+        {languages && languages.length > 0 && (
+          <div>
+            <h3 style={{ fontSize: '16px', fontWeight: '800', marginBottom: '20px', letterSpacing: '1px', borderBottom: '1px solid #aaa', paddingBottom: '5px' }}>LANGUAGES</h3>
+            <ul style={{ padding: '0 0 0 15px', margin: 0, fontSize: '13px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {languages.map((lang, idx) => (
+                <li key={idx}>
+                  <strong>{lang.name}</strong> - {lang.level}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       {/* Main Content */}

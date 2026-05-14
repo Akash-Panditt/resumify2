@@ -18,7 +18,8 @@ const ICONS = {
   revoke: <><path d="M18.36 6.64a9 9 0 1 1-12.73 0" /><line x1="12" y1="2" x2="12" y2="12" /></>,
   check: <polyline points="20 6 9 17 4 12" />,
   lock: <><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></>,
-  unlock: <><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></>
+  unlock: <><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></>,
+  eye: <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></>
 };
 
 const UserManagement = () => {
@@ -27,6 +28,7 @@ const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPlan, setFilterPlan] = useState('all');
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, type: '', userId: null, title: '', message: '', confirmText: '' });
+  const [historyModal, setHistoryModal] = useState({ isOpen: false, userId: null, data: null, loading: false });
   const admin = JSON.parse(localStorage.getItem('resumify_admin') || '{}');
 
   useEffect(() => {
@@ -107,6 +109,30 @@ const UserManagement = () => {
     });
   };
 
+  const handleApproveUpgrade = (userId) => {
+    setConfirmModal({
+      isOpen: true,
+      type: 'primary',
+      userId,
+      title: 'Approve Upgrade',
+      message: 'Are you sure you want to approve this user\'s plan upgrade request?',
+      confirmText: 'Yes, Approve',
+      action: 'approve'
+    });
+  };
+
+  const handleViewHistory = async (userId) => {
+    setHistoryModal({ isOpen: true, userId, data: null, loading: true });
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/history`);
+      setHistoryModal(prev => ({ ...prev, data: res.data, loading: false }));
+    } catch (err) {
+      console.error('Failed to fetch history', err);
+      alert('Failed to fetch user history');
+      setHistoryModal(prev => ({ ...prev, isOpen: false, loading: false }));
+    }
+  };
+
   const handleConfirmAction = async () => {
     const { userId, action } = confirmModal;
     setConfirmModal({ ...confirmModal, isOpen: false });
@@ -134,6 +160,14 @@ const UserManagement = () => {
         fetchUsers();
       } catch (err) {
         alert('Failed to revoke subscription');
+      }
+    } else if (action === 'approve') {
+      try {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/approve-upgrade/${userId}`, {});
+        alert(res.data.message);
+        fetchUsers();
+      } catch (err) {
+        alert('Failed to approve upgrade');
       }
     }
   };
@@ -294,17 +328,6 @@ const UserManagement = () => {
                         <span className={`badge ${['basic', 'pro', 'premium'].includes(u.plan) ? 'badge-purple' : ''}`} style={{ fontSize: '0.65rem', textTransform: 'uppercase', minWidth: '60px', textAlign: 'center', background: u.plan === 'free' ? 'rgba(107, 114, 128, 0.1)' : undefined, color: u.plan === 'free' ? 'var(--text-muted)' : undefined }}>
                           {u.plan}
                         </span>
-                        <select 
-                          value={u.plan} 
-                          className="form-input" 
-                          style={{ padding: '0.15rem 0.3rem', fontSize: '0.75rem', width: '24px', opacity: 0.5, border: 'none', background: 'transparent' }}
-                          onChange={(e) => handleUpdatePlan(u.id, e.target.value)}
-                        >
-                          <option value="free">Free</option>
-                          <option value="basic">Basic</option>
-                          <option value="pro">Pro</option>
-                          <option value="premium">Premium</option>
-                        </select>
                       </div>
                     )}
                   </td>
@@ -321,20 +344,30 @@ const UserManagement = () => {
                   <td data-label="Actions" style={{ textAlign: 'right' }}>
                     {u.role !== 'super_admin' && u.id !== admin.id && (
                       <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                        <button 
+                          className="btn btn-secondary action-btn" 
+                          style={{ background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary)', border: '1px solid rgba(99, 102, 241, 0.2)' }}
+                          onClick={() => handleViewHistory(u.id)}
+                          title="View History"
+                        >
+                          <Icon path={ICONS.eye} size={16} color="var(--primary)" />
+                        </button>
+
                         {u.requested_plan && (
                           <button 
-                            className="btn btn-primary action-btn" 
+                            className="btn action-btn" 
+                            style={{ background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary)', border: '1px solid rgba(99, 102, 241, 0.3)' }}
                             onClick={() => handleApproveUpgrade(u.id)}
                             title="Approve Upgrade"
                           >
-                            <Icon path={ICONS.check} size={16} color="white" />
+                            <Icon path={ICONS.check} size={16} color="var(--primary)" />
                           </button>
                         )}
                         
                         {u.plan !== 'free' && (
                           <button 
-                            className="btn btn-warning action-btn" 
-                            style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.2)' }} 
+                            className="btn action-btn" 
+                            style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)' }} 
                             onClick={() => handleRevokeSubscription(u.id)}
                             title="Revoke subscription"
                           >
@@ -431,6 +464,141 @@ const UserManagement = () => {
         confirmText={confirmModal.confirmText}
         type={confirmModal.type}
       />
+      <UserHistoryModal 
+        isOpen={historyModal.isOpen}
+        onClose={() => setHistoryModal({ ...historyModal, isOpen: false })}
+        data={historyModal.data}
+        loading={historyModal.loading}
+      />
+    </div>
+  );
+};
+
+const UserHistoryModal = ({ isOpen, onClose, data, loading }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'rgba(0, 0, 0, 0.7)',
+      backdropFilter: 'blur(8px)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000,
+      padding: '1.5rem'
+    }} onClick={onClose}>
+      <div style={{
+        width: '100%',
+        maxWidth: '650px',
+        maxHeight: '85vh',
+        background: 'var(--surface)',
+        borderRadius: '24px',
+        border: '1px solid var(--surface-border)',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+      }} onClick={e => e.stopPropagation()}>
+        {/* Modal Header */}
+        <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid var(--surface-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
+          <div>
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>Account Activity History</h3>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{data?.user?.name} ({data?.user?.email})</p>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.5rem' }}>&times;</button>
+        </div>
+
+        {/* Modal Body */}
+        <div style={{ padding: '2rem', overflowY: 'auto', flex: 1 }}>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>Loading history details...</div>
+          ) : !data ? (
+            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--error)' }}>Failed to load data.</div>
+          ) : (
+            <>
+              {/* Quick Stats */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2.5rem' }}>
+                <div style={{ background: 'rgba(99, 102, 241, 0.05)', padding: '1.25rem', borderRadius: '16px', border: '1px solid rgba(99, 102, 241, 0.1)' }}>
+                  <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--primary)', letterSpacing: '0.05em', marginBottom: '0.5rem', fontWeight: '600' }}>Total Downloads</div>
+                  <div style={{ fontSize: '2rem', fontWeight: '800' }}>{data.user.download_count}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>PDF exports generated</div>
+                </div>
+                <div style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '1.25rem', borderRadius: '16px', border: '1px solid rgba(16, 185, 129, 0.1)' }}>
+                  <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#10b981', letterSpacing: '0.05em', marginBottom: '0.5rem', fontWeight: '600' }}>Active Resumes</div>
+                  <div style={{ fontSize: '2rem', fontWeight: '800' }}>{data.resumes.length}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Saved in profile</div>
+                </div>
+              </div>
+
+              {/* Template Usage */}
+              <div style={{ marginBottom: '2.5rem' }}>
+                <h4 style={{ fontSize: '1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ width: '4px', height: '16px', background: 'var(--primary)', borderRadius: '2px' }}></span>
+                  Template Usage
+                </h4>
+                {data.resumes.length > 0 ? (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+                    {Array.from(new Set(data.resumes.map(r => r.template))).map(tpl => (
+                      <div key={tpl} style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', border: '1px solid var(--surface-border)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary)' }}></div>
+                        <span style={{ textTransform: 'capitalize' }}>{tpl} Template</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>No resumes created yet.</p>
+                )}
+              </div>
+
+              {/* Download Timeline */}
+              <div>
+                <h4 style={{ fontSize: '1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ width: '4px', height: '16px', background: 'var(--primary)', borderRadius: '2px' }}></span>
+                  Download Activity
+                </h4>
+                {data.activity.length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {data.activity.map((act, i) => (
+                      <div key={act.id} style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div>
+                          <div style={{ fontWeight: '600', fontSize: '0.95rem', marginBottom: '0.2rem' }}>
+                            {act.resume?.title || 'Untitled Resume'}
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', gap: '1rem' }}>
+                            <span><span style={{ color: 'var(--primary)' }}>Template:</span> {act.template_name}</span>
+                            <span>{new Date(act.created_at).toLocaleString()}</span>
+                          </div>
+                        </div>
+                        <div style={{ color: '#10b981' }}>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                          </svg>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center', padding: '1.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px dashed var(--surface-border)' }}>
+                    No download activity recorded yet.
+                  </p>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Modal Footer */}
+        <div style={{ padding: '1.25rem 2rem', borderTop: '1px solid var(--surface-border)', textAlign: 'right', background: 'rgba(255,255,255,0.02)' }}>
+          <button onClick={onClose} className="btn btn-secondary" style={{ minWidth: '120px' }}>Close</button>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { generateProfessionalPDF } from '../../utils/pdfGenerator';
 import html2pdf from 'html2pdf.js';
 import ThemeToggle from '../../components/ThemeToggle';
 import AIEnhancer from '../../components/AIEnhancer';
@@ -76,10 +77,8 @@ const Builder = () => {
       const targetWidth = 816;
       const targetHeight = 1056;
 
-      const scaleX = (containerWidth - 40) / targetWidth;
-      const scaleY = (containerHeight - 40) / targetHeight;
-
-      const newScale = Math.min(scaleX, scaleY, 1);
+      const scaleX = (containerWidth - 60) / targetWidth;
+      const newScale = Math.min(scaleX, 1);
       setScaleFactor(newScale);
     };
 
@@ -319,30 +318,29 @@ const Builder = () => {
         const updatedUser = { ...user, download_count: res.data.download_count };
         localStorage.setItem('resumify_user', JSON.stringify(updatedUser));
 
-        const element = componentRef.current;
-        const opt = {
-          margin: 0,
-          filename: `${resumeData?.title || 'Resume'}.pdf`,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, letterRendering: true, logging: false },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        await html2pdf().from(element).set(opt).save();
+      if (componentRef.current) {
+        await generateProfessionalPDF(componentRef.current, resumeData);
+      }
       }
     } catch (err) {
-      if (err.response?.status === 403) {
+      if (err.response?.status === 402 || err.response?.status === 403) {
         const errorData = err.response.data;
-        if (errorData.type === 'PAYMENT_REQUIRED' || errorData.type === 'TEMPLATE_PURCHASE_REQUIRED') {
+        if (errorData.type === 'PAYMENT_REQUIRED' || errorData.type === 'TEMPLATE_PURCHASE_REQUIRED' || err.response.status === 402 || errorData.type === 'LIMIT_REACHED' || err.response.status === 403) {
           setPaymentData({
             resumeId: id,
-            price: errorData.price || 9,
-            message: errorData.message
+            price: 9,
+            message: 'Pay ₹9 to download your PDF instantly.',
+            templateName: errorData.templateName || resumeData.template || 'Current'
           });
           setIsPaymentPopupOpen(true);
         } else {
-          setUpgradeModalData(errorData);
-          setIsUpgradeModalOpen(true);
+          // Other potential errors
+          setModal({
+            isOpen: true,
+            type: 'error',
+            title: 'Action Required',
+            message: errorData.message || 'An error occurred.'
+          });
         }
       } else {
         console.error('Download failed', err);
@@ -516,7 +514,7 @@ const Builder = () => {
           <div className="builder-form-header" style={{ padding: '1.5rem 1.5rem 0 1.5rem', flexShrink: 0, borderBottom: '1px solid var(--surface-border)', zIndex: 20, background: 'var(--bg-color)' }}>
             {/* Mobile Action Bar */}
             <div className="mobile-action-bar mobile-only" style={{ marginBottom: '1rem', gap: '0.5rem' }}>
-              <button className="btn btn-secondary btn-sm builder-mobile-btn" onClick={() => navigate('/dashboard')} disabled={isSaving}>Dashboard</button>
+              <button className="btn btn-secondary btn-sm builder-mobile-btn" onClick={() => navigate('/templates')} disabled={isSaving}>Templates</button>
               <button className="btn btn-primary btn-sm builder-mobile-btn" onClick={() => handleSave(true)} disabled={isSaving || downloading}>{isSaving ? 'Saving...' : 'Save'}</button>
               <button className="btn btn-success btn-sm builder-mobile-btn" onClick={handleDownload} disabled={downloading || isSaving} style={{ background: '#10b981', borderColor: '#10b981', color: 'white' }}>{downloading ? '...' : 'Download'}</button>
             </div>
@@ -753,8 +751,23 @@ const Builder = () => {
 
             {/* Navigation Controls */}
             <div className="builder-nav-controls" style={{ padding: '1.5rem 0', marginTop: '1rem', borderTop: '1px solid var(--surface-border)', display: 'flex', justifyContent: 'space-between' }}>
-              <button className="btn btn-secondary" onClick={() => { setActiveStep(activeStep - 1); formContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' }); }} disabled={activeStep === 0}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+              <button 
+                className="btn btn-secondary" 
+                onClick={() => { setActiveStep(activeStep - 1); formContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' }); }} 
+                disabled={activeStep === 0}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: '0.65rem 1.25rem',
+                  fontSize: '0.8rem',
+                  fontWeight: '800',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                 Back
               </button>
 
@@ -821,6 +834,37 @@ const Builder = () => {
                 }}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+              </button>
+
+              {/* Full Preview (Eye Icon) */}
+              <button
+                title="Full Page Preview"
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid var(--surface-border)',
+                  borderRadius: '8px',
+                  color: 'var(--text-main)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onClick={() => handleNavigate(`/preview/${id}`)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(139, 92, 246, 0.1)';
+                  e.currentTarget.style.color = '#8b5cf6';
+                  e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                  e.currentTarget.style.color = 'var(--text-main)';
+                  e.currentTarget.style.borderColor = 'var(--surface-border)';
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
               </button>
 
               {/* Save (Icon) */}
@@ -934,11 +978,8 @@ const Builder = () => {
             <div
               className="builder-preview-scaler"
               style={{
-                transform: `translate(-50%, -50%) scale(${scaleFactor})`,
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transformOrigin: 'center'
+                transform: `scale(${scaleFactor})`,
+                flexShrink: 0
               }}
             >
               <Suspense fallback={<div className="loading-template">Preparing Preview...</div>}>
