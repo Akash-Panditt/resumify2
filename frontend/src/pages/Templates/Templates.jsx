@@ -170,38 +170,6 @@ const Templates = () => {
       <Navbar user={user} />
 
       <main className="templates-container">
-        <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-start' }}>
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="btn-back-to-dashboard"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.6rem 1.2rem',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid var(--surface-border)',
-              borderRadius: '12px',
-              color: 'var(--text-main)',
-              fontSize: '0.85rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-              e.currentTarget.style.transform = 'translateX(-4px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-              e.currentTarget.style.transform = 'translateX(0)';
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            Dashboard
-          </button>
-        </div>
-
         {/* Cinematic Header */}
         <div className="templates-header">
           <div className="header-badge">Design Your Future</div>
